@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ModelEntities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Privilegio">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="80" />
+  </EntityType>
+  <EntityType Name="Privilegios_asociados_roles">
+    <Key>
+      <PropertyRef Name="Id_Privilegio" />
+      <PropertyRef Name="Id_Rol" />
+    </Key>
+    <Property Name="Id_Privilegio" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Id_Rol" Type="nvarchar" MaxLength="128" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="Cedula" />
+    </Key>
+    <Property Name="Cedula" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="16" />
+    <Property Name="Apellido1" Type="varchar" MaxLength="16" />
+    <Property Name="Apellido2" Type="varchar" MaxLength="16" />
+    <Property Name="FechaNac" Type="date" />
+    <Property Name="Telefono1" Type="varchar" MaxLength="10" />
+    <Property Name="Telefono2" Type="varchar" MaxLength="10" />
+    <Property Name="Id" Type="nvarchar" MaxLength="128" />
+  </EntityType>
+  <Association Name="FK__Privilegi__Id_Pr__37A5467C">
+    <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
+    <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Privilegio">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Privilegios_asociados_roles">
+        <PropertyRef Name="Id_Privilegio" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ModelEntitiesStoreContainer">
+    <EntitySet Name="Privilegio" EntityType="Self.Privilegio" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Privilegi__Id_Pr__37A5467C" Association="Self.FK__Privilegi__Id_Pr__37A5467C">
+      <End Role="Privilegio" EntitySet="Privilegio" />
+      <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
