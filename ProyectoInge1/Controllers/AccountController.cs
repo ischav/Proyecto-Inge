@@ -440,7 +440,10 @@ namespace ProyectoInge1.Controllers
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError("", error);
+                if (error.StartsWith("Email"))
+                {
+                    ModelState.AddModelError("", "El email ingresado ya está en uso");
+                }
             }
         }
 
