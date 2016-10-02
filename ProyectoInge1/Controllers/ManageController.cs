@@ -349,6 +349,8 @@ namespace ProyectoInge1.Controllers
         {
             foreach (var error in result.Errors)
             {
+                Console.WriteLine("Aquí\n"+error+"\nAquí");
+
                 ModelState.AddModelError("", error);
             }
         }

@@ -165,6 +165,7 @@ namespace ProyectoInge1.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+
                 AddErrors(result);
             }
 
