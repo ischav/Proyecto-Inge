@@ -24,6 +24,7 @@
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Gestion de usuarios", "Index", "ModuloUsuarios")</li>
+                        <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad")</li>
                     }
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>

@@ -1,0 +1,46 @@
+﻿@model ProyectoInge1.Models.ModeloIntermedio
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<table class="table">
+    <tr>
+        <th>
+            Permisos
+        </th>
+        @for (int i = 0; i < Model.listaRoles.Count; i++)
+        {
+            <th id="@(Model.listaRoles.ElementAt(i).Id)">
+                @Html.DisplayFor(modelItem => Model.listaRoles.ElementAt(i).Name)
+            </th>
+        }
+    </tr>
+    @for (int i = 0; i < Model.listaPrivilegios.Count; i++)
+    {
+        <tr>
+            <th id="@(Model.listaPrivilegios.ElementAt(i).Id)">
+                @Html.DisplayFor(modelItem =>
+                Model.listaPrivilegios.ElementAt(i).Id)
+            </th>
+            @for (int j = 0; j < Model.listaRoles.Count; j++)
+            {
+                <th id="@(Model.listaPrivilegios.ElementAt(i).Id)_/_@(Model.listaRoles.ElementAt(j).Id)">
+                    @{bool exists = false;}
+                    @for (int k = 0; k < Model.listaPrivilegios_asociados_roles.Count; k++)
+                    {
+                        if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Rol.Equals(Model.listaRoles.ElementAt(j).Id))
+                        {
+                            if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Privilegio.Equals(Model.listaPrivilegios.ElementAt(i).Id))
+                            {
+                                exists = true;
+                            }
+                        }
+                    }
+                    @Html.CheckBox("checkbox", exists)
+                </th>
+                        }
+        </tr>
+                        }
+</table>
