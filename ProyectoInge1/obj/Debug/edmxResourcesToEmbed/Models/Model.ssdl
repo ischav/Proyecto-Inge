@@ -28,7 +28,7 @@
     <Property Name="Telefono2" Type="varchar" MaxLength="10" />
     <Property Name="Id" Type="nvarchar" MaxLength="128" />
   </EntityType>
-  <Association Name="FK__Privilegi__Id_Pr__37A5467C">
+  <Association Name="FK__Privilegi__Id_Pr__797309D9">
     <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
     <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
     <ReferentialConstraint>
@@ -44,7 +44,7 @@
     <EntitySet Name="Privilegio" EntityType="Self.Privilegio" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__Privilegi__Id_Pr__37A5467C" Association="Self.FK__Privilegi__Id_Pr__37A5467C">
+    <AssociationSet Name="FK__Privilegi__Id_Pr__797309D9" Association="Self.FK__Privilegi__Id_Pr__797309D9">
       <End Role="Privilegio" EntitySet="Privilegio" />
       <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
     </AssociationSet>
