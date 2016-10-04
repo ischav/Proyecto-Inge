@@ -408,3 +408,7 @@ C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Owin.Secur
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.csprojResolveAssemblyReference.cache
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.dll
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.pdb
+C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.dll
+C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.dll
+C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.xml
+C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.xml

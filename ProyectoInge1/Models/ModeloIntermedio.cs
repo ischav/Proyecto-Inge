@@ -19,5 +19,15 @@ namespace ProyectoInge1.Models
 		public List<Privilegios_asociados_roles> listaPrivilegios_asociados_roles = new List<Privilegios_asociados_roles>();
         public IdentityRole modeloRol { get; set; }
         public List<IdentityRole> listaRoles = new List<IdentityRole>();
+
+        public string Cedula { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido1 { get; set; }
+        public string Apellido2 { get; set; }
+        public DateTime? FechaNac { get; set; }
+        public string Telefono1 { get; set; }
+        public string Telefono2 { get; set; }
+        public string Id { get; set; }
+
     }
 }
