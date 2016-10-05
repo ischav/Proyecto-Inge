@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Sistema de administración de requerimientos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Administración de Requerimientos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -26,9 +26,8 @@
                         <li>@Html.ActionLink("Gestion de usuarios", "Index", "ModuloUsuarios")</li>
                         <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad")</li>
                     }
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Contáctenos", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -38,7 +37,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Sistema de Administración de Requerimientos</p>
         </footer>
     </div>
 

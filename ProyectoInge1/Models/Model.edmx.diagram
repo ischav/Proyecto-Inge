@@ -5,10 +5,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="dc19d03f6bd043faa7faf996bae94acc" Name="Diagram1">
-        <EntityTypeShape EntityType="ModelEntities.Privilegio" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModelEntities.Privilegios_asociados_roles" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModelEntities.Usuario" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <AssociationConnector Association="ModelEntities.FK__Privilegi__Id_Pr__37A5467C" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ModelEntities.Privilegio" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ModelEntities.Usuario" Width="1.5" PointX="4.375" PointY="0.625" />
+        <EntityTypeShape EntityType="ModelEntities.Privilegios_asociados_roles" Width="1.5" PointX="2.25" PointY="3" />
+        <AssociationConnector Association="ModelEntities.FK_Privilegio" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

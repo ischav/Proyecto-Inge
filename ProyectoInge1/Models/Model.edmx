@@ -23,6 +23,7 @@
         <EntityType Name="Usuario">
           <Key>
             <PropertyRef Name="Cedula" />
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="Cedula" Type="varchar" MaxLength="16" Nullable="false" />
           <Property Name="Nombre" Type="varchar" MaxLength="16" />
@@ -31,9 +32,10 @@
           <Property Name="FechaNac" Type="date" />
           <Property Name="Telefono1" Type="varchar" MaxLength="10" />
           <Property Name="Telefono2" Type="varchar" MaxLength="10" />
-          <Property Name="Id" Type="nvarchar" MaxLength="128" />
+          <Property Name="Sexo" Type="char" MaxLength="1" />
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Privilegi__Id_Pr__797309D9">
+        <Association Name="FK_Privilegio">
           <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
           <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
           <ReferentialConstraint>
@@ -49,7 +51,7 @@
           <EntitySet Name="Privilegio" EntityType="Self.Privilegio" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Privilegi__Id_Pr__797309D9" Association="Self.FK__Privilegi__Id_Pr__797309D9">
+          <AssociationSet Name="FK_Privilegio" Association="Self.FK_Privilegio">
             <End Role="Privilegio" EntitySet="Privilegio" />
             <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
           </AssociationSet>
@@ -58,39 +60,50 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ModelEntities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Privilegio" EntityType="ModelEntities.Privilegio" />
+          <EntitySet Name="Usuario" EntityType="ModelEntities.Usuario" />
+          <EntitySet Name="Privilegios_asociados_roles" EntityType="ModelEntities.Privilegios_asociados_roles" />
+          <AssociationSet Name="FK_Privilegio" Association="ModelEntities.FK_Privilegio">
+            <End Role="Privilegio" EntitySet="Privilegio" />
+            <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Privilegio">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Descripcion" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Privilegios_asociados_roles" Relationship="Self.FK__Privilegi__Id_Pr__37A5467C" FromRole="Privilegio" ToRole="Privilegios_asociados_roles" />
-        </EntityType>
-        <EntityType Name="Privilegios_asociados_roles">
-          <Key>
-            <PropertyRef Name="Id_Privilegio" />
-            <PropertyRef Name="Id_Rol" />
-          </Key>
-          <Property Name="Id_Privilegio" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Id_Rol" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Privilegio" Relationship="Self.FK__Privilegi__Id_Pr__37A5467C" FromRole="Privilegios_asociados_roles" ToRole="Privilegio" />
+          <NavigationProperty Name="Privilegios_asociados_roles" Relationship="ModelEntities.FK_Privilegio" FromRole="Privilegio" ToRole="Privilegios_asociados_roles" />
         </EntityType>
         <EntityType Name="Usuario">
           <Key>
             <PropertyRef Name="Cedula" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Cedula" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Cedula" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="false" />
           <Property Name="Nombre" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
           <Property Name="Apellido1" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
           <Property Name="Apellido2" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
           <Property Name="FechaNac" Type="DateTime" Precision="0" />
           <Property Name="Telefono1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Telefono2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Sexo" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Privilegi__Id_Pr__37A5467C">
-          <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
-          <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
+        <EntityType Name="Privilegios_asociados_roles">
+          <Key>
+            <PropertyRef Name="Id_Privilegio" />
+            <PropertyRef Name="Id_Rol" />
+          </Key>
+          <Property Name="Id_Privilegio" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Id_Rol" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Privilegio" Relationship="ModelEntities.FK_Privilegio" FromRole="Privilegios_asociados_roles" ToRole="Privilegio" />
+        </EntityType>
+        <Association Name="FK_Privilegio">
+          <End Type="ModelEntities.Privilegio" Role="Privilegio" Multiplicity="1" />
+          <End Type="ModelEntities.Privilegios_asociados_roles" Role="Privilegios_asociados_roles" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Privilegio">
               <PropertyRef Name="Id" />
@@ -100,15 +113,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Privilegio" EntityType="Self.Privilegio" />
-          <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" />
-          <EntitySet Name="Usuario" EntityType="Self.Usuario" />
-          <AssociationSet Name="FK__Privilegi__Id_Pr__37A5467C" Association="Self.FK__Privilegi__Id_Pr__37A5467C">
-            <End Role="Privilegio" EntitySet="Privilegio" />
-            <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -118,30 +122,31 @@
           <EntitySetMapping Name="Privilegio">
             <EntityTypeMapping TypeName="ModelEntities.Privilegio">
               <MappingFragment StoreEntitySet="Privilegio">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Privilegios_asociados_roles">
-            <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
-              <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
-                <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
-                <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Usuario">
             <EntityTypeMapping TypeName="ModelEntities.Usuario">
               <MappingFragment StoreEntitySet="Usuario">
-                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
-                <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
-                <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
-                <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
-                <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
-                <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+                <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
+                <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
+                <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
+                <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+                <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Privilegios_asociados_roles">
+            <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
+              <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
+                <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
+                <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

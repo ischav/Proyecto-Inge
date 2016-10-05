@@ -1,15 +1,18 @@
 USE BD_IngeGrupo1;
 
 CREATE TABLE Usuario (
-    Cedula   	 VARCHAR(16),
-    Nombre   	 VARCHAR(16),
-    Apellido1    VARCHAR(16),
-    Apellido2    VARCHAR(16),
-    FechaNac    DATE,
-    Telefono1    VARCHAR(10),
-    Telefono2    VARCHAR(10),
-    CONSTRAINT    PK_Usuarios PRIMARY KEY (Cedula)
+    Cedula   	VARCHAR(16),
+    Nombre   	VARCHAR(16),
+    Apellido1   VARCHAR(16),
+    Apellido2   VARCHAR(16),
+    FechaNac	DATE,
+    Telefono1   VARCHAR(10),
+    Telefono2   VARCHAR(10),
+	Sexo		CHAR(1),
+	CONSTRAINT	PK_Usuarios PRIMARY KEY (Cedula)
 );
+
+ALTER TABLE Usuario ADD Id	NVARCHAR(128) CONSTRAINT FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id);
 
 CREATE TABLE Privilegio (
     Id   		 NVARCHAR(128),
@@ -21,11 +24,8 @@ CREATE TABLE Privilegio (
 CREATE TABLE Privilegios_asociados_roles (
     Id_Privilegio	NVARCHAR(128),
 	Id_Rol			NVARCHAR(128),
-	foreign key (Id_Privilegio) references Privilegio(Id),
-	foreign key (Id_Rol) references AspNetRoles(Id),
-    CONSTRAINT PK_Privilegios_asociados_roles PRIMARY KEY (Id_Privilegio, Id_Rol)
+	CONSTRAINT	FK_Privilegio FOREIGN KEY (Id_Privilegio) REFERENCES Privilegio(Id),
+	CONSTRAINT	FK_AspRoles FOREIGN KEY	(Id_Rol) REFERENCES AspNetRoles(Id),
+    CONSTRAINT	PK_Privilegios_asociados_roles PRIMARY KEY (Id_Privilegio, Id_Rol)
 );
 
---Correr despues de que se han creado las tablas de ASP
-ALTER TABLE Usuario
-ADD Id nvarchar(128) foreign key references AspNetUsers(Id)

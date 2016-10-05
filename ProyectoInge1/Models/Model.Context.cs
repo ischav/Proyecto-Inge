@@ -26,7 +26,7 @@ namespace ProyectoInge1.Models
         }
     
         public virtual DbSet<Privilegio> Privilegio { get; set; }
-        public virtual DbSet<Privilegios_asociados_roles> Privilegios_asociados_roles { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
+        public virtual DbSet<Privilegios_asociados_roles> Privilegios_asociados_roles { get; set; }
     }
 }

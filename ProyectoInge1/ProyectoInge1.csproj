@@ -241,6 +241,7 @@
     <Compile Include="Models\Usuario.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\VerificarVistaCrear.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -326,6 +327,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\ModuloUsuarios\Index.cshtml" />
     <Content Include="Views\ModuloSeguridad\Index.cshtml" />
+    <Content Include="Views\ModuloUsuarios\Create.cshtml" />
+    <Content Include="Views\ModuloUsuarios\MEC_Unificado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,30 +4,31 @@
     <EntitySetMapping Name="Privilegio">
       <EntityTypeMapping TypeName="ModelEntities.Privilegio">
         <MappingFragment StoreEntitySet="Privilegio">
-          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Privilegios_asociados_roles">
-      <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
-        <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
-          <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
-          <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Usuario">
       <EntityTypeMapping TypeName="ModelEntities.Usuario">
         <MappingFragment StoreEntitySet="Usuario">
-          <ScalarProperty Name="Cedula" ColumnName="Cedula" />
-          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
-          <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
-          <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
-          <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
-          <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
-          <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
+          <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
+          <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
+          <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+          <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Privilegios_asociados_roles">
+      <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
+        <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
+          <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
+          <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

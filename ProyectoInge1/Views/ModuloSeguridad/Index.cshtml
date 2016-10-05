@@ -1,46 +1,86 @@
 ﻿@model ProyectoInge1.Models.ModeloIntermedio
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Privilegios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-<table class="table">
-    <tr>
-        <th>
-            Permisos
-        </th>
-        @for (int i = 0; i < Model.listaRoles.Count; i++)
+<script>
+    function Cancelar() {
+
+        var respuesta = confirm('¿Confirma que desea cancelar? Se perderá la información ingresada');
+
+        if (respuesta == true)
         {
-            <th id="@(Model.listaRoles.ElementAt(i).Id)">
-                @Html.DisplayFor(modelItem => Model.listaRoles.ElementAt(i).Name)
-            </th>
+            var url = '@Url.Action("Index", "ModuloSeguridad")';
+            window.location.href = url;
         }
-    </tr>
-    @for (int i = 0; i < Model.listaPrivilegios.Count; i++)
+    }
+</script>
+
+<div class="form-group">
+    @using (Html.BeginForm())
     {
-        <tr>
-            <th id="@(Model.listaPrivilegios.ElementAt(i).Id)">
-                @Html.DisplayFor(modelItem =>
-                Model.listaPrivilegios.ElementAt(i).Id)
-            </th>
-            @for (int j = 0; j < Model.listaRoles.Count; j++)
+        @Html.AntiForgeryToken()
+        <h2>Gestión de Privilegios</h2>
+        <div class="form-horizontal">
+            @if (Model.cambiosGuardados == 1)
             {
-                <th id="@(Model.listaPrivilegios.ElementAt(i).Id)_/_@(Model.listaRoles.ElementAt(j).Id)">
-                    @{bool exists = false;}
-                    @for (int k = 0; k < Model.listaPrivilegios_asociados_roles.Count; k++)
-                    {
-                        if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Rol.Equals(Model.listaRoles.ElementAt(j).Id))
-                        {
-                            if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Privilegio.Equals(Model.listaPrivilegios.ElementAt(i).Id))
-                            {
-                                exists = true;
-                            }
-                        }
+                <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+                    <p>Se guardaron los cambios exitosamente!</p>
+                </div>
+            }
+            else if (Model.cambiosGuardados == 2)
+            {
+                <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+                    <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
+                </div>
+            }
+            <table class="table">
+                <tr>
+                    <th style="font-weight:bold;"> Permisos </th>
+                    @for (int i = 0; i < Model.listaRoles.Count; i++)
+                {
+                        <th id="@(Model.listaRoles.ElementAt(i).Id)" style="font-weight:bold;">
+                            @Html.DisplayFor(modelItem => Model.listaRoles.ElementAt(i).Name)
+                        </th>
                     }
-                    @Html.CheckBox("checkbox", exists)
-                </th>
-                        }
-        </tr>
-                        }
-</table>
+                </tr>
+                @for (int i = 0; i < Model.listaPrivilegios.Count; i++)
+                {
+                    <tr>
+                        <th id="@(Model.listaPrivilegios.ElementAt(i).Descripcion)">
+                            @Html.DisplayFor(modelItem => Model.listaPrivilegios.ElementAt(i).Descripcion)
+                        </th>
+                        @for (int j = 0; j < Model.listaRoles.Count; j++)
+                    {
+                        string id = Model.listaPrivilegios.ElementAt(i).Id + "*" + Model.listaRoles.ElementAt(j).Id;
+                            <th id="@(Model.listaPrivilegios.ElementAt(i).Id)_/_@(Model.listaRoles.ElementAt(j).Id)">
+                                @{bool check = false;}
+                                @for (int k = 0; k < Model.listaPrivilegios_asociados_roles.Count; k++)
+                                {
+                                    if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Rol.Equals(Model.listaRoles.ElementAt(j).Id))
+                                    {
+                                        if (Model.listaPrivilegios_asociados_roles.ElementAt(k).Id_Privilegio.Equals(Model.listaPrivilegios.ElementAt(i).Id))
+                                        {
+                                            check = true;
+                                        }
+                                    }
+                                }
+
+                                <input type="checkbox" id="@id" name="pr" value="@id" checked="@check" />
+                            </th>
+                                    }
+                    </tr>
+                                    }
+            </table>
+            <div class="form-group">
+                <div class="form-inline" align="right">
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                        <a class="btn btn-default" onclick="Cancelar()">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>                          }
+
+</div>

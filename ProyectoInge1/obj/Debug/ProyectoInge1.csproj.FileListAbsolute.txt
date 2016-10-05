@@ -412,3 +412,7 @@ C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.dll
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.dll
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.xml
 C:\Users\JoseDaniel\Desktop\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.xml
+C:\Users\Isabel\Documents\UCR\Ingeniería de Software I\Proyecto-Inge\Proyecto-Inge\ProyectoInge1\bin\PagedList.dll
+C:\Users\Isabel\Documents\UCR\Ingeniería de Software I\Proyecto-Inge\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.dll
+C:\Users\Isabel\Documents\UCR\Ingeniería de Software I\Proyecto-Inge\Proyecto-Inge\ProyectoInge1\bin\PagedList.xml
+C:\Users\Isabel\Documents\UCR\Ingeniería de Software I\Proyecto-Inge\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.xml

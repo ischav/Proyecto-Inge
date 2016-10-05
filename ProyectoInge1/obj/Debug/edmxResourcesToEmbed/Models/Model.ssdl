@@ -18,6 +18,7 @@
   <EntityType Name="Usuario">
     <Key>
       <PropertyRef Name="Cedula" />
+      <PropertyRef Name="Id" />
     </Key>
     <Property Name="Cedula" Type="varchar" MaxLength="16" Nullable="false" />
     <Property Name="Nombre" Type="varchar" MaxLength="16" />
@@ -26,9 +27,10 @@
     <Property Name="FechaNac" Type="date" />
     <Property Name="Telefono1" Type="varchar" MaxLength="10" />
     <Property Name="Telefono2" Type="varchar" MaxLength="10" />
-    <Property Name="Id" Type="nvarchar" MaxLength="128" />
+    <Property Name="Sexo" Type="char" MaxLength="1" />
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
   </EntityType>
-  <Association Name="FK__Privilegi__Id_Pr__797309D9">
+  <Association Name="FK_Privilegio">
     <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
     <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
     <ReferentialConstraint>
@@ -44,7 +46,7 @@
     <EntitySet Name="Privilegio" EntityType="Self.Privilegio" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__Privilegi__Id_Pr__797309D9" Association="Self.FK__Privilegi__Id_Pr__797309D9">
+    <AssociationSet Name="FK_Privilegio" Association="Self.FK_Privilegio">
       <End Role="Privilegio" EntitySet="Privilegio" />
       <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
     </AssociationSet>

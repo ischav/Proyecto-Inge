@@ -14,8 +14,10 @@
 @using (Html.BeginForm("Index", "ModuloUsuarios", FormMethod.Get))
 {
     <p>
-        Filtro: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-        <input type="submit" value="Buscar" />
+        Buscar: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
     </p>
 }
 
@@ -69,7 +71,7 @@
                 @Html.DisplayFor(modelItem => item.Telefono2)
             </td>
             <td>
-                @Html.ActionLink("Details", "Details", new { id = item.Cedula })
+                @Html.ActionLink("Detalles", "MEC_Unificado", new { cedula = item.Cedula , id = item.Id})
             </td>
         </tr>
     }
