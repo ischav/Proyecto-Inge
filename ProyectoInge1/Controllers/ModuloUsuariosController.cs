@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using System.Net;
 using System.Threading.Tasks;
+using System.Net.Mail;
 
 namespace ProyectoInge1.Controllers
 {
@@ -197,15 +198,26 @@ public ActionResult eliminarUsuario(string cedula, string Id) {
             {
 
                 var user = new ApplicationUser { UserName = modelo.modCrear.Email, Email = modelo.modCrear.Email };
-                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));            
+                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var result = await manager.CreateAsync(user, modelo.modCrear.Password);
-                modelo.modeloUsuario.Id = user.Id;
-                manager.AddToRole(user.Id, modelo.modCrear.Rol);
+                if (result.Succeeded) {
+                    modelo.modeloUsuario.Id = user.Id;
+                    manager.AddToRole(user.Id, modelo.modCrear.Rol);
+                    baseDatos.Usuario.Add(modelo.modeloUsuario);
+                    baseDatos.SaveChanges();
+                    MailModel mailModel = new MailModel();
+                    mailModel.Body = modelo.modCrear.Password;
+                    mailModel.From = "SistemaRequerimientosSoporte@gmail.com";
+                    mailModel.To = modelo.modCrear.Email;
+                    mailModel.Subject = "Contraseña Sistema de requerimientos";
+                    EnviarCorreo(mailModel);
+                    return RedirectToAction("Index");
 
-                baseDatos.Usuario.Add(modelo.modeloUsuario);
-                baseDatos.SaveChanges();
+                }
 
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", "El correo indicado ya fue registrado.");
+                return View(modelo);
+
             }
             else
             {
@@ -215,5 +227,26 @@ public ActionResult eliminarUsuario(string cedula, string Id) {
         }
 
 
+        void EnviarCorreo(MailModel _objModelMail)
+        {
+            if (ModelState.IsValid)
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(_objModelMail.To);
+                mail.From = new MailAddress(_objModelMail.From);
+                mail.Subject = _objModelMail.Subject;
+                string Body = _objModelMail.Body;
+                mail.Body = Body;
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential
+                ("SistemaRequerimientosSoporte@gmail.com", "Adrian96!");// Enter seders User name and password
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
+        }
     }
 }
