@@ -18,7 +18,7 @@ namespace ProyectoInge1.Controllers
     {
         Entities baseDatos = new Entities();
 
-	//Metodo GET index usuarios
+	    //Metodo GET index usuarios
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -113,7 +113,7 @@ namespace ProyectoInge1.Controllers
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
-public ActionResult eliminarUsuario(string cedula, string Id) {
+        public ActionResult eliminarUsuario(string cedula, string Id) {
 
             //Borra al usuario de la tabla Usuarios
             ModeloIntermedio modelo = new ModeloIntermedio();
@@ -127,7 +127,7 @@ public ActionResult eliminarUsuario(string cedula, string Id) {
             bd.Users.Remove(user);
             bd.SaveChanges();
 
-                return RedirectToAction("Index");
+            return RedirectToAction("Index");
 		}
 
 		//Metodo GET para la pantalla unificada. Corresponde a consultar
@@ -147,7 +147,7 @@ public ActionResult eliminarUsuario(string cedula, string Id) {
 				if(usr != null) {
 					modelo.aspUserEmail = usr.Email;
 				} else {
-					modelo.aspUserEmail = "Nulo";
+					modelo.aspUserEmail = " ";
 				}
 			}
 
@@ -209,7 +209,7 @@ public ActionResult eliminarUsuario(string cedula, string Id) {
                     mailModel.Body = modelo.modCrear.Password;
                     mailModel.From = "SistemaRequerimientosSoporte@gmail.com";
                     mailModel.To = modelo.modCrear.Email;
-                    mailModel.Subject = "Contraseña Sistema de requerimientos";
+                    mailModel.Subject = "Contraseña Sistema de Requerimientos";
                     EnviarCorreo(mailModel);
                     return RedirectToAction("Index");
 

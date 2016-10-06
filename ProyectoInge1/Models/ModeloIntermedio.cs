@@ -9,7 +9,6 @@ namespace ProyectoInge1.Models
 {
 	public class ModeloIntermedio
 	{
-        
 		public Usuario modeloUsuario { get; set; }
         public Privilegio modeloPrivilegio { get; set; }
 		public Privilegios_asociados_roles modeloPrivilegios_asociados_roles { get; set; }        
@@ -29,6 +28,8 @@ namespace ProyectoInge1.Models
         public string Telefono2 { get; set; }
         public string Id { get; set; }
 
+        // Rol del usuario loggeado al sistemma
+        public string currentUserRole { get; set; }
 
         //Email Asp
         public string aspUserEmail { get; set; }

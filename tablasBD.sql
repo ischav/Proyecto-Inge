@@ -9,10 +9,10 @@ CREATE TABLE Usuario (
     Telefono1   VARCHAR(10),
     Telefono2   VARCHAR(10),
 	Sexo		CHAR(1),
-	CONSTRAINT	PK_Usuarios PRIMARY KEY (Cedula)
+	Id			NVARCHAR(128),
+	CONSTRAINT	PK_Usuarios PRIMARY KEY (Cedula, Id),
+	CONSTRAINT	FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id)
 );
-
-ALTER TABLE Usuario ADD Id	NVARCHAR(128) CONSTRAINT FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id);
 
 CREATE TABLE Privilegio (
     Id   		 NVARCHAR(128),

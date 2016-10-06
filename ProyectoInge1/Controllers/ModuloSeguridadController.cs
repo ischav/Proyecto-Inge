@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoInge1.Models;
+using Microsoft.AspNet.Identity;
 
 namespace ProyectoInge1.Controllers
 {
@@ -11,6 +12,18 @@ namespace ProyectoInge1.Controllers
     {
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
+
+        //Verifica si un permiso X lo tiene asignado un rol Y
+        private bool verificaPrivilegios(string privilegio)
+        {
+            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var rol = context.Users.Find(userId).Roles.First();
+            var privilegioId = baseDatos.Privilegio.Where(m => m.Descripcion == privilegio).First().Id;
+            var listaRoles = baseDatos.Privilegios_asociados_roles.Where(m => m.Id_Privilegio == privilegioId).ToList().Select(n => n.Id_Rol);
+            bool userRol = listaRoles.Contains(rol.RoleId);
+
+            return userRol;
+        }
 
         // GET: ModuloSeguridad
         public ActionResult Index()
@@ -20,6 +33,9 @@ namespace ProyectoInge1.Controllers
             modelo.listaPrivilegios = baseDatos.Privilegio.ToList();
             modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
             modelo.cambiosGuardados = 0;
+
+            //Obtener el usuario actual
+            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
             return View(modelo);
         }

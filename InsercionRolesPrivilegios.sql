@@ -9,7 +9,8 @@ INSERT INTO [dbo].[AspNetRoles]([Id],[Name]) VALUES ('02Develop','Desarrollador'
 
 INSERT INTO [dbo].[AspNetRoles]([Id],[Name]) VALUES ('03User','Usuario Final');
 
--- Agregar Privilegios
+
+-- Agregar Privilegios por Módulo:
 
 -- Modulo Gestion Usuarios
 
@@ -20,6 +21,10 @@ INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('GUS-C', 'Consultar 
 INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('GUS-M', 'Modificar usuarios'); 
 
 INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('GUS-E', 'Eliminar usuarios');
+
+-- Manejo de Privilegios
+
+INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('SEG-I', 'Gestionar privilegios');
 
 -- Modulo Proyectos
 
