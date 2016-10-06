@@ -30,6 +30,8 @@ namespace ProyectoInge1.Models
 
         // Rol del usuario loggeado al sistemma
         public string currentUserRole { get; set; }
+        public string usuarioActualId { get; set; }
+        public string rolActualId { get; set; }
 
         //Email Asp
         public string aspUserEmail { get; set; }

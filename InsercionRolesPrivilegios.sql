@@ -36,7 +36,6 @@ INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('PRO-M', 'Modificar 
 
 INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('PRO-E', 'Eliminar proyectos');
 
-
 -- Modulo Gestión de Requerimientos Funcionales
 
 INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('GRF-I', 'Registrar requerimientos');

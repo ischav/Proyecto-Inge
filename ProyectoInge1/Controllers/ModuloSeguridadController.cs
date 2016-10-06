@@ -35,7 +35,8 @@ namespace ProyectoInge1.Controllers
             modelo.cambiosGuardados = 0;
 
             //Obtener el usuario actual
-            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
 
             return View(modelo);
         }
