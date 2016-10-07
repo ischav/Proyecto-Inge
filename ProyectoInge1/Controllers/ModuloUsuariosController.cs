@@ -17,10 +17,30 @@ namespace ProyectoInge1.Controllers
     public class ModuloUsuariosController : Controller
     {
         Entities baseDatos = new Entities();
+        ApplicationDbContext context = new ApplicationDbContext();
 
-	    //Metodo GET index usuarios
+        //Metodo GET index usuarios
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
+            ModeloIntermedio modelo = new ModeloIntermedio();
+            //---------------------
+            // Obtener el usuario actual
+            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+
+            // Verificación de los privilegios disponibles en el modulo de usuarios y
+            // asociadoos al rol del usuario loggeado en el sistema.
+            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-I", modelo.rolActualId);
+            if (privilegio == null)
+            {
+                modelo.agregar = false;
+            }
+            else
+            {
+                modelo.agregar = true;
+            }
+            //---------------------
+
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -108,8 +128,9 @@ namespace ProyectoInge1.Controllers
                     break;
             }
 
-            int pageSize = 5;
+            int pageSize = 7;
             int pageNumber = (page ?? 1);
+ 
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
@@ -131,12 +152,50 @@ namespace ProyectoInge1.Controllers
 		}
 
 		//Metodo GET para la pantalla unificada. Corresponde a consultar
-		public ActionResult MEC_Unificado(string cedula, string id) {
-			if(id == null) {
+		public ActionResult MEC_Unificado(string cedula, string id)
+        {
+            ModeloIntermedio modelo = new ModeloIntermedio();
+
+            // Obtener el usuario actual
+            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+
+            // Verificación de los privilegios disponibles en el modulo de usuarios y
+            // asociadoos al rol del usuario loggeado en el sistema.
+            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
+            if (privilegio == null)
+            {
+                modelo.modificar = false;
+            }
+            else
+            {
+                modelo.modificar = true;
+            }
+
+            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-C", modelo.rolActualId);
+            if (privilegio == null)
+            {
+                modelo.consultar = false;
+            }
+            else
+            {
+                modelo.consultar = true;
+            }
+
+            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-E", modelo.rolActualId);
+            if (privilegio == null)
+            {
+                modelo.eliminar = false;
+            }
+            else
+            {
+                modelo.eliminar = true;
+            }
+            //------------------
+            if (id == null) {
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			ModeloIntermedio modelo = new ModeloIntermedio();
 			modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
 			if(modelo.modeloUsuario == null) {
 				return HttpNotFound();

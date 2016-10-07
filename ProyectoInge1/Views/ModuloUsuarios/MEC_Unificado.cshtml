@@ -1,8 +1,9 @@
 ﻿@model ProyectoInge1.Models.ModeloIntermedio
 @{
-    ViewBag.Title = "MEC_Unificado";
+    ViewBag.Title = "MEC";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <script>
 
     function esconderEliminar()
@@ -44,9 +45,17 @@
     }
 
 </script>
+
 <h2>Detalles</h2>
+@if (Model.modificar == true)
+{
 <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
 <button type="button" class="btn btn-default" id="btnEliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Cedula)','@(Model.modeloUsuario.Id)')">Eliminar</button>
+}
+else
+{
+    <p>se fue al else de modificar.</p>
+}
     <div>
         <div class="elementoEliminar">
             <h4>Usuario</h4>
@@ -100,10 +109,19 @@
                 <dd>
                     @Html.DisplayFor(model => model.modeloUsuario.Telefono2)
                 </dd>
-                <!--FALTA AGREGAR SEXO A LA BASE-->
+                <dt>
+                    @Html.DisplayNameFor(model => model.modeloUsuario.Sexo)
+                </dt>
+                <dd>
+                    @if (Model.modeloUsuario.Sexo == "F")
+                    {
+                        @Html.DisplayName("Femenino")
+                    }
+                </dd>
             </dl>
         </div>
     </div>
+
     <div class="elementoModificar" style="display:none">
         @using (Html.BeginForm())
         {
@@ -135,13 +153,6 @@
                     </div>
                 </div>
                 @Html.HiddenFor(model => model.modeloUsuario.Cedula)
-                <div class="form-group">
-                    @Html.LabelFor(model => model.modeloUsuario.Cedula, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.modeloUsuario.Cedula, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.modeloUsuario.Cedula, "", new { @class = "text-danger" })
-                    </div>
-                </div>
                 <div class="form-group">
                     @Html.LabelFor(model => model.modeloUsuario.FechaNac, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -177,18 +188,27 @@
                         @Html.ValidationMessageFor(model => model.modeloUsuario.Id, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <!--FALTA AGREGAR SEXO A LA BASE-->
                 <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
+                    @Html.LabelFor(model => model.modeloUsuario.Sexo, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F")@Html.DisplayName("Femenino")
+                        @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M")@Html.DisplayName("Masculino")
+                        @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O")@Html.DisplayName("Otro")
+                    </div>
+                </div>               
+                @if (Model.eliminar == true)
+                {
+                <div class="form-group">
+                    <div class="form-inline" align="right">
                         <input type="submit" value="Aceptar" class="btn btn-default" />
                         <a class="btn btn-default" onclick="habilitarEliminar()">Cancelar</a>
                     </div>
                 </div>
+                }
+                
             </div>
         }
     </div>
     <p>
         @Html.ActionLink("Volver a Usuarios", "Index")
     </p>
-
-

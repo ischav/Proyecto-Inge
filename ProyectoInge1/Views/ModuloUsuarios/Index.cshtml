@@ -1,15 +1,25 @@
 ﻿@model PagedList.IPagedList<ProyectoInge1.Models.Usuario>
 @using PagedList.Mvc;
+
+
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
-    ViewBag.Title = "Usuarios ";
+    ViewBag.Title = "Gestión de Usuarios ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Usuarios</h2>
-<p>
-    @Html.ActionLink("Agregar usuario", "Create")
-</p>
+<h2>Gestión de Usuarios</h2>
+
+@if (true) {
+    <p>
+        @Html.ActionLink("Agregar usuario", "Create")
+    </p>
+}
+else {
+    <p> 
+        Se fue al else.
+    </p>
+}
 
 @using (Html.BeginForm("Index", "ModuloUsuarios", FormMethod.Get))
 {

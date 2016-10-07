@@ -13,8 +13,8 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
-        //Verifica si un permiso X lo tiene asignado un rol Y
-        private bool verificaPrivilegios(string privilegio)
+        // Verifica si un permiso X lo tiene asignado un rol Y
+       /* private bool verificaPrivilegios(string privilegio)
         {
             string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             var rol = context.Users.Find(userId).Roles.First();
@@ -23,7 +23,7 @@ namespace ProyectoInge1.Controllers
             bool userRol = listaRoles.Contains(rol.RoleId);
 
             return userRol;
-        }
+        }*/
 
         // GET: ModuloSeguridad
         public ActionResult Index()
@@ -34,10 +34,22 @@ namespace ProyectoInge1.Controllers
             modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
             modelo.cambiosGuardados = 0;
 
-            //Obtener el usuario actual
+            // Obtener el usuario actual
             modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
 
+            // Variables de sesion para verificar los privilegios
+            // asociadoos al rol del usuario loggeado en el sistema.
+            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("SEG-I", modelo.rolActualId);
+            if (privilegio == null)
+            {
+                modelo.privilegios = false;
+            }
+            else
+            {
+                modelo.privilegios = true;
+            }
+            
             return View(modelo);
         }
 

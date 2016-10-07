@@ -19,6 +19,7 @@ namespace ProyectoInge1.Models
         public List<IdentityRole> listaRoles = new List<IdentityRole>();
         public int cambiosGuardados = 0;
 
+        //Datos personales
         public string Cedula { get; set; }
         public string Nombre { get; set; }
         public string Apellido1 { get; set; }
@@ -28,10 +29,15 @@ namespace ProyectoInge1.Models
         public string Telefono2 { get; set; }
         public string Id { get; set; }
 
-        // Rol del usuario loggeado al sistemma
-        public string currentUserRole { get; set; }
+        // Rol y privilegios del usuario loggeado al sistemma
         public string usuarioActualId { get; set; }
-        public string rolActualId { get; set; }
+        public string rolActualId { get; set; } 
+        public bool privilegios { get; set; }
+        public bool agregar { get; set; }
+        public bool consultar { get; set; }
+        public bool modificar { get; set; }
+        public bool eliminar { get; set; }
+        // Faltan más tipos de priviliegio pero son de los módulos que no han sido implementados
 
         //Email Asp
         public string aspUserEmail { get; set; }
