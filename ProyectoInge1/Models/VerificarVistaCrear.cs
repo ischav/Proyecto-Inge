@@ -5,12 +5,12 @@ namespace ProyectoInge1.Models
 {
     public class modeloCrear
     {
-        [Required]
+        [Required(ErrorMessage = "El email es un campo requerido.")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La contraseña es un campo requerido.")]
         [StringLength(100, ErrorMessage = "La {0} debe ser de al menos {2} caracteres.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]

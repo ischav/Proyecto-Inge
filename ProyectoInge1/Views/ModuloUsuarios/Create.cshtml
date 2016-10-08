@@ -9,7 +9,7 @@
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea insertar este usuario?');
         if(respuesta == true){
-            var url = '@Url.Action("Index", "ModuloUsuarios")';
+            var url = '@Url.Action("Create", "ModuloUsuarios")';
             window.location.href = url;
         }
     }
@@ -17,6 +17,10 @@
 </script>
 
 <h2>Crear usuario</h2>
+
+<p>
+    @Html.ActionLink("Volver a consultar usuarios", "Index")
+</p>
 
 @using (Html.BeginForm())
 {
@@ -121,7 +125,7 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="form-inline" align="right">
                 <input type="submit" value="Aceptar" class="btn btn-default" />
                 <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
             </div>

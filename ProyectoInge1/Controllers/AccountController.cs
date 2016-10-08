@@ -8,7 +8,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System.Net.Mail;
+using Microsoft.AspNet.Identity.EntityFramework;
 using ProyectoInge1.Models;
+using System.Web.Security;
 
 namespace ProyectoInge1.Controllers
 {
@@ -196,6 +199,8 @@ namespace ProyectoInge1.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        //
+        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -203,12 +208,31 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine(model.Email);
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
+                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+
+                if (user != null)
+                { //si el correo del usuario fue registrado
+                    string password = "A";
+                    password = password + Membership.GeneratePassword(12, 1); //genera un nuevo password
+                    await manager.RemovePasswordAsync(user.Id);
+                    await manager.AddPasswordAsync(user.Id, password);
+                    var bd = new ApplicationDbContext();
+                    bd.Users.Find(user.Id);
+                    bd.SaveChanges();
+                    MailModel mailModel = new MailModel();
+                    mailModel.Body = password;
+                    mailModel.From = "SistemaRequerimientosSoporte@gmail.com";
+                    mailModel.To = model.Email;
+                    mailModel.Subject = "Contraseña Sistema de Requerimientos";
+                    EnviarCorreo(mailModel);
+
+
+                    return View("Login");
                 }
+
+
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
@@ -219,7 +243,30 @@ namespace ProyectoInge1.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            ModelState.AddModelError("", "El correo indicado no ha sido registrado");
             return View(model);
+        }
+
+        void EnviarCorreo(MailModel _objModelMail)
+        {
+            if (ModelState.IsValid)
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(_objModelMail.To);
+                mail.From = new MailAddress(_objModelMail.From);
+                mail.Subject = _objModelMail.Subject;
+                string Body = _objModelMail.Body;
+                mail.Body = Body;
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential
+                ("SistemaRequerimientosSoporte@gmail.com", "Adrian96!");// Enter seders User name and password
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
         }
 
         //

@@ -48,12 +48,12 @@ namespace ProyectoInge1.Models
 
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "El email es un campo requerido.")]
         [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La contraseña es un campo requerido.")]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }
@@ -105,7 +105,7 @@ namespace ProyectoInge1.Models
 
     public class ForgotPasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "El email es un campo requerido.")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
