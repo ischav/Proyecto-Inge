@@ -110,6 +110,15 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Sexo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F", false)@Html.DisplayName("Femenino")
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M", false)@Html.DisplayName("Masculino")
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName("Otro")
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.modCrear.Rol, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.modCrear.Rol, new SelectList(

@@ -93,7 +93,7 @@ namespace ProyectoInge1.Models
         [StringLength(100, ErrorMessage = "La {0} debe ser de al menos {2} caracteres.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
-        public string Password { get; set; }        
+        public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar contraseña")]
@@ -101,6 +101,7 @@ namespace ProyectoInge1.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+
     }
 
     public class ForgotPasswordViewModel

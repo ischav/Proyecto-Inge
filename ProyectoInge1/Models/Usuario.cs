@@ -20,17 +20,18 @@ namespace ProyectoInge1.Models
         [Display(Name = "Cédula")]
         public string Cedula { get; set; }
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
-        [RegularExpression(@"[a-zA-Záéíóú\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; }
         [Required(ErrorMessage = "El apellido 1 es un campo requerido.")]
-        [RegularExpression(@"[a-zA-Záéíóú\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
         [Display(Name = "Primer apellido")]
         public string Apellido1 { get; set; }
-        [RegularExpression(@"[a-zA-Záéíóú\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
         [Display(Name = "Segundo apellido")]
         public string Apellido2 { get; set; }
         [Display(Name = "Fecha de nacimiento")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaNac { get; set; }
         [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
         [Display(Name = "Primer teléfono")]

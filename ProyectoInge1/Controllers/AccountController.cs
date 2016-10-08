@@ -215,7 +215,7 @@ namespace ProyectoInge1.Controllers
                 if (user != null)
                 { //si el correo del usuario fue registrado
                     string password = "A";
-                    password = password + Membership.GeneratePassword(12, 1); //genera un nuevo password
+                    password = password + Membership.GeneratePassword(8, 1); //genera un nuevo password
                     await manager.RemovePasswordAsync(user.Id);
                     await manager.AddPasswordAsync(user.Id, password);
                     var bd = new ApplicationDbContext();
@@ -227,8 +227,7 @@ namespace ProyectoInge1.Controllers
                     mailModel.To = model.Email;
                     mailModel.Subject = "Contraseña Sistema de Requerimientos";
                     EnviarCorreo(mailModel);
-
-
+                    TempData["notice"] = "La nueva contraseña fue enviada al correo";
                     return View("Login");
                 }
 
