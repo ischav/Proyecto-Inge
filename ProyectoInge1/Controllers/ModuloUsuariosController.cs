@@ -192,6 +192,7 @@ namespace ProyectoInge1.Controllers
                 modelo.eliminar = true;
             }
             //------------------
+
             if (id == null) {
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
