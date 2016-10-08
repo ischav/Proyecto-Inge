@@ -234,9 +234,10 @@ namespace ProyectoInge1.Controllers
                 //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
 				baseDatos.SaveChanges();
-
+				
+				modelo.errorValidacion = false;
 			} else {
-				ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+				modelo.errorValidacion = true;
 			}
             return View(modelo);
 		}

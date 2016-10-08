@@ -44,6 +44,8 @@ namespace ProyectoInge1.Models
 
         //Objeto que tiene los atributos de las tablas de Asp
         public modeloCrear modCrear { get; set; } 
+		
+		public bool errorValidacion { get; set; }
 	}
 
     public class Gate
