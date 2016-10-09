@@ -11,17 +11,34 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Usuario
     {
+        [Required(ErrorMessage = "La cédula es un campo requerido.")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Cédula")]
         public string Cedula { get; set; }
+        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        [RegularExpression(@"[a-zA-Z]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Nombre")]
         public string Nombre { get; set; }
+        [Required(ErrorMessage = "El apellido 1 es un campo requerido.")]
+        [RegularExpression(@"[a-zA-Z]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Primer apellido")]
         public string Apellido1 { get; set; }
+        [RegularExpression(@"[a-zA-Z]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Segundo apellido")]
         public string Apellido2 { get; set; }
+        [Display(Name = "Fecha de nacimiento")]
         public Nullable<System.DateTime> FechaNac { get; set; }
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Teléfono 1")]
         public string Telefono1 { get; set; }
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Teléfono 2")]
         public string Telefono2 { get; set; }
-        public string Sexo { get; set; }
         public string Id { get; set; }
+        public string Sexo { get; set; }
     }
 }
