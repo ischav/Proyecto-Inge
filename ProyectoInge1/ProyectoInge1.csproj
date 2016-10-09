@@ -330,6 +330,8 @@
     <Content Include="Views\ModuloSeguridad\Index.cshtml" />
     <Content Include="Views\ModuloUsuarios\Create.cshtml" />
     <Content Include="Views\ModuloUsuarios\MEC_Unificado.cshtml" />
+    <Content Include="Views\ModuloUsuarios\Informacion.cshtml" />
+    <Content Include="Views\Manage\Cambio_Contraseña.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

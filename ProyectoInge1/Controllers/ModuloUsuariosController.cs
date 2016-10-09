@@ -309,5 +309,68 @@ namespace ProyectoInge1.Controllers
                 smtp.Send(mail);
             }
         }
+
+        public ActionResult Informacion(int? message)
+        {
+            ViewBag.StatusMessage = message.Equals(1) ? "Su contraseña ha sido cambiada exitosamente":
+                 message.Equals(2) ? "Los datos han sido modificados exitosamente exitosamente" : "";
+
+            ModeloIntermedio modelo = new ModeloIntermedio();
+            string id_us = User.Identity.GetUserId();
+            string privilegioId = baseDatos.Usuario.Where(m => m.Id == id_us).First().Cedula;
+            modelo.modeloUsuario = baseDatos.Usuario.Find(privilegioId, User.Identity.GetUserId());
+
+            if (modelo.modeloUsuario == null)
+            {
+                return HttpNotFound();
+            }
+            else {
+                //Se obtiene el email de AspNetUsers
+                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+                var usr = manager.FindById(User.Identity.GetUserId());
+                if (usr != null)
+                {
+                    modelo.aspUserEmail = usr.Email;
+                }
+                else {
+                    modelo.aspUserEmail = " ";
+                }
+              
+            }
+
+            return View(modelo);
+        }
+
+
+        //Metodo POST para la pantalla unificada. Corresponde a modificar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Informacion(ModeloIntermedio modelo)
+        {
+            if (ModelState.IsValid)
+            {
+
+                //Para guardar en aspNetUsers
+                var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
+                var manager = new UserManager<ApplicationUser>(store);
+                var usr = manager.FindById(modelo.modeloUsuario.Id);
+
+                if (usr != null)
+                {
+                    usr.Email = modelo.aspUserEmail;
+                    var context = store.Context as ApplicationDbContext;
+                    context.SaveChangesAsync();
+                }
+
+                //Para guardar en tabla usuarios
+                baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+
+            }
+            else {
+                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+            }
+            return View(modelo);
+        }
     }
 }

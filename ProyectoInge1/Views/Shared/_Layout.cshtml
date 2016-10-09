@@ -21,6 +21,8 @@
                 </button>
                 @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
+           @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+           {
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (Request.IsAuthenticated)
@@ -31,9 +33,22 @@
                     <li>@Html.ActionLink("Contáctenos", "Contact", "Home")</li>
                     <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li> @Html.ActionLink("Mi cuenta", "Informacion", "ModuloUsuarios") </li>
+                        @Html.AntiForgeryToken()
+                        <li><a href="javascript:document.getElementById('logoutForm').submit()">Salir </a></li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    }
+                </ul>
             </div>
+           }
         </div>
+           
     </div>
     <div class="container body-content">
         @RenderBody()
