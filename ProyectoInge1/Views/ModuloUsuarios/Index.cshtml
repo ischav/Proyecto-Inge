@@ -10,16 +10,9 @@
 }
 <h2>Gestión de Usuarios</h2>
 
-@if (true) {
     <p>
         @Html.ActionLink("Agregar usuario", "Create")
     </p>
-}
-else {
-    <p> 
-        Se fue al else.
-    </p>
-}
 
 @using (Html.BeginForm("Index", "ModuloUsuarios", FormMethod.Get))
 {

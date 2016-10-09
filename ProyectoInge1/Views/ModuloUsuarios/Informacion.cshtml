@@ -32,7 +32,7 @@
     }
 
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios hechos no se guardaran');
+        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios realizados no se guardarán');
 
         if (respuesta == true) {
             window.location.reload();
@@ -71,7 +71,7 @@
         styleElementoModificar = new HtmlString("style =\"display: none\"");
     }
     else {
-        ViewBag.StatusMessage ="Los datos han sido modificados exitosamente exitosamente";
+        ViewBag.StatusMessage ="Los datos han sido modificados exitosamente.";
         styleElementoEliminar = new HtmlString("style =\"display: none\"");
         styleElementoModificar = new HtmlString("");
     }
