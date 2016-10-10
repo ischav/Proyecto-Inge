@@ -18,24 +18,6 @@
         $('.elementoModificar').hide();
     }
 
-    function validacionDatos(errorValidacion) {
-        if (errorValidacion == false) {
-            $('.elementoEliminar').show();
-            $('.elementoModificar').hide();
-        } else {
-            $('.elementoEliminar').hide();
-            $('.elementoModificar').show();
-        }
-    }
-
-    function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios hechos no se guardaran');
-
-        if (respuesta == true) {
-            window.location.reload();
-        }
-    }
-
     function confirmarEliminar(cedula, id) {
 
         var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
@@ -75,6 +57,20 @@
 <div class="elementoModificar" @styleElementoModificar>
     <h2>Modificar</h2>
 </div>
+
+@if(Model.cambiosGuardados == 1) {
+    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+        <p>Se guardaron los cambios exitosamente!</p>
+    </div>
+} else if(Model.cambiosGuardados == 2) {
+    <div class="elementoModificar" style="text-align: right; width: 100%; color:red; font-weight:bold;">
+        <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
+    </div>
+} else if(Model.cambiosGuardados == 3) {
+    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+        <p>Cambios descartados!</p>
+    </div>
+}
 
     <div>
         <div class="elementoEliminar" @styleElementoEliminar>
@@ -171,6 +167,7 @@
                             @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido2, "", new { @class = "text-danger" })
                         </div>
                     </div>
+                    <!--La cedula no se muestra porque no se puede modificar-->
                     @Html.HiddenFor(model => model.modeloUsuario.Cedula)
                     <div class="form-group">
                         @Html.LabelFor(model => model.modeloUsuario.FechaNac, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -203,17 +200,17 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.modeloUsuario.Sexo, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F", false)@Html.DisplayName(" Femenino")
-                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M", false)@Html.DisplayName(" Masculino")
-                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName(" Otro")
+                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F", false)@Html.DisplayName("Femenino")
+                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M", false)@Html.DisplayName("Masculino")
+                            @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName("Otro")
                         </div>
                     </div>
                     <!--El id no se muestra porque no se puede modificar-->
                     @Html.HiddenFor(model => model.modeloUsuario.Id)
                     <div class="form-group">
                         <div class="form-inline" align="right">
-                            <input type="submit" value="Aceptar" class="btn btn-default" />
-                            <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+                            <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
+                            <input type="submit" value="Cancelar" name="cancelar" class="btn btn-default" />
                         </div>
                     </div>
                 </div>

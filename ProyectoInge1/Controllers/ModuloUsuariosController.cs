@@ -211,15 +211,15 @@ namespace ProyectoInge1.Controllers
 				}
 			}
 
-
+			modelo.cambiosGuardados = 0; //no se muestra mensaje
 			return View(modelo);
 		}
 
 		//Metodo POST para la pantalla unificada. Corresponde a modificar
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult MEC_Unificado(ModeloIntermedio modelo) {
-			if(ModelState.IsValid) {
+		public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar, string cancelar) {
+			if(ModelState.IsValid && !string.IsNullOrEmpty(aceptar)) {
 				
 				//Para guardar en aspNetUsers
 				var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
@@ -235,12 +235,32 @@ namespace ProyectoInge1.Controllers
                 //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
 				baseDatos.SaveChanges();
-				
+
 				modelo.errorValidacion = false;
+				modelo.cambiosGuardados = 1; //cambios guardados
 			} else {
+
+				if(!string.IsNullOrEmpty(cancelar)) {
+					ModelState.Clear();
+					return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
+				}
 				modelo.errorValidacion = true;
+				modelo.cambiosGuardados = 2; //cambios no guardados
 			}
             return View(modelo);
+		}
+		
+		private ModeloIntermedio limpiarCampos(string cedula, string id) {
+			ModeloIntermedio modelo = new ModeloIntermedio();
+			modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
+				//Se obtiene el email de AspNetUsers
+				var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+				var usr = manager.FindById(id);
+				if(usr != null) {
+					modelo.aspUserEmail = usr.Email;
+				}
+			modelo.cambiosGuardados = 3; //cambios descartados
+			return modelo;
 		}
 
         //Metodo GET pantalla Crear
