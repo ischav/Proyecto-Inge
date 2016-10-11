@@ -13,18 +13,6 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
-        // Verifica si un permiso X lo tiene asignado un rol Y
-       /* private bool verificaPrivilegios(string privilegio)
-        {
-            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            var rol = context.Users.Find(userId).Roles.First();
-            var privilegioId = baseDatos.Privilegio.Where(m => m.Descripcion == privilegio).First().Id;
-            var listaRoles = baseDatos.Privilegios_asociados_roles.Where(m => m.Id_Privilegio == privilegioId).ToList().Select(n => n.Id_Rol);
-            bool userRol = listaRoles.Contains(rol.RoleId);
-
-            return userRol;
-        }*/
-
         // GET: ModuloSeguridad
         public ActionResult Index()
         {
@@ -75,16 +63,20 @@ namespace ProyectoInge1.Controllers
                         baseDatos.SaveChanges();
                     }
                     gate.PreprationRequired = Request.Form["pr"];
-                    string[] cat = gate.PreprationRequired.Split(',');
-                    for (int i = 0; i < cat.Length; i++)
+                    if (gate.PreprationRequired != null)
                     {
-                        string[] v = cat[i].Split('*');
+                        string[] cat = gate.PreprationRequired.Split(',');
+                        for (int i = 0; i < cat.Length; i++)
+                        {
+                            string[] v = cat[i].Split('*');
 
-                        Privilegios_asociados_roles pari = new Privilegios_asociados_roles();
-                        pari.Id_Privilegio = v[0];
-                        pari.Id_Rol = v[1];
-                        baseDatos.Privilegios_asociados_roles.Add(pari);
-                        baseDatos.SaveChanges();
+                            Privilegios_asociados_roles pari = new Privilegios_asociados_roles();
+                            pari.Id_Privilegio = v[0];
+                            pari.Id_Rol = v[1];
+                            baseDatos.Privilegios_asociados_roles.Add(pari);
+
+                            baseDatos.SaveChanges();
+                        }
                     }
                 }
                 modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();

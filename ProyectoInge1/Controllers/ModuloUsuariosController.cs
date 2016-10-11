@@ -130,17 +130,18 @@ namespace ProyectoInge1.Controllers
 
             int pageSize = 7;
             int pageNumber = (page ?? 1);
- 
+
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult eliminarUsuario(string cedula, string Id) {
+        public ActionResult eliminarUsuario(string cedula, string Id)
+        {
 
             //Borra al usuario de la tabla Usuarios
             ModeloIntermedio modelo = new ModeloIntermedio();
-			modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, Id);
-			baseDatos.Usuario.Remove(modelo.modeloUsuario);
-			baseDatos.SaveChanges();
+            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, Id);
+            baseDatos.Usuario.Remove(modelo.modeloUsuario);
+            baseDatos.SaveChanges();
 
             //Borra al usuario de la tabla AspNetUsers
             var bd = new ApplicationDbContext();
@@ -149,10 +150,10 @@ namespace ProyectoInge1.Controllers
             bd.SaveChanges();
 
             return RedirectToAction("Index");
-		}
+        }
 
-		//Metodo GET para la pantalla unificada. Corresponde a consultar
-		public ActionResult MEC_Unificado(string cedula, string id)
+        //Metodo GET para la pantalla unificada. Corresponde a consultar
+        public ActionResult MEC_Unificado(string cedula, string id)
         {
             ModeloIntermedio modelo = new ModeloIntermedio();
 
@@ -193,75 +194,90 @@ namespace ProyectoInge1.Controllers
             }
             //------------------
 
-            if (id == null) {
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
-			modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
-			if(modelo.modeloUsuario == null) {
-				return HttpNotFound();
-			}else {
-				//Se obtiene el email de AspNetUsers
-				var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-				var usr = manager.FindById(modelo.modeloUsuario.Id);
-				if(usr != null) {
-					modelo.aspUserEmail = usr.Email;
-				} else {
-					modelo.aspUserEmail = " ";
-				}
-			}
+            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
+            if (modelo.modeloUsuario == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                //Se obtiene el email de AspNetUsers
+                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+                var usr = manager.FindById(modelo.modeloUsuario.Id);
+                if (usr != null)
+                {
+                    modelo.aspUserEmail = usr.Email;
+                }
+                else
+                {
+                    modelo.aspUserEmail = " ";
+                }
+            }
 
-			modelo.cambiosGuardados = 0; //no se muestra mensaje
-			return View(modelo);
-		}
+            modelo.cambiosGuardados = 0; //no se muestra mensaje
+            return View(modelo);
+        }
 
-		//Metodo POST para la pantalla unificada. Corresponde a modificar
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar, string cancelar) {
-			if(ModelState.IsValid && !string.IsNullOrEmpty(aceptar)) {
-				
-				//Para guardar en aspNetUsers
-				var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
-				var manager = new UserManager<ApplicationUser>(store);
-				var usr = manager.FindById(modelo.modeloUsuario.Id);
+        //Metodo POST para la pantalla unificada. Corresponde a modificar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar, string cancelar)
+        {
+            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
+            {
 
-				if(usr != null) {
-					usr.Email = modelo.aspUserEmail;
-					var context = store.Context as ApplicationDbContext;
-					context.SaveChangesAsync();
-				}
+                //Para guardar en aspNetUsers
+                var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
+                var manager = new UserManager<ApplicationUser>(store);
+                var usr = manager.FindById(modelo.modeloUsuario.Id);
+
+                if (usr != null)
+                {
+                    usr.Email = modelo.aspUserEmail;
+                    var context = store.Context as ApplicationDbContext;
+                    context.SaveChangesAsync();
+                }
 
                 //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
-				baseDatos.SaveChanges();
+                baseDatos.SaveChanges();
 
-				modelo.errorValidacion = false;
-				modelo.cambiosGuardados = 1; //cambios guardados
-			} else {
+                modelo.errorValidacion = false;
+                modelo.cambiosGuardados = 1; //cambios guardados
+            }
+            else
+            {
 
-				if(!string.IsNullOrEmpty(cancelar)) {
-					ModelState.Clear();
-					return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
-				}
-				modelo.errorValidacion = true;
-				modelo.cambiosGuardados = 2; //cambios no guardados
-			}
+                if (!string.IsNullOrEmpty(cancelar))
+                {
+                    ModelState.Clear();
+                    return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
+                }
+                modelo.errorValidacion = true;
+                modelo.cambiosGuardados = 2; //cambios no guardados
+            }
             return View(modelo);
-		}
-		
-		private ModeloIntermedio limpiarCampos(string cedula, string id) {
-			ModeloIntermedio modelo = new ModeloIntermedio();
-			modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
-				//Se obtiene el email de AspNetUsers
-				var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-				var usr = manager.FindById(id);
-				if(usr != null) {
-					modelo.aspUserEmail = usr.Email;
-				}
-			modelo.cambiosGuardados = 3; //cambios descartados
-			return modelo;
-		}
+        }
+
+        private ModeloIntermedio limpiarCampos(string cedula, string id)
+        {
+            ModeloIntermedio modelo = new ModeloIntermedio();
+            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
+            //Se obtiene el email de AspNetUsers
+            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            var usr = manager.FindById(id);
+            if (usr != null)
+            {
+                modelo.aspUserEmail = usr.Email;
+            }
+            modelo.cambiosGuardados = 3; //cambios descartados
+            return modelo;
+        }
 
         //Metodo GET pantalla Crear
         public ActionResult Create()
@@ -281,7 +297,8 @@ namespace ProyectoInge1.Controllers
                 var user = new ApplicationUser { UserName = modelo.modCrear.Email, Email = modelo.modCrear.Email };
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var result = await manager.CreateAsync(user, modelo.modCrear.Password);
-                if (result.Succeeded) {
+                if (result.Succeeded)
+                {
                     modelo.modeloUsuario.Id = user.Id;
                     manager.AddToRole(user.Id, modelo.modCrear.Rol);
                     baseDatos.Usuario.Add(modelo.modeloUsuario);
@@ -329,11 +346,11 @@ namespace ProyectoInge1.Controllers
                 smtp.Send(mail);
             }
         }
-
+        // ___________________- Este metodo hay que cambiarlo Isa ___________________________
         public ActionResult Informacion(int? message)
         {
-            ViewBag.StatusMessage = message.Equals(1) ? "Su contraseña ha sido cambiada exitosamente":
-                 message.Equals(2) ? "Los datos han sido modificados exitosamente exitosamente" : "";
+            ViewBag.StatusMessage = message.Equals(1) ? "Su contraseña ha sido cambiada exitosamente" :
+                 message.Equals(2) ? "Cambios descartados" : "";
 
             ModeloIntermedio modelo = new ModeloIntermedio();
             string id_us = User.Identity.GetUserId();
@@ -344,7 +361,8 @@ namespace ProyectoInge1.Controllers
             {
                 return HttpNotFound();
             }
-            else {
+            else
+            {
                 //Se obtiene el email de AspNetUsers
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var usr = manager.FindById(User.Identity.GetUserId());
@@ -352,22 +370,23 @@ namespace ProyectoInge1.Controllers
                 {
                     modelo.aspUserEmail = usr.Email;
                 }
-                else {
+                else
+                {
                     modelo.aspUserEmail = " ";
                 }
-              
-            }
 
+            }
+            modelo.cambiosGuardados = 0;
             return View(modelo);
         }
 
-
+        // ___________________- Este metodo hay que cambiarlo Isa ___________________________
         //Metodo POST para la pantalla unificada. Corresponde a modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Informacion(ModeloIntermedio modelo)
+        public ActionResult Informacion(ModeloIntermedio modelo, string aceptar, string cancelar)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
             {
 
                 //Para guardar en aspNetUsers
@@ -385,10 +404,17 @@ namespace ProyectoInge1.Controllers
                 //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
                 baseDatos.SaveChanges();
-
+                modelo.cambiosGuardados = 1;
             }
-            else {
-                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+            else
+            {
+                if (!string.IsNullOrEmpty(cancelar))
+                {
+                    ModelState.Clear();
+                    return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
+                }
+                modelo.errorValidacion = true;
+
             }
             return View(modelo);
         }

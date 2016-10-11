@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity;
+@using ProyectoInge1.Models;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -27,9 +30,15 @@
                 <ul class="nav navbar-nav">
                     @if (Request.IsAuthenticated)
                     {
-                       
-                        <li>@Html.ActionLink("Usuarios", "Index", "ModuloUsuarios")</li>
-                        
+                        Entities baseDatos = new Entities();
+                        ApplicationDbContext context = new ApplicationDbContext();
+                        ModeloIntermedio modelo = new ModeloIntermedio();
+                        modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                        string rolId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+                        if (rolId == "01Admin")
+                        {
+                            <li>@Html.ActionLink("Usuarios", "Index", "ModuloUsuarios")</li>
+                        }
                         <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad")</li>
                     }
                     <li>@Html.ActionLink("Contáctenos", "Contact", "Home")</li>
