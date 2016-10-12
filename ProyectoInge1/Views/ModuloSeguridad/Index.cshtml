@@ -66,8 +66,13 @@
                                         }
                                     }
                                 }
-
-                                <input type="checkbox" id="@id" name="pr" value="@id" checked="@check" />
+                                @if(Model.listaRoles.ElementAt(j).Id == "01Admin"){
+                                    <input type="checkbox" id="@id" name="pr" value="@id" checked="@check" onclick="return false;" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="@id" name="pr" value="@id" checked="@check" />
+                                }
                             </th>
                                     }
                     </tr>
@@ -88,6 +93,6 @@
     {
 
     }
-        </div>                          }
-
+        </div>
+}
 </div>

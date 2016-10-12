@@ -27,8 +27,9 @@ namespace ProyectoInge1.Controllers
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
 
             // Variables de sesion para verificar los privilegios
-            // asociadoos al rol del usuario loggeado en el sistema.
+            // asociadoos al rol del usuario loggeado en el sistema
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("SEG-I", modelo.rolActualId);
+
             if (privilegio == null)
             {
                 modelo.privilegios = false;
@@ -80,6 +81,22 @@ namespace ProyectoInge1.Controllers
                     }
                 }
                 modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
+                // Obtener el usuario actual
+                modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+
+                // Variables de sesion para verificar los privilegios
+                // asociadoos al rol del usuario loggeado en el sistema
+                Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("SEG-I", modelo.rolActualId);
+
+                if (privilegio == null)
+                {
+                    modelo.privilegios = false;
+                }
+                else
+                {
+                    modelo.privilegios = true;
+                }
                 modelo.cambiosGuardados = 1;
             }
             catch
