@@ -96,7 +96,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.modCrear.Password, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.modCrear.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.modCrear.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Ejemplo: Abcd!123" } })
                 @Html.ValidationMessageFor(model => model.modCrear.Password, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -125,7 +125,7 @@
                   new List<Object>{
                        new { value = "Administrador" , text = "Administrador"  },
                        new { value = "Desarrollador" , text = "Desarrollador" },
-                       new { value = "Desarrollador" , text = "Usuario"}
+                       new { value = "Usuario Final" , text = "Usuario"}
                     },
                   "value",
                   "text",
