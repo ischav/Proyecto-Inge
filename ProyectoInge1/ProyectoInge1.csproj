@@ -208,6 +208,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ModuloCambiosController.cs" />
+    <Compile Include="Controllers\ModuloProyectoController.cs" />
+    <Compile Include="Controllers\ModuloRequerimientosController.cs" />
     <Compile Include="Controllers\ModuloSeguridadController.cs" />
     <Compile Include="Controllers\ModuloUsuariosController.cs" />
     <Compile Include="Global.asax.cs">
@@ -335,6 +338,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\ModuloCambios\" />
+    <Folder Include="Views\ModuloProyecto\" />
+    <Folder Include="Views\ModuloRequerimientos\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
