@@ -43,7 +43,7 @@ CREATE TABLE Cambio(
 	Descripcion		VARCHAR(200),
 	Justificacion	VARCHAR(200),
 	IdRequerimiento	VARCHAR(20),
-	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha),
+	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento),
 	CONSTRAINT	FK_Cambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) 
 );
 
