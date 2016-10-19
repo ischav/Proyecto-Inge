@@ -51,9 +51,10 @@ CREATE TABLE Usuarios_asociados_cambios(
 	CedulaUsuario	VARCHAR(16),
 	IdUsuario		NVARCHAR(128),
 	FechaCambio		DATE,
+	IdRequerimientoCambio VARCHAR(20)
 	CONSTRAINT  PK_Usuarios_asociados_cambios PRIMARY KEY (CedulaUsuario, IdUsuario, FechaCambio),
 	CONSTRAINT	FK_Usuario FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
-	CONSTRAINT  FK_Cambio FOREIGN KEY (FechaCambio) REFERENCES Cambio(Fecha)
+	CONSTRAINT  FK_Cambio FOREIGN KEY (FechaCambio, IdRequerimientoCambio) REFERENCES Cambio(Fecha, IdRequerimiento)
 );
 
 CREATE TABLE CriterioAceptacion(
