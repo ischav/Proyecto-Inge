@@ -335,12 +335,14 @@
     <Content Include="Views\ModuloUsuarios\MEC_Unificado.cshtml" />
     <Content Include="Views\ModuloUsuarios\Informacion.cshtml" />
     <Content Include="Views\Manage\Cambio_Contraseña.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\Index.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\Create.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\MEC_UnificadoRequerimientos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\ModuloCambios\" />
     <Folder Include="Views\ModuloProyecto\" />
-    <Folder Include="Views\ModuloRequerimientos\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

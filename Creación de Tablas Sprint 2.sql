@@ -1,3 +1,12 @@
+-- Creación de Tablas para el Sistema de Administración de Requerimientos
+-- Curso de Ingeniería de Software I
+-- Estudiantes:
+--		Andreína Alvarado
+--		Isabel Chaves
+--		Adrián Madrigal
+--		Josin Madrigal
+--		José Sánchez
+
 USE BD_IngeGrupo1;
 
 CREATE TABLE Proyecto (
