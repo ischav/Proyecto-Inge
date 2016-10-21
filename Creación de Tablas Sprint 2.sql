@@ -17,8 +17,8 @@ CREATE TABLE Usuarios_asociados_proyecto(
 	IdProyecto		VARCHAR(20),
 	RolProyecto		VARCHAR(15)			NOT NULL,
 	CONSTRAINT	PK_Usuario_asociados_proyecto PRIMARY KEY (CedulaUsuario, IdUsuario, IdProyecto), 
-	CONSTRAINT	FK_Usuario FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
-	CONSTRAINT	FK_Proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
+	CONSTRAINT	FK_UsuarioUsuario_asociados_proyecto FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
+	CONSTRAINT	FK_ProyectoUsuario_asociados_proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
 );
 
 CREATE TABLE Requerimiento(
@@ -35,7 +35,7 @@ CREATE TABLE Requerimiento(
 	Observaciones	VARCHAR(150),
 	IdProyecto		VARCHAR(20),
 	CONSTRAINT	PK_Requerimiento PRIMARY KEY (Id),
-	CONSTRAINT	FK_Proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
+	CONSTRAINT	FK_ProyectoRequerimiento FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
 );
 
 CREATE TABLE Cambio(
@@ -44,7 +44,7 @@ CREATE TABLE Cambio(
 	Justificacion	VARCHAR(200)		NOT NULL,
 	IdRequerimiento	VARCHAR(20)			NOT NULL,
 	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento),
-	CONSTRAINT	FK_Cambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) 
+	CONSTRAINT	FK_CambioCambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) 
 );
 
 CREATE TABLE Usuarios_asociados_cambios(
@@ -53,8 +53,8 @@ CREATE TABLE Usuarios_asociados_cambios(
 	FechaCambio		DATE,
 	IdRequerimientoCambio VARCHAR(20)
 	CONSTRAINT  PK_Usuarios_asociados_cambios PRIMARY KEY (CedulaUsuario, IdUsuario, FechaCambio),
-	CONSTRAINT	FK_Usuario FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
-	CONSTRAINT  FK_Cambio FOREIGN KEY (FechaCambio, IdRequerimientoCambio) REFERENCES Cambio(Fecha, IdRequerimiento)
+	CONSTRAINT	FK_UsuarioUsuarios_asociados_cambios FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
+	CONSTRAINT  FK_CambioUsuarios_asociados_cambios FOREIGN KEY (FechaCambio, IdRequerimientoCambio) REFERENCES Cambio(Fecha, IdRequerimiento)
 );
 
 CREATE TABLE CriterioAceptacion(
@@ -62,5 +62,5 @@ CREATE TABLE CriterioAceptacion(
 	Descripcion		VARCHAR(200)		NOT NULL,
 	IdRequerimiento VARCHAR(20),
 	CONSTRAINT	PK_CriterioAceptacion PRIMARY KEY (Escenario, IdRequerimiento),
-	CONSTRAINT	FK_Requerimiento FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id)
+	CONSTRAINT	FK_RequerimientoCriterioAceptacion FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id)
 );
