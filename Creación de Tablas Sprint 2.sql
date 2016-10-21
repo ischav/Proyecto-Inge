@@ -1,11 +1,11 @@
--- CreaciÛn de Tablas para el Sistema de AdministraciÛn de Requerimientos
--- Curso de IngenierÌa de Software I
+-- Creaci√≥n de Tablas para el Sistema de Administraci√≥n de Requerimientos
+-- Curso de Ingenier√≠a de Software I
 -- Estudiantes:
---		AndreÌna Alvarado
+--		Andre√≠na Alvarado
 --		Isabel Chaves
---		Adri·n Madrigal
+--		Adri√°n Madrigal
 --		Josin Madrigal
---		JosÈ S·nchez
+--		Jos√© S√°nchez
 
 USE BD_IngeGrupo1;
 
@@ -51,19 +51,12 @@ CREATE TABLE Cambio(
 	Fecha			DATE,
 	Descripcion		VARCHAR(200)		NOT NULL,
 	Justificacion	VARCHAR(200)		NOT NULL,
-	IdRequerimiento	VARCHAR(20)			NOT NULL,
-	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento),
-	CONSTRAINT	FK_CambioCambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) 
-);
-
-CREATE TABLE Usuarios_asociados_cambios(
+	IdRequerimiento	VARCHAR(20),
 	CedulaUsuario	VARCHAR(16),
 	IdUsuario		NVARCHAR(128),
-	FechaCambio		DATE,
-	IdRequerimientoCambio VARCHAR(20)
-	CONSTRAINT  PK_Usuarios_asociados_cambios PRIMARY KEY (CedulaUsuario, IdUsuario, FechaCambio),
-	CONSTRAINT	FK_UsuarioUsuarios_asociados_cambios FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id),
-	CONSTRAINT  FK_CambioUsuarios_asociados_cambios FOREIGN KEY (FechaCambio, IdRequerimientoCambio) REFERENCES Cambio(Fecha, IdRequerimiento)
+	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento),
+	CONSTRAINT	FK_RequerimientoCambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id),
+	CONSTRAINT	FK_UsuarioCambio FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id)
 );
 
 CREATE TABLE CriterioAceptacion(
