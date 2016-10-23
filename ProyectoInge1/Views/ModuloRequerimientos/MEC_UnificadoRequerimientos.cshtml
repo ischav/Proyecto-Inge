@@ -4,8 +4,40 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="elementoModificar" >
+<script>
+    function verConsultar() {
+        $('.modificar').hide();
+        $('.consultar').show();
+    }
+
+    function verModificar() {
+        $('.consultar').hide();
+        $('.modificar').show();
+    }
+
+    function eliminarRequerimiento() {
+        var respuesta = confirm('¿Confirma que desea eliminar este requerimiento?');
+
+        if (respuesta == true) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("eliminarRequerimiento")',
+                data: '&id=' + @Model.modeloRequerimiento.Id,
+                success: function (data) {
+                    alert('Requerimiento eliminado exitosamente');
+                    var url = '@Url.Action("Index", "ModuloRequerimientos")';
+                    window.location.href = url;
+                },
+            });
+        }
+    }
+</script>
+
+<div class="consultar">
     <h2>Detalles</h2>
+    <a class="btn btn-default" onclick="verConsultar()">Consultar</a>
+    <a class="btn btn-default" onclick="verModificar()">Modificar</a>
+    <a class="btn btn-default" onclick="eliminarRequerimiento()">Eliminar</a>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -18,7 +50,125 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Id, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.modeloRequerimiento.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">               
+                        @Html.EditorFor(model => model.modeloRequerimiento.Nombre, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Nombre, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+               
+                        @Html.EditorFor(model => model.modeloRequerimiento.Estado, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Estado, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    
+                        @Html.EditorFor(model => model.modeloRequerimiento.Descripcion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Prioridad, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                   
+                        @Html.EditorFor(model => model.modeloRequerimiento.Prioridad, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Prioridad, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Esfuerzo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                   
+                        @Html.EditorFor(model => model.modeloRequerimiento.Esfuerzo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Esfuerzo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                   
+                        @Html.EditorFor(model => model.modeloRequerimiento.FechaInicio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaInicio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.FechaFinal, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.FechaFinal, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaFinal, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.Sprint, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Sprint, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Observaciones, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.Observaciones, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Observaciones, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.IdProyecto, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.IdProyecto, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdProyecto, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modificar">
+    <h2>Detalles</h2>
+    <a class="btn btn-default" onclick="verConsultar()">Consultar</a>
+    <a class="btn btn-default" onclick="verModificar()">Modificar</a>
+    <a class="btn btn-default" onclick="eliminarRequerimiento()">Eliminar</a>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(model => model.modeloRequerimiento.Id)
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloRequerimiento.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.modeloRequerimiento.Id, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -86,7 +236,7 @@
                     @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
                 </div>
             </div>
-            
+
             <div class="form-group">
                 @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -104,13 +254,13 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.modeloRequerimiento.Proyecto, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.modeloRequerimiento.IdProyecto, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Proyecto, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Proyecto, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.modeloRequerimiento.IdProyecto, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdProyecto, "", new { @class = "text-danger" })
                 </div>
             </div>
-                        
+
             <div class="form-group">
                 <div class="form-inline" align="right">
                     <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
@@ -120,6 +270,7 @@
         </div>
     }
 </div>
+
 <p>
     @Html.ActionLink("Volver a Usuarios", "Index")
 </p>

@@ -176,22 +176,50 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult MEC_UnificadoRequerimientos(string Id)
+        {
+            ModeloProyecto modelo = new ModeloProyecto();
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
+            modelo.accion = 0;
+
+            return View(modelo);
+        }
+
         //Metodo POST para la pantalla unificada. Corresponde a modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_UnificadoRequerimientos(ModeloProyecto modelo)
+        public ActionResult Informacion(ModeloProyecto modelo, string aceptar, string cancelar)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
             {
-                //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloRequerimiento).State = EntityState.Modified;
                 baseDatos.SaveChanges();
-
-                modelo.errorValidacion = false;
-                modelo.cambiosGuardados = 0; //cambios guardados
+                modelo.cambiosGuardados = 1;
             }
-
+            else
+            {
+                if (!string.IsNullOrEmpty(cancelar))
+                {
+                    return View(modelo);
+                }
+            }
             return View(modelo);
+        }
+
+        public ActionResult cambiarAccion(string Id, int Accion)
+        {
+            try
+            {
+                ModeloProyecto modelo = new ModeloProyecto();
+                modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
+                modelo.accion = Accion;
+                return View(modelo);
+            }
+            catch(Exception e)
+            {
+                Console.Write(e);
+                return View("Index");
+            }
         }
     }
 }
