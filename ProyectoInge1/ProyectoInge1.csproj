@@ -354,11 +354,12 @@
     <Content Include="Views\ModuloRequerimientos\Index.cshtml" />
     <Content Include="Views\ModuloRequerimientos\Create.cshtml" />
     <Content Include="Views\ModuloRequerimientos\MEC_UnificadoRequerimientos.cshtml" />
+    <Content Include="Views\ModuloProyecto\Index.cshtml" />
+    <Content Include="Views\ModuloProyecto\MEC_Unificado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\ModuloCambios\" />
-    <Folder Include="Views\ModuloProyecto\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

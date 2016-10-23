@@ -8,6 +8,35 @@
       <End Role="Privilegio" EntitySet="Privilegio" />
       <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
     </AssociationSet>
+    <EntitySet Name="Cambio" EntityType="ModelEntities.Cambio" />
+    <EntitySet Name="CriterioAceptacion" EntityType="ModelEntities.CriterioAceptacion" />
+    <EntitySet Name="Proyecto" EntityType="ModelEntities.Proyecto" />
+    <EntitySet Name="Requerimiento" EntityType="ModelEntities.Requerimiento" />
+    <EntitySet Name="Usuarios_asociados_proyecto" EntityType="ModelEntities.Usuarios_asociados_proyecto" />
+    <AssociationSet Name="FK_RequerimientoCambio" Association="ModelEntities.FK_RequerimientoCambio">
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
+      <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UsuarioCambio" Association="ModelEntities.FK_UsuarioCambio">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RequerimientoCriterioAceptacion" Association="ModelEntities.FK_RequerimientoCriterioAceptacion">
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
+      <End Role="CriterioAceptacion" EntitySet="CriterioAceptacion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProyectoRequerimiento" Association="ModelEntities.FK_ProyectoRequerimiento">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProyectoUsuario_asociados_proyecto" Association="ModelEntities.FK_ProyectoUsuario_asociados_proyecto">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Usuarios_asociados_proyecto" EntitySet="Usuarios_asociados_proyecto" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UsuarioUsuario_asociados_proyecto" Association="ModelEntities.FK_UsuarioUsuario_asociados_proyecto">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Usuarios_asociados_proyecto" EntitySet="Usuarios_asociados_proyecto" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Privilegio">
     <Key>
@@ -31,6 +60,8 @@
     <Property Name="Telefono2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="Sexo" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
     <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Cambio" Relationship="ModelEntities.FK_UsuarioCambio" FromRole="Usuario" ToRole="Cambio" />
+    <NavigationProperty Name="Usuarios_asociados_proyecto" Relationship="ModelEntities.FK_UsuarioUsuario_asociados_proyecto" FromRole="Usuario" ToRole="Usuarios_asociados_proyecto" />
   </EntityType>
   <EntityType Name="Privilegios_asociados_roles">
     <Key>
@@ -50,6 +81,153 @@
       </Principal>
       <Dependent Role="Privilegios_asociados_roles">
         <PropertyRef Name="Id_Privilegio" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Cambio">
+    <Key>
+      <PropertyRef Name="Fecha" />
+      <PropertyRef Name="IdRequerimiento" />
+    </Key>
+    <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Justificacion" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IdRequerimiento" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CedulaUsuario" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="IdUsuario" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModelEntities.FK_RequerimientoCambio" FromRole="Cambio" ToRole="Requerimiento" />
+    <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioCambio" FromRole="Cambio" ToRole="Usuario" />
+  </EntityType>
+  <EntityType Name="CriterioAceptacion">
+    <Key>
+      <PropertyRef Name="Escenario" />
+      <PropertyRef Name="IdRequerimiento" />
+    </Key>
+    <Property Name="Escenario" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IdRequerimiento" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModelEntities.FK_RequerimientoCriterioAceptacion" FromRole="CriterioAceptacion" ToRole="Requerimiento" />
+  </EntityType>
+  <EntityType Name="Proyecto">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Estado" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="FechaInicio" Type="DateTime" Precision="0" />
+    <Property Name="FechaFinal" Type="DateTime" Precision="0" />
+    <Property Name="Duracion" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModelEntities.FK_ProyectoRequerimiento" FromRole="Proyecto" ToRole="Requerimiento" />
+    <NavigationProperty Name="Usuarios_asociados_proyecto" Relationship="ModelEntities.FK_ProyectoUsuario_asociados_proyecto" FromRole="Proyecto" ToRole="Usuarios_asociados_proyecto" />
+  </EntityType>
+  <EntityType Name="Requerimiento">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+    <Property Name="Prioridad" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+    <Property Name="Esfuerzo" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+    <Property Name="Estado" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="FechaInicio" Type="DateTime" Precision="0" />
+    <Property Name="FechaFinal" Type="DateTime" Precision="0" />
+    <Property Name="Sprint" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+    <Property Name="Modulo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="Observaciones" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="IdProyecto" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Cambio" Relationship="ModelEntities.FK_RequerimientoCambio" FromRole="Requerimiento" ToRole="Cambio" />
+    <NavigationProperty Name="CriterioAceptacion" Relationship="ModelEntities.FK_RequerimientoCriterioAceptacion" FromRole="Requerimiento" ToRole="CriterioAceptacion" />
+    <NavigationProperty Name="Proyecto" Relationship="ModelEntities.FK_ProyectoRequerimiento" FromRole="Requerimiento" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Usuarios_asociados_proyecto">
+    <Key>
+      <PropertyRef Name="CedulaUsuario" />
+      <PropertyRef Name="IdUsuario" />
+      <PropertyRef Name="IdProyecto" />
+    </Key>
+    <Property Name="CedulaUsuario" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="IdProyecto" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="RolProyecto" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Proyecto" Relationship="ModelEntities.FK_ProyectoUsuario_asociados_proyecto" FromRole="Usuarios_asociados_proyecto" ToRole="Proyecto" />
+    <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioUsuario_asociados_proyecto" FromRole="Usuarios_asociados_proyecto" ToRole="Usuario" />
+  </EntityType>
+  <Association Name="FK_RequerimientoCambio">
+    <End Type="ModelEntities.Requerimiento" Role="Requerimiento" Multiplicity="1" />
+    <End Type="ModelEntities.Cambio" Role="Cambio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cambio">
+        <PropertyRef Name="IdRequerimiento" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UsuarioCambio">
+    <End Type="ModelEntities.Usuario" Role="Usuario" Multiplicity="0..1" />
+    <End Type="ModelEntities.Cambio" Role="Cambio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Cedula" />
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cambio">
+        <PropertyRef Name="CedulaUsuario" />
+        <PropertyRef Name="IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RequerimientoCriterioAceptacion">
+    <End Type="ModelEntities.Requerimiento" Role="Requerimiento" Multiplicity="1" />
+    <End Type="ModelEntities.CriterioAceptacion" Role="CriterioAceptacion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CriterioAceptacion">
+        <PropertyRef Name="IdRequerimiento" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProyectoRequerimiento">
+    <End Type="ModelEntities.Proyecto" Role="Proyecto" Multiplicity="0..1" />
+    <End Type="ModelEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="IdProyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProyectoUsuario_asociados_proyecto">
+    <End Type="ModelEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
+    <End Type="ModelEntities.Usuarios_asociados_proyecto" Role="Usuarios_asociados_proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Usuarios_asociados_proyecto">
+        <PropertyRef Name="IdProyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UsuarioUsuario_asociados_proyecto">
+    <End Type="ModelEntities.Usuario" Role="Usuario" Multiplicity="1" />
+    <End Type="ModelEntities.Usuarios_asociados_proyecto" Role="Usuarios_asociados_proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Cedula" />
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Usuarios_asociados_proyecto">
+        <PropertyRef Name="CedulaUsuario" />
+        <PropertyRef Name="IdUsuario" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
