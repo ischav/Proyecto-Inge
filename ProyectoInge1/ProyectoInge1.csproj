@@ -356,6 +356,7 @@
     <Content Include="Views\ModuloRequerimientos\MEC_UnificadoRequerimientos.cshtml" />
     <Content Include="Views\ModuloProyecto\Index.cshtml" />
     <Content Include="Views\ModuloProyecto\MEC_Unificado.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\Informacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

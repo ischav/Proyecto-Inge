@@ -293,7 +293,6 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var user = new ApplicationUser { UserName = modelo.modCrear.Email, Email = modelo.modCrear.Email };
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var result = await manager.CreateAsync(user, modelo.modCrear.Password);

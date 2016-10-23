@@ -11,7 +11,8 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Requerimiento
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,11 +27,13 @@ namespace ProyectoInge1.Models
         public string Prioridad { get; set; }
         public string Esfuerzo { get; set; }
         public string Estado { get; set; }
+        [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
         public Nullable<System.DateTime> FechaInicio { get; set; }
         public Nullable<System.DateTime> FechaFinal { get; set; }
         public string Sprint { get; set; }
         public string Modulo { get; set; }
+        [DataType(DataType.MultilineText)]
         public string Observaciones { get; set; }
         public string IdProyecto { get; set; }
     

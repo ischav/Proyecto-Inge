@@ -136,5 +136,62 @@ namespace ProyectoInge1.Controllers
 
             return View(requerimiento.ToPagedList(pageNumber, pageSize));
         }
+
+        public ActionResult Create()
+        {
+            ModeloProyecto modelo = new ModeloProyecto();
+            modelo.listaProyectos = baseDatos.Proyecto.ToList();
+
+            return View(modelo);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(ModeloProyecto modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                Proyecto proyectoRequerimiento = baseDatos.Proyecto.Find(modelo.proyectoRequerimiento.ToString());
+                modelo.modeloRequerimiento.Proyecto = proyectoRequerimiento;
+                baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
+                baseDatos.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+                return View(modelo);
+            }
+        }
+
+        public ActionResult eliminarRequerimiento(string Id)
+        {
+            //Borra al requerimiento de la tabla Requerimientos
+            ModeloProyecto modelo = new ModeloProyecto();
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
+            baseDatos.Requerimiento.Remove(modelo.modeloRequerimiento);
+            baseDatos.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        //Metodo POST para la pantalla unificada. Corresponde a modificar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MEC_UnificadoRequerimientos(ModeloProyecto modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                //Para guardar en tabla usuarios
+                baseDatos.Entry(modelo.modeloRequerimiento).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+
+                modelo.errorValidacion = false;
+                modelo.cambiosGuardados = 0; //cambios guardados
+            }
+
+            return View(modelo);
+        }
     }
 }

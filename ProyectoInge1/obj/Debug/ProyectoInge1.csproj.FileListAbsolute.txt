@@ -671,6 +671,6 @@ C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Ow
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.csprojResolveAssemblyReference.cache
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.dll
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.pdb
+C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.csprojResolveAssemblyReference.cache
