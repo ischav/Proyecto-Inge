@@ -673,3 +673,7 @@ C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Ow
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.dll
 C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.pdb
+C:\Users\Geovanny\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\bin\PagedList.dll
+C:\Users\Geovanny\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.dll
+C:\Users\Geovanny\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\bin\PagedList.xml
+C:\Users\Geovanny\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\bin\PagedList.Mvc.xml

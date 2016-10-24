@@ -18,6 +18,7 @@ namespace ProyectoInge1.Models
         public Requerimiento modeloRequerimiento { get; set; }
         public CriterioAceptacion modeloCriterioAceptacion { get; set; }
         public Usuarios_asociados_proyecto modeloUsuarios_asociados_proyecto { get; set; }
+		public Usuario modeloUsuario { get; set; }
         public int accion = 0;
         public int cambiosGuardados = 0;
 

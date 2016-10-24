@@ -1,7 +1,7 @@
 ﻿@model ProyectoInge1.Models.ModeloProyecto
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Agregar proyectos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,7 +9,7 @@
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea insertar este proyecto?');
         if(respuesta == true){
-            var url = '@Url.Action("Create", "ModuloUsuarios")';
+            var url = '@Url.Action("Create", "ModuloProyecto")';
             window.location.href = url;
         }
     }
@@ -72,9 +72,11 @@
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.modeloProyecto.Estado, new SelectList(
                   new List<Object>{
-                       new { value = "Pendiente" , text = "Pendiente"  },
+                       new { value = "Por iniciar" , text = "Por iniciar"  },
+                       new { value = "En ejecución" , text = "En ejecución" },
+                       new { value = "En pausa" , text = "En pausa" },
                        new { value = "Finalizado" , text = "Finalizado" },
-                       new { value = "Cancelado" , text = "Cancelado"}
+                       new { value = "Cerrado" , text = "Cerrado"}
                     },
                   "value",
                   "text",

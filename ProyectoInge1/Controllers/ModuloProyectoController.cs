@@ -141,5 +141,10 @@ namespace ProyectoInge1.Controllers
 
             return View(proyecto.ToPagedList(pageNumber, pageSize));
         }
-    }
+
+		//Metodo GET pantalla Crear Proyecto
+		public ActionResult Create() {
+			return View();
+		}
+	}
 }
