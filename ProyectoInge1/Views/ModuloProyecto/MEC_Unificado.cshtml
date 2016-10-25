@@ -1,8 +1,132 @@
-﻿
+﻿@model ProyectoInge1.Models.ModeloProyecto
 @{
     ViewBag.Title = "MEC_Unificado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>MEC_Unificado</h2>
+
+<script>
+    function confirmarEliminar(id) {
+
+        var respuesta = confirm('¿Confirma que desea eliminar este proyecto?');
+
+        if (respuesta == true)
+        {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("eliminarProyecto")',
+                data: 'id=' + id,
+                success: function (data) {
+                    alert('Proyecto eliminado exitosamente');
+                    var url = '@Url.Action("Index", "ModuloProyecto")';
+                    window.location.href = url;
+                },
+            });
+        }
+    }
+
+    function habilitarCampos() {
+        $("input").prop('disabled', false);
+        $('select').prop('disabled', false);
+        $("#descripcion *").prop("disabled", false);
+
+    }
+
+    function funcionCancelar() {
+        var respuesta = confirm('¿Confirma que no desea modificar este proyecto?');
+        if (respuesta == true) {
+            var url = '@Url.Action("MEC_Unificado", "ModuloProyecto")';
+            window.location.href = url;
+        }
+    }
+</script>
+
+<h2>Consultar</h2>
+
+<a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
+<a class="btn btn-default" onclick="confirmarEliminar('@(Model.modeloProyecto.Id)')">Eliminar</a>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloProyecto.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloProyecto.Id, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.modeloProyecto.Id, "", new { @class = "text-danger" })
+                 </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloProyecto.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloProyecto.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.modeloProyecto.Nombre, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group", id="descripcion">
+                @Html.LabelFor(model => model.modeloProyecto.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloProyecto.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.modeloProyecto.Descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloProyecto.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloProyecto.FechaInicio, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.modeloProyecto.FechaInicio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloProyecto.FechaFinal, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.modeloProyecto.FechaFinal, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.modeloProyecto.FechaFinal, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.modeloProyecto.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.modeloProyecto.Estado, new SelectList(
+                  new List<Object>{
+                       new { value = "Por iniciar" , text = "Por iniciar"  },
+                       new { value = "En ejecución" , text = "En ejecución" },
+                       new { value = "En pausa" , text = "En pausa" },
+                       new { value = "Finalizado" , text = "Finalizado" },
+                       new { value = "Cerrado" , text = "Cerrado"}
+                    },
+                  "value",
+                  "text",
+                   2))
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-inline" align="right">
+                    <input type="submit" value="Aceptar" class="btn btn-default" />
+                    <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    }
+<script>
+        window.onload = function () {
+            $("input").prop('disabled', true).trigger("click");
+            $('select').prop('disabled', true).trigger("click");
+            $("#descripcion *").prop("disabled", true).trigger("click");
+
+        }
+</script>
+
+<p>
+    @Html.ActionLink("Volver a proyectos", "Index")
+</p>
+
 
