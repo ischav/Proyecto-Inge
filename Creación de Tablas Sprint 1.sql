@@ -23,6 +23,9 @@ CREATE TABLE Usuario (
 	CONSTRAINT	FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id)
 );
 
+ALTER TABLE Usuario DROP CONSTRAINT FK_ASPUsers;
+ALTER TABLE Usuario ADD CONSTRAINT FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id) ON DELETE CASCADE; 
+
 CREATE TABLE Privilegio (
     Id   		 NVARCHAR(128),
     Descripcion    VARCHAR(80),
@@ -38,3 +41,8 @@ CREATE TABLE Privilegios_asociados_roles (
     CONSTRAINT	PK_Privilegios_asociados_roles PRIMARY KEY (Id_Privilegio, Id_Rol)
 );
 
+ALTER TABLE Privilegios_asociados_roles DROP CONSTRAINT FK_Privilegio;
+ALTER TABLE Privilegios_asociados_roles ADD CONSTRAINT FK_Privilegio FOREIGN KEY (Id_Privilegio) REFERENCES Privilegio(Id) ON DELETE CASCADE; 
+
+ALTER TABLE Privilegios_asociados_roles DROP CONSTRAINT FK_AspRoles;
+ALTER TABLE Privilegios_asociados_roles ADD CONSTRAINT	FK_AspRoles FOREIGN KEY	(Id_Rol) REFERENCES AspNetRoles(Id);
