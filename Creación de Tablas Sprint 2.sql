@@ -30,6 +30,9 @@ CREATE TABLE Usuarios_asociados_proyecto(
 	CONSTRAINT	FK_ProyectoUsuario_asociados_proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
 );
 
+ALTER TABLE Usuarios_asociados_proyecto DROP CONSTRAINT FK_ProyectoUsuario_asociados_proyecto;
+ALTER TABLE Usuarios_asociados_proyecto ADD CONSTRAINT FK_ProyectoUsuario_asociados_proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id) ON DELETE CASCADE;
+
 CREATE TABLE Requerimiento(
 	Id				VARCHAR(20),
 	Nombre			VARCHAR(40)			NOT NULL,
@@ -47,6 +50,11 @@ CREATE TABLE Requerimiento(
 	CONSTRAINT	FK_ProyectoRequerimiento FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id)
 );
 
+ALTER TABLE Requerimiento ADD Imagen image;
+
+ALTER TABLE Requerimiento DROP CONSTRAINT FK_ProyectoRequerimiento;
+ALTER TABLE Requerimiento ADD CONSTRAINT FK_ProyectoRequerimiento FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id) ON DELETE CASCADE;
+
 CREATE TABLE Cambio(
 	Fecha			DATE,
 	Descripcion		VARCHAR(200)		NOT NULL,
@@ -59,6 +67,9 @@ CREATE TABLE Cambio(
 	CONSTRAINT	FK_UsuarioCambio FOREIGN KEY (CedulaUsuario, IdUsuario) REFERENCES Usuario(Cedula, Id)
 );
 
+ALTER TABLE Cambio DROP CONSTRAINT FK_RequerimientoCambio;
+ALTER TABLE Cambio ADD CONSTRAINT	FK_RequerimientoCambio FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) ON DELETE CASCADE;
+
 CREATE TABLE CriterioAceptacion(
 	Escenario		VARCHAR(30),
 	Descripcion		VARCHAR(200)		NOT NULL,
@@ -66,3 +77,6 @@ CREATE TABLE CriterioAceptacion(
 	CONSTRAINT	PK_CriterioAceptacion PRIMARY KEY (Escenario, IdRequerimiento),
 	CONSTRAINT	FK_RequerimientoCriterioAceptacion FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id)
 );
+
+ALTER TABLE CriterioAceptacion DROP CONSTRAINT FK_RequerimientoCriterioAceptacion;
+ALTER TABLE CriterioAceptacion ADD CONSTRAINT	FK_RequerimientoCriterioAceptacion FOREIGN KEY (IdRequerimiento) REFERENCES Requerimiento(Id) ON DELETE CASCADE;
