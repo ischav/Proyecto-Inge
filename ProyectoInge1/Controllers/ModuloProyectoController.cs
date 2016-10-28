@@ -151,46 +151,17 @@ namespace ProyectoInge1.Controllers
 
         /**************Cambios Adrián****************************/
 
-        private ModeloProyecto limpiarCampos(string id)
-        {
-            ModeloProyecto modelo = new ModeloProyecto();
-            /*modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
-            //Se obtiene el email de AspNetUsers
-            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-            var usr = manager.FindById(id);
-            if (usr != null)
-            {
-                modelo.aspUserEmail = usr.Email;
-            }*/
-            modelo.cambiosGuardados = 3; //cambios descartados
-            return modelo;
-        }
-
-
         //Metodo GET para la pantalla unificada. Corresponde a consultar
         public ActionResult MEC_Unificado(string id)
         {
             ModeloProyecto modeloPr = new ModeloProyecto();
             ModeloIntermedio modelo = new ModeloIntermedio();
-            //id = "Proy01";
 
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            var usuarioAct = from m in baseDatos.Usuario
-             select m;
-
-            if (modelo.usuarioActualId != null)
-            {
-                usuarioAct = usuarioAct.Where(s => s.Id.Contains(modelo.usuarioActualId));
-            }
-
-            usuarioAct.ToList();
-
-            Usuario user = usuarioAct.First();
             modeloPr.modeloProyecto = baseDatos.Proyecto.Find(id);
 
             // Verificación de los privilegios disponibles en el modulo de usuarios y
             // asociadoos al rol del usuario loggeado en el sistema.
+            //Cambiar por los de este modulo
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
             if (privilegio == null)
             {
@@ -237,7 +208,6 @@ namespace ProyectoInge1.Controllers
 
             }
 
-            modelo.cambiosGuardados = 0; //no se muestra mensaje
             return View(modeloPr);
         }
 
@@ -247,40 +217,17 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult MEC_Unificado(ModeloProyecto modelo, string aceptar, string cancelar)
         {
-            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
+            if (ModelState.IsValid)
             {
-
-                //Para guardar en aspNetUsers
-                /*var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
-                var manager = new UserManager<ApplicationUser>(store);
-                var usr = manager.FindById(modelo.modeloUsuario.Id);
-
-                if (usr != null)
-                {
-                    usr.Email = modelo.aspUserEmail;
-                    var context = store.Context as ApplicationDbContext;
-                    context.SaveChangesAsync();
-                }
-
-                //Para guardar en tabla usuarios
-                baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
+                baseDatos.Entry(modelo.modeloProyecto).State = EntityState.Modified;
                 baseDatos.SaveChanges();
-
-                modelo.errorValidacion = false;
-                */
-                modelo.cambiosGuardados = 1; //cambios guardados
             }
             else
             {
-
-                /*if (!string.IsNullOrEmpty(cancelar))
-                {
-                    ModelState.Clear();
-                    return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
-                }
-                modelo.errorValidacion = true;*/
-                modelo.cambiosGuardados = 2; //cambios no guardados
+                modelo.cambiosGuardados = 1;
             }
+
+
             return View(modelo);
         }
 
@@ -288,8 +235,21 @@ namespace ProyectoInge1.Controllers
         {
 
             //Borra el proyecto de la tabla Proyectos
+            ModeloProyecto modelo = new ModeloProyecto();
+            modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
+            if (modelo.modeloProyecto.Estado.Equals("Finalizado"))
+            {
+                baseDatos.Proyecto.Remove(modelo.modeloProyecto);
+                baseDatos.SaveChanges();
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+
 
             return RedirectToAction("Index");
         }
+
     }
 }

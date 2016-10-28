@@ -21,9 +21,18 @@ namespace ProyectoInge1.Models
             this.Cambio = new HashSet<Cambio>();
             this.CriterioAceptacion = new HashSet<CriterioAceptacion>();
         }
-    
+
+        [Required(ErrorMessage = "El id es un campo requerido.")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Id")]
         public string Id { get; set; }
+
+        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Nombre")]
         public string Nombre { get; set; }
+
+
         public string Prioridad { get; set; }
         public string Esfuerzo { get; set; }
         public string Estado { get; set; }
