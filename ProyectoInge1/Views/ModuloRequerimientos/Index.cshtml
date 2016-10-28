@@ -12,6 +12,13 @@
     @Html.ActionLink("Agregar requerimiento", "Create")
 </p>
 
+@using (Html.BeginForm())
+{
+<p>
+    @Html.DropDownList("pro", null, htmlAttributes: new { @class="form-control",onchange="this.form.submit()"})
+</p>
+}
+
 @using (Html.BeginForm("Index", "ModuloRequerimientos", FormMethod.Get))
 {
     <p>
