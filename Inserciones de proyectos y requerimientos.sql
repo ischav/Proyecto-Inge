@@ -1,6 +1,6 @@
 USE BD_IngeGrupo1
 
--- En esta secciÛn se insertan proyectos
+-- En esta secci√≥n se insertan proyectos
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
 VALUES (1,'Sistema de administracion de requerimientos', 'Este software tiene como finalidad
@@ -11,30 +11,30 @@ VALUES (2,'BAC San Jose', 'Este proyecto tiene la finalidad de permitir a los us
 sus datos bancarios', 'En proceso','2016-06-07','2016-11-04','4 meses');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
-VALUES (3,'Escuela Republicana', 'La finalidad es la creaciÛn de una p·gina web para mantener
-informados a los padres de familia', 'En proceso','2017-06-07','2016-06-07','1 aÒo');
+VALUES (3,'Escuela Republicana', 'La finalidad es la creaci√≥n de una p√°gina web para mantener
+informados a los padres de familia', 'En proceso','2017-06-07','2016-06-07','1 a√±o');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
 VALUES (4,'Promociones Supermercado ARJ', 'Con este software se pretende mostrar las promociones del 
-supermercado', 'En proceso','2015-01-07','2017-01-07','1 aÒo');
+supermercado', 'En proceso','2015-01-07','2017-01-07','1 a√±o');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
 VALUES (5,'Servicios Hotel La Condesa', 'Se busca que los empleados del hotel puedan solicitar
 productos y servios mediante esta herramienta','En proceso','2016-03-24','2017-01-07','9 meses');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
-VALUES (6,'Restaurante Milori', 'Se utilizar· como herramienta para distribucion de promociones',
-       'En proceso','2016-05-21','2017-05-21','1 aÒo');
+VALUES (6,'Restaurante Milori', 'Se utilizar√° como herramienta para distribucion de promociones',
+       'En proceso','2016-05-21','2017-05-21','1 a√±o');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
-VALUES (7,'Matem·ticas Online', 'Con este software se pretende que los estudiantes fortalezcan sus 
-habilidades para los examenes','En proceso','2016-07-27','2018-07-27','2 aÒos');
+VALUES (7,'Matem√°ticas Online', 'Con este software se pretende que los estudiantes fortalezcan sus 
+habilidades para los examenes','En proceso','2016-07-27','2018-07-27','2 a√±os');
 
 INSERT INTO Proyecto(Id,Nombre,Descripcion,Estado,FechaInicio,FechaFinal,Duracion) 
 VALUES (8,'La Cueva en tu casa', 'Con este software se pretende realizar avaluos a
-articulos antes de empeÒarlos','En proceso','2016-01-11','2016-10-27','10 meses');
+articulos antes de empe√±arlos','En proceso','2016-01-11','2016-10-27','10 meses');
 
--- En esta secciÛn se insertan requerimientos
+-- En esta secci√≥n se insertan requerimientos
 
 INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
 Modulo, Observaciones,IdProyecto) VALUES (1,'Insertar proyectos',1,4,'En proceso'
@@ -46,4 +46,29 @@ Modulo, Observaciones,IdProyecto) VALUES (2,'Insertar promociones',1,2,'En proce
 
 INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
 Modulo, Observaciones,IdProyecto) VALUES (3,'Modificar formula',1,6,'En proceso'
-,'Se desea modificar fÛrmulas relacionada a tem·ticas', '2016-08-01','2016-09-05',1,1,'Ninguna',7)
+,'Se desea modificar f√≥rmulas relacionada a tem√°ticas', '2016-08-01','2016-09-05',1,1,'Ninguna',7)
+
+--Correr desde aqui para m√°s requerimientos
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (4,'Crear formula',1,6,'En proceso'
+,'Se desea crear f√≥rmulas relacionadas a tem√°ticas', '2016-08-02','2016-09-05',1,1,'Ninguna',7)
+
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (5,'Generaci√≥n de diagramas',1,6,'En proceso'
+,'Se desea crear f√≥rmulas relacionadas a tem√°ticas', '2016-12-02','2016-11-05',1,1,'Ninguna',7)
+
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (6,'Exportar documentos en Latex',1,6,'En proceso'
+,'Se desea crear f√≥rmulas relacionadas a tem√°ticas', '2016-12-02','2016-11-05',1,1,'Ninguna',7)
+
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (7,'Eliminar proyectos',1,4,'En proceso'
+,'Se desea eliminar proyectos en el sistema', '2016-02-01','2016-05-12',1,3,'Ninguna',1)
+
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (8,'Consultar proyectos',1,4,'En proceso'
+,'Se desea consultar proyectos en el sistema', '2016-02-01','2016-05-12',1,3,'Ninguna',1)
+
+INSERT INTO Requerimiento(Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,
+Modulo, Observaciones,IdProyecto) VALUES (9,'Modificar proyectos',1,4,'En proceso'
+,'Se desea modificar proyectos en el sistema', '2016-02-01','2016-05-12',1,3,'Ninguna',1)
