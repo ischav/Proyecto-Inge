@@ -62,9 +62,8 @@ CREATE TABLE Cambio(
 	Justificacion	VARCHAR(200)		NOT NULL,
 	IdRequerimiento	VARCHAR(20),
 	IdProyecto		VARCHAR(20),
-	-- CedulaUsuario	VARCHAR(16),
 	IdUsuario		NVARCHAR(128),
-	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento, IdProyecto, CedulaUsuario, IdUsuario),
+	CONSTRAINT	PK_Cambio PRIMARY KEY (Fecha, IdRequerimiento, IdProyecto, IdUsuario),
 	CONSTRAINT	FK_RequerimientoCambio FOREIGN KEY (IdRequerimiento, IdProyecto) REFERENCES Requerimiento(Id, IdProyecto) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT	FK_UsuarioCambio FOREIGN KEY (IdUsuario) REFERENCES Usuario(Id)
 );
