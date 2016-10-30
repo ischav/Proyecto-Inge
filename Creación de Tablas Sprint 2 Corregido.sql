@@ -8,21 +8,20 @@ DROP TABLE Requerimiento;
 
 CREATE TABLE Proyecto (
 	Id				VARCHAR(20),
-    Nombre   		VARCHAR(50) 		NOT NULL,
-    Descripcion		VARCHAR(100),
+	Nombre   		VARCHAR(50) 		NOT NULL,
+    	Descripcion		VARCHAR(100),
 	Estado			VARCHAR(20)			NOT NULL,
-    FechaInicio		DATE,
-    FechaFinal		DATE,
+    	FechaInicio		DATE,
+    	FechaFinal		DATE,
 	Duracion		VARCHAR(10),
 	CONSTRAINT	PK_Proyecto PRIMARY KEY (Id)
 );
 
 CREATE TABLE Usuarios_asociados_proyecto(
-	CedulaUsuario	VARCHAR(16),
 	IdUsuario		NVARCHAR(128),
 	IdProyecto		VARCHAR(20),
 	RolProyecto		VARCHAR(15)			NOT NULL,
-	CONSTRAINT	PK_Usuario_asociados_proyecto PRIMARY KEY (CedulaUsuario, IdUsuario, IdProyecto), 
+	CONSTRAINT	PK_Usuario_asociados_proyecto PRIMARY KEY (IdUsuario, IdProyecto), 
 	CONSTRAINT	FK_UsuarioUsuario_asociados_proyecto FOREIGN KEY (IdUsuario) REFERENCES Usuario(Id) ON UPDATE CASCADE,
 	CONSTRAINT	FK_ProyectoUsuario_asociados_proyecto FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id) ON DELETE CASCADE
 );
@@ -41,7 +40,6 @@ CREATE TABLE Requerimiento(
 	Observaciones	VARCHAR(150),
 	IdProyecto		VARCHAR(20),
 	Imagen			IMAGE,
-	-- CedResponsable	VARCHAR(16),
 	IdResponsable	NVARCHAR(128),
 	CONSTRAINT	PK_Requerimiento PRIMARY KEY (Id, IdProyecto),
 	CONSTRAINT	FK_Usuarios FOREIGN KEY (IdResponsable) REFERENCES Usuario(Id) ON UPDATE CASCADE,
