@@ -71,6 +71,7 @@
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="Imagen" Type="image" />
     <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
+    <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" Nullable="false" />
   </EntityType>
   <EntityType Name="Usuario">
     <Key>
@@ -179,7 +180,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Usuarios">
+  <Association Name="FK_UsuarioResponsable">
     <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
     <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="*" />
     <ReferentialConstraint>
@@ -188,6 +189,18 @@
       </Principal>
       <Dependent Role="Requerimiento">
         <PropertyRef Name="IdResponsable" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UsuarioSolicitante">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="IdSolicitante" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -236,7 +249,11 @@
       <End Role="Usuario" EntitySet="Usuario" />
       <End Role="Cambio" EntitySet="Cambio" />
     </AssociationSet>
-    <AssociationSet Name="FK_Usuarios" Association="Self.FK_Usuarios">
+    <AssociationSet Name="FK_UsuarioResponsable" Association="Self.FK_UsuarioResponsable">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UsuarioSolicitante" Association="Self.FK_UsuarioSolicitante">
       <End Role="Usuario" EntitySet="Usuario" />
       <End Role="Requerimiento" EntitySet="Requerimiento" />
     </AssociationSet>

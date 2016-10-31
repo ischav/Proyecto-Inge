@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <script>
     function confirmarEliminar(id) {
 
@@ -63,6 +62,7 @@
         <h2>Consultar</h2>
     </div>
 }
+
 <div class="elementoModificar" style="display:none">
     <h2>Modificar</h2>
 </div>
@@ -73,8 +73,10 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
         <div class="form-group">
             @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">

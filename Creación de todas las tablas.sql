@@ -86,7 +86,10 @@ CREATE TABLE Requerimiento(
 	CONSTRAINT	FK_Usuarios FOREIGN KEY (IdResponsable) REFERENCES Usuario(Id) ON UPDATE CASCADE,
 	CONSTRAINT	FK_ProyectoRequerimiento FOREIGN KEY (IdProyecto) REFERENCES Proyecto(Id) ON DELETE CASCADE
 );
-
+ALTER TABLE Requerimiento ADD IdSolicitante NVARCHAR(128) NOT NULL; 
+ALTER TABLE Requerimiento DROP CONSTRAINT FK_Usuarios;
+ALTER TABLE Requerimiento ADD CONSTRAINT FK_UsuarioResponsable FOREIGN KEY (IdResponsable) REFERENCES Usuario(Id);
+ALTER TABLE Requerimiento ADD CONSTRAINT FK_UsuarioSolicitante FOREIGN KEY (IdSolicitante) REFERENCES Usuario(Id);
 
 CREATE TABLE Cambio(
 	Fecha			DATE,

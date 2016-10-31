@@ -47,8 +47,14 @@
         <div class="form-group">
             @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.modeloRequerimiento.Estado, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Estado, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(
+new List<Object>{
+                       new { value = "Pendiente de asignación" , text = "Pendiente de asignación"  },
+                       new { value = "Asignado" , text = "Asignado"  },
+                       new { value = "En ejecución" , text = "En ejecución" },
+                       new { value = "Finalizado" , text = "Finalizado" },
+                       new { value = "Cerrado" , text = "Cerrado"}
+                    }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
         </div>
 
@@ -118,10 +124,29 @@
         <div class="form-group">
             @Html.LabelFor(model => model.modeloRequerimiento.Proyecto, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.proyectoRequerimiento, Model.listaProyectos.Select( x => new SelectListItem{
-                Value = x.Id.ToString(),
-                Text = x.Id.ToString()
+                @Html.DropDownListFor(model => model.proyectoRequerimiento, Model.listaProyectos.Select(x => new SelectListItem {
+               Value = x.Id.ToString(),
+               Text = x.Id.ToString()
            }))
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Solicitado por", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloRequerimiento.IdSolicitante, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdSolicitante, "", new { @class = "text-danger" })
+                @*@Html.DropDownListFor(model => model.cliente, new SelectList(ViewBag.listaClientes, "Id", "NombreCompleto"), "Seleccione un solicitante", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Responsable", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloRequerimiento.IdResponsable, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdResponsable, "", new { @class = "text-danger" })
+              @* @Html.DropDownList("desarrolladores", new SelectList(ViewBag.listaRecursos, "Id", "NombreCompleto"), "Seleccione un responsable", new { @class = "form-control" })*@
             </div>
         </div>
 

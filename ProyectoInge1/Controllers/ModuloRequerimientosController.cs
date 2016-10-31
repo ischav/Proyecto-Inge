@@ -159,7 +159,10 @@ namespace ProyectoInge1.Controllers
                 modelo.modeloRequerimiento.Proyecto = proyectoRequerimiento;
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
-                return RedirectToAction("Index");
+                ModeloProyecto nuevoModelo = new ModeloProyecto();
+                obtenerUsuarios(nuevoModelo);
+                //return View(nuevoModelo);
+                return RedirectToAction("Create");
             }
             else
             {
@@ -184,10 +187,10 @@ namespace ProyectoInge1.Controllers
          * MODIFICA:
          * RETORNA:
          */
-        public ActionResult MEC_UnificadoRequerimientos(string Id)
+        public ActionResult MEC_UnificadoRequerimientos(string Id, string IdProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
             modelo.accion = 0;
 
             return View(modelo);
@@ -228,6 +231,31 @@ namespace ProyectoInge1.Controllers
                 Console.Write(e);
                 return View("Index");
             }
+        }
+
+        //Método para obtener los usuarios
+        private void obtenerUsuarios(ModeloProyecto modelo)
+        {
+
+            var listaUsuarios = baseDatos.Usuario.ToList();
+            var clientes = new List<Usuario>();
+            var recursos = new List<Usuario>();
+
+            foreach (var usr in listaUsuarios)
+            {
+                if (context.Users.Find(usr.Id).Roles.First().RoleId == "03User")
+                {
+                    clientes.Add(usr);
+                }
+                else if (context.Users.Find(usr.Id).Roles.First().RoleId == "02Develop")
+                {
+                    recursos.Add(usr);
+                }
+            }
+
+            ViewBag.listaClientes = clientes;
+            ViewBag.listaRecursos = recursos;
+            ViewBag.listaDesarrolladores = new List<Usuario>();
         }
     }
 }
