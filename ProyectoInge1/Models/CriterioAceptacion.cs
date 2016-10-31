@@ -17,6 +17,7 @@ namespace ProyectoInge1.Models
         public string Escenario { get; set; }
         public string Descripcion { get; set; }
         public string IdRequerimiento { get; set; }
+        public string IdProyecto { get; set; }
     
         public virtual Requerimiento Requerimiento { get; set; }
     }

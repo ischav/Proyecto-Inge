@@ -47,7 +47,7 @@
         }
     }
 
-    function confirmarEliminar(cedula, id) {
+    function confirmarEliminar(id) {
 
         var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
 
@@ -56,7 +56,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("eliminarUsuario")',
-                data: 'cedula=' + cedula + '&id=' + id,
+                data: 'id=' + id,
                 success: function (data) {
                     alert('Usuario eliminado exitosamente');
                     var url = '@Url.Action("Index", "ModuloUsuarios")';

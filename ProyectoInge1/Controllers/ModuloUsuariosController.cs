@@ -134,12 +134,12 @@ namespace ProyectoInge1.Controllers
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult eliminarUsuario(string cedula, string Id)
+        public ActionResult eliminarUsuario(string Id)
         {
 
             //Borra al usuario de la tabla Usuarios
             ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, Id);
+            modelo.modeloUsuario = baseDatos.Usuario.Find(Id);
             baseDatos.Usuario.Remove(modelo.modeloUsuario);
             baseDatos.SaveChanges();
 
@@ -153,7 +153,7 @@ namespace ProyectoInge1.Controllers
         }
 
         //Metodo GET para la pantalla unificada. Corresponde a consultar
-        public ActionResult MEC_Unificado(string cedula, string id)
+        public ActionResult MEC_Unificado(string id)
         {
             ModeloIntermedio modelo = new ModeloIntermedio();
 
@@ -199,7 +199,7 @@ namespace ProyectoInge1.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
+            modelo.modeloUsuario = baseDatos.Usuario.Find(id);
             if (modelo.modeloUsuario == null)
             {
                 return HttpNotFound();
@@ -256,7 +256,7 @@ namespace ProyectoInge1.Controllers
                 if (!string.IsNullOrEmpty(cancelar))
                 {
                     ModelState.Clear();
-                    return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
+                    return View(limpiarCampos(modelo.modeloUsuario.Id));
                 }
                 modelo.errorValidacion = true;
                 modelo.cambiosGuardados = 2; //cambios no guardados
@@ -264,10 +264,10 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 
-        private ModeloIntermedio limpiarCampos(string cedula, string id)
+        private ModeloIntermedio limpiarCampos(string id)
         {
             ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.modeloUsuario = baseDatos.Usuario.Find(cedula, id);
+            modelo.modeloUsuario = baseDatos.Usuario.Find(id);
             //Se obtiene el email de AspNetUsers
             var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
             var usr = manager.FindById(id);
@@ -352,9 +352,7 @@ namespace ProyectoInge1.Controllers
                  message.Equals(2) ? "Cambios descartados" : "";
 
             ModeloIntermedio modelo = new ModeloIntermedio();
-            string id_us = User.Identity.GetUserId();
-            string privilegioId = baseDatos.Usuario.Where(m => m.Id == id_us).First().Cedula;
-            modelo.modeloUsuario = baseDatos.Usuario.Find(privilegioId, User.Identity.GetUserId());
+            modelo.modeloUsuario = baseDatos.Usuario.Find(User.Identity.GetUserId());
 
             if (modelo.modeloUsuario == null)
             {
@@ -410,7 +408,7 @@ namespace ProyectoInge1.Controllers
                 if (!string.IsNullOrEmpty(cancelar))
                 {
                     ModelState.Clear();
-                    return View(limpiarCampos(modelo.modeloUsuario.Cedula, modelo.modeloUsuario.Id));
+                    return View(limpiarCampos(modelo.modeloUsuario.Id));
                 }
                 modelo.errorValidacion = true;
 

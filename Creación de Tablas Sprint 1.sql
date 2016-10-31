@@ -10,16 +10,16 @@
 USE BD_IngeGrupo1;
 
 CREATE TABLE Usuario (
-    Cedula   	VARCHAR(16),
-    Nombre   	VARCHAR(16),
-    Apellido1   VARCHAR(16),
+    Cedula   	VARCHAR(16)	UNIQUE,
+    Nombre   	VARCHAR(16)	NOT NULL,
+    Apellido1   VARCHAR(16)	NOT NULL,
     Apellido2   VARCHAR(16),
     FechaNac	DATE,
     Telefono1   VARCHAR(10),
     Telefono2   VARCHAR(10),
 	Sexo		CHAR(1),
 	Id			NVARCHAR(128),
-	CONSTRAINT	PK_Usuarios PRIMARY KEY (Cedula, Id),
+	CONSTRAINT	PK_Usuarios PRIMARY KEY (Id),
 	CONSTRAINT	FK_ASPUsers FOREIGN KEY (Id) REFERENCES AspNetUsers(Id)
 );
 

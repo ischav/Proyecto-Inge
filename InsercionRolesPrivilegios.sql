@@ -61,4 +61,43 @@ INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('GCS-CR', 'Consultar
 
 -- Módulo Reportes
 
-INSERT INTO [dbo].[Privilegio] ([Id],[Descripcion]) VALUES ('REP-R', 'Generar reportes');
+
+
+
+
+
+
+
+--********************Asignacion de todos los privilegios al rol administrador
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GUS-I', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GUS-C', '01Admin'); 
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GUS-M', '01Admin'); 
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GUS-E', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('SEG-I', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('PRO-I', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('PRO-C', '01Admin'); 
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('PRO-M', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('PRO-E', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GRF-I', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GRF-C', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GRF-M', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('REP-R', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GCS-CP', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('GCS-CR', '01Admin');
+
+INSERT INTO [dbo].[Privilegios_asociados_roles] ([Id_Privilegio],[Id_Rol]) VALUES ('REP-R', '01Admin');

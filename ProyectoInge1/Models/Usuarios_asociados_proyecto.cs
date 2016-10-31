@@ -14,7 +14,6 @@ namespace ProyectoInge1.Models
     
     public partial class Usuarios_asociados_proyecto
     {
-        public string CedulaUsuario { get; set; }
         public string IdUsuario { get; set; }
         public string IdProyecto { get; set; }
         public string RolProyecto { get; set; }

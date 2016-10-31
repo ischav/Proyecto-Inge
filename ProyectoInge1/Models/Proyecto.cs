@@ -9,10 +9,9 @@
 
 namespace ProyectoInge1.Models
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 	using System.ComponentModel.DataAnnotations;
-
 	public partial class Proyecto
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -49,11 +48,12 @@ namespace ProyectoInge1.Models
 		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
 		public Nullable<System.DateTime> FechaFinal { get; set; }
 
+		[Required(ErrorMessage = "La duración es un campo requerido.")]
 		[RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
 		[Display(Name = "Duración")]
 		public string Duracion { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Requerimiento> Requerimiento { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Usuarios_asociados_proyecto> Usuarios_asociados_proyecto { get; set; }

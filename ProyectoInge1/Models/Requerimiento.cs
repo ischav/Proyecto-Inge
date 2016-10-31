@@ -9,11 +9,10 @@
 
 namespace ProyectoInge1.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class Requerimiento
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel.DataAnnotations;
+	public partial class Requerimiento
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Requerimiento()
@@ -22,34 +21,34 @@ namespace ProyectoInge1.Models
             this.CriterioAceptacion = new HashSet<CriterioAceptacion>();
         }
 
-        [Required(ErrorMessage = "El id es un campo requerido.")]
-        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
-        [Display(Name = "Id")]
-        public string Id { get; set; }
+		[Required(ErrorMessage = "El id es un campo requerido.")]
+		[RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+		[Display(Name = "Id")]
+		public string Id { get; set; }
 
-        [Required(ErrorMessage = "El nombre es un campo requerido.")]
-        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
-        [Display(Name = "Nombre")]
-        public string Nombre { get; set; }
+		[Required(ErrorMessage = "El nombre es un campo requerido.")]
+		[RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+		[Display(Name = "Nombre")]
+		public string Nombre { get; set; }
 
-
-        public string Prioridad { get; set; }
+		public string Prioridad { get; set; }
         public string Esfuerzo { get; set; }
         public string Estado { get; set; }
-        [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
         public Nullable<System.DateTime> FechaInicio { get; set; }
         public Nullable<System.DateTime> FechaFinal { get; set; }
         public string Sprint { get; set; }
         public string Modulo { get; set; }
-        [DataType(DataType.MultilineText)]
         public string Observaciones { get; set; }
         public string IdProyecto { get; set; }
+        public byte[] Imagen { get; set; }
+        public string IdResponsable { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cambio> Cambio { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CriterioAceptacion> CriterioAceptacion { get; set; }
         public virtual Proyecto Proyecto { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

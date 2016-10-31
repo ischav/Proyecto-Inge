@@ -22,8 +22,12 @@ namespace ProyectoInge1.Models
         public int accion = 0;
         public int cambiosGuardados = 0;
 
-        //Listas
-        public List<Proyecto> listaProyectos = new List<Proyecto>();
+		[Required(ErrorMessage = "Este campo es obligatorio.")]
+		[Display(Name = "Cliente")]
+		public string cliente { get; set; }
+
+		//Listas
+		public List<Proyecto> listaProyectos = new List<Proyecto>();
         public List<Cambio> listaCambios = new List<Cambio>();
         public List<Requerimiento> listaRequerimientos = new List<Requerimiento>();
         public List<CriterioAceptacion> listaCriteriosAceptacion = new List<CriterioAceptacion>();

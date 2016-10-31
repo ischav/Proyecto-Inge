@@ -18,7 +18,7 @@ namespace ProyectoInge1.Models
         public string Descripcion { get; set; }
         public string Justificacion { get; set; }
         public string IdRequerimiento { get; set; }
-        public string CedulaUsuario { get; set; }
+        public string IdProyecto { get; set; }
         public string IdUsuario { get; set; }
     
         public virtual Requerimiento Requerimiento { get; set; }

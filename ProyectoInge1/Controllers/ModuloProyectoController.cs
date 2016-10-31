@@ -142,12 +142,6 @@ namespace ProyectoInge1.Controllers
             return View(proyecto.ToPagedList(pageNumber, pageSize));
         }
 
-        //Metodo GET pantalla Crear Proyecto
-        public ActionResult Create()
-        {
-            return View();
-        }
-
 
         /**************Cambios Adrián****************************/
 
@@ -251,5 +245,71 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("Index");
         }
 
-    }
+		//Metodo GET pantalla Crear Proyecto
+		public ActionResult Create() {
+			ModeloProyecto modelo = new ModeloProyecto();
+			obtenerUsuarios(modelo);
+
+			return View(modelo);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Create(ModeloProyecto modelo, string aceptar, string lider, string[] equipoDesarrollo) {
+
+			if(!string.IsNullOrEmpty(aceptar)) {
+				if(ModelState.IsValid) {
+				for(int i = 0; i < equipoDesarrollo.Count(); i++) {
+					modelo.listaUsuarios_asociados_proyecto.Add(
+						new Usuarios_asociados_proyecto {
+							IdUsuario = equipoDesarrollo[i],
+							IdProyecto = modelo.modeloProyecto.Id,
+							RolProyecto = "Desarrollador"
+						});
+				}
+
+				modelo.listaUsuarios_asociados_proyecto.Add(
+				new Usuarios_asociados_proyecto {
+					IdUsuario = lider,
+					IdProyecto = modelo.modeloProyecto.Id,
+					RolProyecto = "Líder"
+				});
+
+				baseDatos.Usuarios_asociados_proyecto.AddRange(modelo.listaUsuarios_asociados_proyecto);
+				baseDatos.Proyecto.Add(modelo.modeloProyecto);
+				try {
+					baseDatos.SaveChanges();
+				}
+				catch { }
+			}
+			}
+
+			ModeloProyecto nuevoModelo = new ModeloProyecto();
+			obtenerUsuarios(nuevoModelo);
+			//return View(nuevoModelo);
+			return RedirectToAction("Create");
+		}
+
+		private void obtenerUsuarios(ModeloProyecto modelo) {
+
+			var listaUsuarios = baseDatos.Usuario.ToList();
+			var clientes = new List<Usuario>();
+			var recursos = new List<Usuario>();
+			var lideres = new List<Usuario>();
+
+			foreach(var usr in listaUsuarios) {
+				if(context.Users.Find(usr.Id).Roles.First().RoleId == "03User") {
+					clientes.Add(usr);
+				} else if(context.Users.Find(usr.Id).Roles.First().RoleId == "02Develop") {
+					recursos.Add(usr);
+					lideres.Add(usr);
+				}
+			}
+
+			ViewBag.listaClientes = clientes;
+			ViewBag.listaRecursos = recursos;
+			ViewBag.listaDesarrolladores = new List<Usuario>();
+		}
+
+	}
 }

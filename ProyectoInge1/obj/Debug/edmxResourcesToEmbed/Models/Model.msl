@@ -1,42 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="ModelEntitiesStoreContainer" CdmEntityContainer="Entities">
-    <EntitySetMapping Name="Privilegio">
-      <EntityTypeMapping TypeName="ModelEntities.Privilegio">
-        <MappingFragment StoreEntitySet="Privilegio">
-          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Usuario">
-      <EntityTypeMapping TypeName="ModelEntities.Usuario">
-        <MappingFragment StoreEntitySet="Usuario">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
-          <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
-          <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
-          <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
-          <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
-          <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
-          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
-          <ScalarProperty Name="Cedula" ColumnName="Cedula" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Privilegios_asociados_roles">
-      <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
-        <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
-          <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
-          <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Cambio">
       <EntityTypeMapping TypeName="ModelEntities.Cambio">
         <MappingFragment StoreEntitySet="Cambio">
           <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
-          <ScalarProperty Name="CedulaUsuario" ColumnName="CedulaUsuario" />
+          <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="IdRequerimiento" ColumnName="IdRequerimiento" />
           <ScalarProperty Name="Justificacion" ColumnName="Justificacion" />
           <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
@@ -47,9 +16,26 @@
     <EntitySetMapping Name="CriterioAceptacion">
       <EntityTypeMapping TypeName="ModelEntities.CriterioAceptacion">
         <MappingFragment StoreEntitySet="CriterioAceptacion">
+          <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="IdRequerimiento" ColumnName="IdRequerimiento" />
           <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
           <ScalarProperty Name="Escenario" ColumnName="Escenario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Privilegio">
+      <EntityTypeMapping TypeName="ModelEntities.Privilegio">
+        <MappingFragment StoreEntitySet="Privilegio">
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Privilegios_asociados_roles">
+      <EntityTypeMapping TypeName="ModelEntities.Privilegios_asociados_roles">
+        <MappingFragment StoreEntitySet="Privilegios_asociados_roles">
+          <ScalarProperty Name="Id_Rol" ColumnName="Id_Rol" />
+          <ScalarProperty Name="Id_Privilegio" ColumnName="Id_Privilegio" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -69,6 +55,8 @@
     <EntitySetMapping Name="Requerimiento">
       <EntityTypeMapping TypeName="ModelEntities.Requerimiento">
         <MappingFragment StoreEntitySet="Requerimiento">
+          <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
+          <ScalarProperty Name="Imagen" ColumnName="Imagen" />
           <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="Observaciones" ColumnName="Observaciones" />
           <ScalarProperty Name="Modulo" ColumnName="Modulo" />
@@ -84,13 +72,27 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Usuario">
+      <EntityTypeMapping TypeName="ModelEntities.Usuario">
+        <MappingFragment StoreEntitySet="Usuario">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="Telefono2" ColumnName="Telefono2" />
+          <ScalarProperty Name="Telefono1" ColumnName="Telefono1" />
+          <ScalarProperty Name="FechaNac" ColumnName="FechaNac" />
+          <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+          <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Usuarios_asociados_proyecto">
       <EntityTypeMapping TypeName="ModelEntities.Usuarios_asociados_proyecto">
         <MappingFragment StoreEntitySet="Usuarios_asociados_proyecto">
           <ScalarProperty Name="RolProyecto" ColumnName="RolProyecto" />
           <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
-          <ScalarProperty Name="CedulaUsuario" ColumnName="CedulaUsuario" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -4,22 +4,26 @@
     <Key>
       <PropertyRef Name="Fecha" />
       <PropertyRef Name="IdRequerimiento" />
+      <PropertyRef Name="IdProyecto" />
+      <PropertyRef Name="IdUsuario" />
     </Key>
     <Property Name="Fecha" Type="date" Nullable="false" />
     <Property Name="Descripcion" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="Justificacion" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="IdRequerimiento" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="CedulaUsuario" Type="varchar" MaxLength="16" />
-    <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" />
+    <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
   </EntityType>
   <EntityType Name="CriterioAceptacion">
     <Key>
       <PropertyRef Name="Escenario" />
       <PropertyRef Name="IdRequerimiento" />
+      <PropertyRef Name="IdProyecto" />
     </Key>
     <Property Name="Escenario" Type="varchar" MaxLength="30" Nullable="false" />
     <Property Name="Descripcion" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="IdRequerimiento" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
   </EntityType>
   <EntityType Name="Privilegio">
     <Key>
@@ -51,6 +55,7 @@
   <EntityType Name="Requerimiento">
     <Key>
       <PropertyRef Name="Id" />
+      <PropertyRef Name="IdProyecto" />
     </Key>
     <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="Nombre" Type="varchar" MaxLength="40" Nullable="false" />
@@ -63,16 +68,17 @@
     <Property Name="Sprint" Type="varchar" MaxLength="2" />
     <Property Name="Modulo" Type="varchar" MaxLength="30" />
     <Property Name="Observaciones" Type="varchar" MaxLength="150" />
-    <Property Name="IdProyecto" Type="varchar" MaxLength="20" />
+    <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Imagen" Type="image" />
+    <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
   </EntityType>
   <EntityType Name="Usuario">
     <Key>
-      <PropertyRef Name="Cedula" />
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Cedula" Type="varchar" MaxLength="16" Nullable="false" />
-    <Property Name="Nombre" Type="varchar" MaxLength="16" />
-    <Property Name="Apellido1" Type="varchar" MaxLength="16" />
+    <Property Name="Cedula" Type="varchar" MaxLength="16" />
+    <Property Name="Nombre" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="Apellido1" Type="varchar" MaxLength="16" Nullable="false" />
     <Property Name="Apellido2" Type="varchar" MaxLength="16" />
     <Property Name="FechaNac" Type="date" />
     <Property Name="Telefono1" Type="varchar" MaxLength="10" />
@@ -82,11 +88,9 @@
   </EntityType>
   <EntityType Name="Usuarios_asociados_proyecto">
     <Key>
-      <PropertyRef Name="CedulaUsuario" />
       <PropertyRef Name="IdUsuario" />
       <PropertyRef Name="IdProyecto" />
     </Key>
-    <Property Name="CedulaUsuario" Type="varchar" MaxLength="16" Nullable="false" />
     <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="RolProyecto" Type="varchar" MaxLength="15" Nullable="false" />
@@ -104,7 +108,9 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_ProyectoRequerimiento">
-    <End Role="Proyecto" Type="Self.Proyecto" Multiplicity="0..1" />
+    <End Role="Proyecto" Type="Self.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Proyecto">
@@ -116,7 +122,9 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_ProyectoUsuario_asociados_proyecto">
-    <End Role="Proyecto" Type="Self.Proyecto" Multiplicity="1" />
+    <End Role="Proyecto" Type="Self.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="Usuarios_asociados_proyecto" Type="Self.Usuarios_asociados_proyecto" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Proyecto">
@@ -128,40 +136,58 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_RequerimientoCambio">
-    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1" />
+    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Requerimiento">
         <PropertyRef Name="Id" />
+        <PropertyRef Name="IdProyecto" />
       </Principal>
       <Dependent Role="Cambio">
         <PropertyRef Name="IdRequerimiento" />
+        <PropertyRef Name="IdProyecto" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_RequerimientoCriterioAceptacion">
-    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1" />
+    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="CriterioAceptacion" Type="Self.CriterioAceptacion" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Requerimiento">
         <PropertyRef Name="Id" />
+        <PropertyRef Name="IdProyecto" />
       </Principal>
       <Dependent Role="CriterioAceptacion">
         <PropertyRef Name="IdRequerimiento" />
+        <PropertyRef Name="IdProyecto" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_UsuarioCambio">
-    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
     <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Usuario">
-        <PropertyRef Name="Cedula" />
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Cambio">
-        <PropertyRef Name="CedulaUsuario" />
         <PropertyRef Name="IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuarios">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="IdResponsable" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -170,11 +196,9 @@
     <End Role="Usuarios_asociados_proyecto" Type="Self.Usuarios_asociados_proyecto" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Usuario">
-        <PropertyRef Name="Cedula" />
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Usuarios_asociados_proyecto">
-        <PropertyRef Name="CedulaUsuario" />
         <PropertyRef Name="IdUsuario" />
       </Dependent>
     </ReferentialConstraint>
@@ -211,6 +235,10 @@
     <AssociationSet Name="FK_UsuarioCambio" Association="Self.FK_UsuarioCambio">
       <End Role="Usuario" EntitySet="Usuario" />
       <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuarios" Association="Self.FK_Usuarios">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
     </AssociationSet>
     <AssociationSet Name="FK_UsuarioUsuario_asociados_proyecto" Association="Self.FK_UsuarioUsuario_asociados_proyecto">
       <End Role="Usuario" EntitySet="Usuario" />

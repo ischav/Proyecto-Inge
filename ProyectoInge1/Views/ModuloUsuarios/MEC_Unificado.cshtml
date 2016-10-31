@@ -18,7 +18,7 @@
         $('.elementoModificar').hide();
     }
 
-    function confirmarEliminar(cedula, id) {
+    function confirmarEliminar(id) {
 
         var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
 
@@ -27,7 +27,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("eliminarUsuario")',
-                data: 'cedula=' + cedula + '&id=' + id,
+                data: 'id=' + id,
                 success: function (data) {
                     alert('Usuario eliminado exitosamente');
                     var url = '@Url.Action("Index", "ModuloUsuarios")';
@@ -52,7 +52,7 @@
 <div class="elementoEliminar" @styleElementoEliminar>
     <h2>Detalles</h2>
     <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
-    <a class="btn btn-default" onclick="confirmarEliminar('@(Model.modeloUsuario.Cedula)','@(Model.modeloUsuario.Id)')">Eliminar</a>
+    <a class="btn btn-default" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
 </div>
 <div class="elementoModificar" @styleElementoModificar>
     <h2>Modificar</h2>
