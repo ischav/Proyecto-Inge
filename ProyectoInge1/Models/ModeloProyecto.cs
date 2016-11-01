@@ -22,7 +22,7 @@ namespace ProyectoInge1.Models
         public int accion = 0;
         public int cambiosGuardados = 0;
 
-		[Required(ErrorMessage = "Este campo es obligatorio.")]
+		//[Required(ErrorMessage = "Este campo es obligatorio.")]
 		[Display(Name = "Cliente")]
 		public string cliente { get; set; }
 
