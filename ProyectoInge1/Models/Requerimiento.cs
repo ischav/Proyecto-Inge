@@ -43,6 +43,5 @@ namespace ProyectoInge1.Models
         public virtual ICollection<CriterioAceptacion> CriterioAceptacion { get; set; }
         public virtual Proyecto Proyecto { get; set; }
         public virtual Usuario Usuario { get; set; }
-        public virtual Usuario Usuario1 { get; set; }
     }
 }

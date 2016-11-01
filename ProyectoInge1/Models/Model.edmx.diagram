@@ -7,24 +7,24 @@
       <Diagram DiagramId="dc19d03f6bd043faa7faf996bae94acc" Name="Diagram1">
         <AssociationConnector Association="ModelEntities.FK_RequerimientoCambio1" />
         <AssociationConnector Association="ModelEntities.FK_RequerimientoCriterioAceptacion1" />
-        <EntityTypeShape EntityType="ModelEntities.Cambio" Width="1.5" PointX="5.25" PointY="2.375" />
-        <EntityTypeShape EntityType="ModelEntities.CriterioAceptacion" Width="1.5" PointX="5.25" PointY="8.625" />
-        <EntityTypeShape EntityType="ModelEntities.Privilegio" Width="1.5" PointX="7.75" PointY="0.875" />
-        <EntityTypeShape EntityType="ModelEntities.Privilegios_asociados_roles" Width="1.5" PointX="10" PointY="0.875" />
-        <EntityTypeShape EntityType="ModelEntities.Proyecto" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="ModelEntities.Cambio" Width="1.5" PointX="3" PointY="5.5" />
+        <EntityTypeShape EntityType="ModelEntities.CriterioAceptacion" Width="1.5" PointX="8.25" PointY="5.875" />
+        <EntityTypeShape EntityType="ModelEntities.Privilegio" Width="1.5" PointX="5.75" PointY="0.875" />
+        <EntityTypeShape EntityType="ModelEntities.Privilegios_asociados_roles" Width="1.5" PointX="8" PointY="0.875" />
+        <EntityTypeShape EntityType="ModelEntities.Proyecto" Width="1.5" PointX="0.75" PointY="1.5" />
+        <EntityTypeShape EntityType="ModelEntities.Requerimiento" Width="1.5" PointX="6.125" PointY="4.375" />
         <EntityTypeShape EntityType="ModelEntities.Usuario" Width="1.5" PointX="0.75" PointY="5" />
-        <EntityTypeShape EntityType="ModelEntities.Usuarios_asociados_proyecto" Width="1.5" PointX="6" PointY="5.625" />
-        <AssociationConnector Association="ModelEntities.FK_UsuarioCambio" />
-        <AssociationConnector Association="ModelEntities.FK_Privilegio" />
-        <AssociationConnector Association="ModelEntities.FK_ProyectoUsuario_asociados_proyecto" />
-        <AssociationConnector Association="ModelEntities.FK_UsuarioUsuario_asociados_proyecto" />
-        <EntityTypeShape EntityType="ModelEntities.Requerimiento" Width="1.5" PointX="3" PointY="2.5" />
+        <EntityTypeShape EntityType="ModelEntities.Usuarios_asociados_proyecto" Width="1.5" PointX="3" PointY="2.875" />
         <AssociationConnector Association="ModelEntities.FK_RequerimientoCambio" />
+        <AssociationConnector Association="ModelEntities.FK_UsuarioCambio" />
         <AssociationConnector Association="ModelEntities.FK_RequerimientoCriterioAceptacion" />
+        <AssociationConnector Association="ModelEntities.FK_Privilegio" />
         <AssociationConnector Association="ModelEntities.FK_ProyectoRequerimiento" />
+        <AssociationConnector Association="ModelEntities.FK_ProyectoUsuario_asociados_proyecto" />
         <AssociationConnector Association="ModelEntities.FK_UsuarioResponsable" />
         <AssociationConnector Association="ModelEntities.FK_UsuarioSolicitante" />
-      </Diagram>
+        <AssociationConnector Association="ModelEntities.FK_UsuarioUsuario_asociados_proyecto" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -9,10 +9,10 @@
 
 namespace ProyectoInge1.Models
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel.DataAnnotations;
-	public partial class Proyecto
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    public partial class Proyecto
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Proyecto()
@@ -21,39 +21,39 @@ namespace ProyectoInge1.Models
             this.Usuarios_asociados_proyecto = new HashSet<Usuarios_asociados_proyecto>();
         }
 
-		[Required(ErrorMessage = "El id es un campo requerido.")]
-		[RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
-		[Display(Name = "Id")]
-		public string Id { get; set; }
+        [Required(ErrorMessage = "El id es un campo requerido.")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Id")]
+        public string Id { get; set; }
 
-		[Required(ErrorMessage = "El nombre es un campo requerido.")]
-		[RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
-		[Display(Name = "Nombre")]
-		public string Nombre { get; set; }
+        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; }
 
-		[Required(ErrorMessage = "La descripción es un campo requerido.")]
-		[Display(Name = "Descripción")]
-		[DataType(DataType.MultilineText)]
-		public string Descripcion { get; set; } //puede necesitar expresion regular
+        [Required(ErrorMessage = "La descripción es un campo requerido.")]
+        [Display(Name = "Descripción")]
+        [DataType(DataType.MultilineText)]
+        public string Descripcion { get; set; } //puede necesitar expresion regular
 
-		[Required(ErrorMessage = "El estado es un campo requerido.")]
-		[Display(Name = "Estado")]
-		public string Estado { get; set; }
+        [Required(ErrorMessage = "El estado es un campo requerido.")]
+        [Display(Name = "Estado")]
+        public string Estado { get; set; }
 
-		[Display(Name = "Fecha de inicio")]
-		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-		public Nullable<System.DateTime> FechaInicio { get; set; }
+        [Display(Name = "Fecha de inicio")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> FechaInicio { get; set; }
 
-		[Display(Name = "Fecha de finalización")]
-		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-		public Nullable<System.DateTime> FechaFinal { get; set; }
+        [Display(Name = "Fecha de finalización")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> FechaFinal { get; set; }
 
-		[Required(ErrorMessage = "La duración es un campo requerido.")]
-		[RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
-		[Display(Name = "Duración")]
-		public string Duracion { get; set; }
+        [Required(ErrorMessage = "La duración es un campo requerido.")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Duración")]
+        public string Duracion { get; set; }
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Requerimiento> Requerimiento { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Usuarios_asociados_proyecto> Usuarios_asociados_proyecto { get; set; }

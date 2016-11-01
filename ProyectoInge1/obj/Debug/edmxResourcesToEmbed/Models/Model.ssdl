@@ -71,7 +71,7 @@
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="Imagen" Type="image" />
     <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
-    <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" />
   </EntityType>
   <EntityType Name="Usuario">
     <Key>
@@ -193,7 +193,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_UsuarioSolicitante">
-    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
     <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Usuario">

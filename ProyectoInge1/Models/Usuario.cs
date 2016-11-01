@@ -11,9 +11,8 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-	using System.ComponentModel.DataAnnotations;
-
-	public partial class Usuario
+    using System.ComponentModel.DataAnnotations;
+    public partial class Usuario
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Usuario()
@@ -23,47 +22,49 @@ namespace ProyectoInge1.Models
             this.Usuarios_asociados_proyecto = new HashSet<Usuarios_asociados_proyecto>();
         }
 
-		[Required(ErrorMessage = "La cédula es un campo requerido.")]
-		[RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
-		[Display(Name = "Cédula")]
-		public string Cedula { get; set; }
+        [Required(ErrorMessage = "La cédula es un campo requerido.")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Cédula")]
+        public string Cedula { get; set; }
 
-		[Required(ErrorMessage = "El nombre es un campo requerido.")]
-		[RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
-		[Display(Name = "Nombre")]
-		public string Nombre { get; set; }
+        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; }
 
-		[Required(ErrorMessage = "El apellido 1 es un campo requerido.")]
-		[RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
-		[Display(Name = "Primer apellido")]
-		public string Apellido1 { get; set; }
+        [Required(ErrorMessage = "El apellido 1 es un campo requerido.")]
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Primer apellido")]
+        public string Apellido1 { get; set; }
 
-		[RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
-		[Display(Name = "Segundo apellido")]
-		public string Apellido2 { get; set; }
+        [RegularExpression(@"[a-zA-Záéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras")]
+        [Display(Name = "Segundo apellido")]
+        public string Apellido2 { get; set; }
 
-		public string NombreCompleto {
-			get {
-				return Nombre + " " + Apellido1 + " " + Apellido2;
-			}
-		}
+        public string NombreCompleto
+        {
+            get
+            {
+                return Nombre + " " + Apellido1 + " " + Apellido2;
+            }
+        }
 
-		[Display(Name = "Fecha de nacimiento")]
-		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-		public Nullable<System.DateTime> FechaNac { get; set; }
+        [Display(Name = "Fecha de nacimiento")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> FechaNac { get; set; }
 
-		[RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
-		[Display(Name = "Primer teléfono")]
-		public string Telefono1 { get; set; }
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Primer teléfono")]
+        public string Telefono1 { get; set; }
 
-		[RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
-		[Display(Name = "Segundo teléfono")]
-		public string Telefono2 { get; set; }
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Segundo teléfono")]
+        public string Telefono2 { get; set; }
 
-		public string Id { get; set; }
-		public string Sexo { get; set; }
+        public string Id { get; set; }
+        public string Sexo { get; set; }
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cambio> Cambio { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Requerimiento> Requerimiento { get; set; }
