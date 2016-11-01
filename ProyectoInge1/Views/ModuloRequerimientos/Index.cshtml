@@ -127,7 +127,7 @@
                 @Html.DisplayFor(modelItem => item.Modulo)
             </td>
             <td>
-                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id })
+                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto })
             </td>
         </tr>
     }
