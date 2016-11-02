@@ -4,24 +4,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script>
-
+    /* Método que esconde el "div" de eliminar y muestra el "div" de modificar en la vista MEC_Unificado
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function esconderEliminar()
     {
         $('.elementoEliminar').hide();
         $('.elementoModificar').show();
     }
 
-    //function h() { $('.elementoModificar :input').attr("disabled", true); }
-
+    /* Método que esconde el "div" de modificar y muestra el "div" de eliminar en la vista MEC_Unificado
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function esconderModificar() {
         $('.elementoEliminar').show();
         $('.elementoModificar').hide();
     }
 
+    /* Método que elimina la tupla de la base de datos en la vista MEC_Unificado
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function confirmarEliminar(id) {
-
         var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
-
         if (respuesta == true)
         {
             $.ajax({
@@ -49,6 +59,7 @@
     styleElementoModificar = new HtmlString("");
 }
 
+<!-- Se imprimen los botones de modificar y eliminar, cuando se ingresa a consultar los datos -->
 <div class="elementoEliminar" @styleElementoEliminar>
     <h2>Detalles</h2>
     <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
@@ -58,6 +69,12 @@
     <h2>Modificar</h2>
 </div>
 
+<!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
+     en la base de datos, se imprime un mensaje de éxito
+     Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
+     en la base de datos, se imprime un mensaje de error
+     Si la variable de cambios guardados es igual a 3, entonces los cambios se descartaron, se imprime un mensaje de
+     verificación -->
 @if(Model.cambiosGuardados == 1) {
     <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
         <p>Se guardaron los cambios exitosamente!</p>
@@ -72,6 +89,7 @@
     </div>
 }
 
+<!-- Se despliega la información del elemento seleccionado cuando se va a eliminar -->
     <div>
         <div class="elementoEliminar" @styleElementoEliminar>
                 <hr />
@@ -139,6 +157,8 @@
                 </dl>
             </div>
         </div>
+
+<!-- Se despliega la información modificable, del elemento seleccionado cuando se va a modificar -->
         <div class="elementoModificar" @styleElementoModificar>
             @using(Html.BeginForm()) {
                 @Html.AntiForgeryToken()
@@ -167,7 +187,7 @@
                             @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido2, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <!--La cedula no se muestra porque no se puede modificar-->
+
                     @Html.HiddenFor(model => model.modeloUsuario.Cedula)
                     <div class="form-group">
                         @Html.LabelFor(model => model.modeloUsuario.FechaNac, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -205,7 +225,7 @@
                             @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName("Otro")
                         </div>
                     </div>
-                    <!--El id no se muestra porque no se puede modificar-->
+
                     @Html.HiddenFor(model => model.modeloUsuario.Id)
                     <div class="form-group">
                         <div class="form-inline" align="right">

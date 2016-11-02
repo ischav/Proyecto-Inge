@@ -1,19 +1,19 @@
 ﻿@model PagedList.IPagedList<ProyectoInge1.Models.Usuario>
 @using PagedList.Mvc;
 
-
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
-
 @{
     ViewBag.Title = "Gestión de Usuarios ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <h2>Gestión de Usuarios</h2>
 
-    <p>
-        @Html.ActionLink("Agregar usuario", "Create")
-    </p>
+<p>
+    @Html.ActionLink("Agregar usuario", "Create")
+</p>
 
+<!-- Se filtran las tuplas de la tabla Usuario de la base de datos -->
 @using (Html.BeginForm("Index", "ModuloUsuarios", FormMethod.Get))
 {
     <p>
@@ -24,6 +24,7 @@
     </p>
 }
 
+<!-- Se crea una tabla para imprimir los atributos de las tuplas en la tabla Usuario de la base de datos -->
 <table class="table">
     <tr>
         <th>
@@ -82,7 +83,10 @@
 </table>
 
 <br />
+<!-- Se realiza paginación para las tuplas de la tabla Usuario de la base de datos -->
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 
+<!-- Se envían los parámetros de página, el orden con el que se va a ordenar y el filtro que se va a utilizar, cuando se
+     crea la paginación -->
 @Html.PagedListPager(Model, page => Url.Action("Index",
     new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

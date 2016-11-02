@@ -1,11 +1,17 @@
-﻿@model ProyectoInge1.Models.ModeloIntermedio
+﻿<!-- Vista que despliega la información para agregar un usuario en el sistema -->
 
+@model ProyectoInge1.Models.ModeloIntermedio
 @{
     ViewBag.Title = "Agregar usuario";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <script>
+    /* Método que borra los campos cambiados en la vista Create
+     * Requiere: no aplica
+     * Modifica: los campos en la vista Create
+     * Retorna: el modelo cargado
+     */
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea insertar este usuario?');
         if(respuesta == true){
@@ -21,6 +27,8 @@
     @Html.ActionLink("Volver a consultar usuarios", "Index")
 </p>
 
+<!-- Para cada atributo en la tabla Usuario de la base de datos, se despliega un campo para ingresar el valor de ese
+     atributo -->
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

@@ -763,3 +763,4 @@ C:\Users\B43939\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge
 C:\Users\B43939\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.csprojResolveAssemblyReference.cache
 C:\Users\B43939\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.dll
 C:\Users\B43939\Documents\Visual Studio 2015\Projects\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.pdb
+C:\Users\Andreína Alvarado\Desktop\Proyecto-Inge\ProyectoInge1\obj\Debug\ProyectoInge1.csprojResolveAssemblyReference.cache

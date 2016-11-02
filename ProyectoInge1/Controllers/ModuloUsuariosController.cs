@@ -19,46 +19,55 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
-        //Metodo GET index usuarios
+        /* Método que carga el modelo para la vista Index
+         * Requiere: no aplica
+         * Modifica: el modelo
+         * Retorna: el modelo cargado
+         */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
+            /*
+             * Se crea el modelo:
+             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
+             * en la base de datos (tabla de la base de datos)
+             * Se verifica si el usuario actual cuenta con permisos para realizar la acción
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
-            //---------------------
-            // Obtener el usuario actual
             modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-
-            // Verificación de los privilegios disponibles en el modulo de usuarios y
-            // asociadoos al rol del usuario loggeado en el sistema.
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-I", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.agregar = false;
-            }
             else
-            {
                 modelo.agregar = true;
-            }
-            //---------------------
 
+            /* 
+             * Se asignan los valores necesarios para la paginación y el filtrado 
+             */ 
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
+            /*
+             * Se asigna el valor de la primer página a la paginación, en el caso de que no se aplique un filtro y un valor
+             * correspondiente al filtro en el caso de que se aplique
+             */
             if (searchString != null)
-            {
                 page = 1;
-            }
             else
-            {
                 searchString = currentFilter;
-            }
-
             ViewBag.CurrentFilter = searchString;
 
+            /*
+             * Se asigna a la variable usuarios, el valor de todos los usuarios de la base de datos
+             */
             var usuarios = from s in baseDatos.Usuario
                            select s;
 
+            /* 
+             * Si existe una hilera con la cual filtrar, entonces se devuelven las tuplas de la tabla Usuario de la base
+             * de datos, que cumplen con tener el valor de ese filtro en alguno de los atributos
+             */
             if (!String.IsNullOrEmpty(searchString))
             {
                 usuarios = usuarios.Where(s => s.Cedula.Contains(searchString) || s.Apellido1.Contains(searchString)
@@ -66,6 +75,9 @@ namespace ProyectoInge1.Controllers
                                         s.Telefono1.Contains(searchString) || s.Telefono2.Contains(searchString));
             }
 
+            /*
+             * De acuerdo al atributo con el que se desea ordenar, se ordena ya sea ascendente o descendentemente
+             */
             switch (sortOrder)
             {
                 case "name_desc":
@@ -128,77 +140,88 @@ namespace ProyectoInge1.Controllers
                     break;
             }
 
+            /*
+             * Se asigna un valor a la paginación y un número de página, en caso de que no sea 1
+             */
             int pageSize = 7;
             int pageNumber = (page ?? 1);
 
+            /*
+             * Se retorna a la vista, el modelo con el usuarios con los cambios de paginación y filtrado
+             */
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
+        /* Método elimina un elemento en la vista Index
+         * Requiere: parámetro recibido válido en la base de datos
+         * Modifica: la tabla Usuario de la base de datos
+         * Retorna: redirección a la vista Index
+         */
         public ActionResult eliminarUsuario(string Id)
         {
-
-            //Borra al usuario de la tabla Usuarios
+            /*
+             * Se crea un modelo para la vista, se encuentra la tupla de la tabla Usuario en la base de datos, con id igual
+             * al parámetro recibido y se elimina esa tupla de la base de datos, tanto en la tabla de usuarios de ASP, como
+             * en la de la base de datos
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
             modelo.modeloUsuario = baseDatos.Usuario.Find(Id);
             baseDatos.Usuario.Remove(modelo.modeloUsuario);
             baseDatos.SaveChanges();
+            ApplicationUser user = context.Users.Find(Id);
+            context.Users.Remove(user);
+            context.SaveChanges();
 
-            //Borra al usuario de la tabla AspNetUsers
-            var bd = new ApplicationDbContext();
-            var user = bd.Users.Find(Id);
-            bd.Users.Remove(user);
-            bd.SaveChanges();
-
+            /*
+             * Se retorna a la vista Index
+             */
             return RedirectToAction("Index");
         }
 
-        //Metodo GET para la pantalla unificada. Corresponde a consultar
+        /* Método para consultar un usuario para la vista MEC_Unificado
+         * Requiere: parámetro recibido válido en la base de datos
+         * Modifica: el modelo
+         * Retorna: el modelo cargado
+         */
         public ActionResult MEC_Unificado(string id)
         {
+            /*
+             * Se crea el modelo:
+             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
+             * en la base de datos (tabla de la base de datos)
+             * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
-
-            // Obtener el usuario actual
             modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-
-            // Verificación de los privilegios disponibles en el modulo de usuarios y
-            // asociadoos al rol del usuario loggeado en el sistema.
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.modificar = false;
-            }
             else
-            {
                 modelo.modificar = true;
-            }
-
             privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-C", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.consultar = false;
-            }
             else
-            {
                 modelo.consultar = true;
-            }
 
             privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-E", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.eliminar = false;
-            }
             else
-            {
                 modelo.eliminar = true;
-            }
-            //------------------
 
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            /*
+             * Si el usuario existe:
+             *   - Se asigna al atributo modeloUsuario el valor del usuario correspondiente al id
+             *   - Se asigna el email a ese usuario
+             *   - Se asigna un 0 a la variable de cambios guardados
+             */
             modelo.modeloUsuario = baseDatos.Usuario.Find(id);
             if (modelo.modeloUsuario == null)
             {
@@ -206,32 +229,42 @@ namespace ProyectoInge1.Controllers
             }
             else
             {
-                //Se obtiene el email de AspNetUsers
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var usr = manager.FindById(modelo.modeloUsuario.Id);
                 if (usr != null)
-                {
                     modelo.aspUserEmail = usr.Email;
-                }
                 else
-                {
                     modelo.aspUserEmail = " ";
-                }
             }
 
-            modelo.cambiosGuardados = 0; //no se muestra mensaje
+            /*
+            * Se asigna el valor de 0 a la variable de cambios guardados, indicando que no se ha modificado la vista
+            */
+            modelo.cambiosGuardados = 0;
+
+            /*
+             * Se retorna el modelo a la vista
+             */
             return View(modelo);
         }
 
-        //Metodo POST para la pantalla unificada. Corresponde a modificar
+        /* Método que guarda los cambios en la vista de MEC_Unificado
+         * Requiere: no aplica
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar, string cancelar)
         {
+            /*
+             * Si el estado del modelo es válido y se desea modificar el elemento:
+             *   - Se busca el usuario al que permitenece el id correspondiente al usuario del modelo y se modifica el elemento
+             *   - Se busca el email relacionado a ese elemento en las tablas de ASP
+             *   - Se guardan los cambios
+             */
             if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
             {
-
-                //Para guardar en aspNetUsers
                 var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
                 var manager = new UserManager<ApplicationUser>(store);
                 var usr = manager.FindById(modelo.modeloUsuario.Id);
@@ -243,54 +276,84 @@ namespace ProyectoInge1.Controllers
                     context.SaveChangesAsync();
                 }
 
-                //Para guardar en tabla usuarios
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
                 baseDatos.SaveChanges();
 
                 modelo.errorValidacion = false;
-                modelo.cambiosGuardados = 1; //cambios guardados
-            }
-            else
-            {
 
+                /*
+                 * Se asigna el valor de 1 a la variable de cambios guardados, indicando que se ha modificado la vista
+                 */
+                modelo.cambiosGuardados = 1; 
+            }
+            else { 
+                /*
+                 * Si se desea cancelar la vista:
+                 *   - Se reestablecen los campos de cada uno de los elementos en la vista
+                 *   - Se envía el modelo con los datos actuales en la base de datos
+                 */
                 if (!string.IsNullOrEmpty(cancelar))
                 {
                     ModelState.Clear();
                     return View(limpiarCampos(modelo.modeloUsuario.Id));
                 }
+
                 modelo.errorValidacion = true;
-                modelo.cambiosGuardados = 2; //cambios no guardados
+                
+                /*
+                 * Se asigna el valor de 2 a la variable de cambios guardados, indicando que se han descartado los cambios en la vista
+                 */
+                modelo.cambiosGuardados = 2; 
             }
             return View(modelo);
         }
 
+        /* Método que obtiene los valores actuales sobre el usuario en la base de datos, en la vista de MEC_Unificado
+         * Requiere: no aplica
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         private ModeloIntermedio limpiarCampos(string id)
         {
+            /*
+             * Se obtiene la información de la tupla de la tabla Usuario en la base de datos, correspondiente al id que se
+             * recibe como parámetro y se asigna el email 
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
             modelo.modeloUsuario = baseDatos.Usuario.Find(id);
-            //Se obtiene el email de AspNetUsers
             var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
             var usr = manager.FindById(id);
             if (usr != null)
             {
                 modelo.aspUserEmail = usr.Email;
             }
-            modelo.cambiosGuardados = 3; //cambios descartados
+
+            /*
+             * Se asigna el valor de 3 a la variable de cambios guardados, indicando que se han descartado los cambios (se limpió
+             * el modelo)
+             */
+            modelo.cambiosGuardados = 3;
+
+            /*
+             * Se retorna el modelo recargado
+             */
             return modelo;
         }
 
-        //Metodo GET pantalla Crear
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-
-        //Metodo POST de pantalla Crear
+        /* Método que crea elementos en la vista de MEC_Unificado
+         * Requiere: datos ingresados válidos
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ModeloIntermedio modelo)
         {
+            /*
+             * Si el estado del modelo es válido:
+             *   - Se crea la tupla de la tabla Usuario de la base de datos, con los valores ingresados y se le envía un correo al 
+             *     correo especificado, al usuario para darle a conocer su contraseña
+             */
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = modelo.modCrear.Email, Email = modelo.modCrear.Email };
@@ -312,18 +375,35 @@ namespace ProyectoInge1.Controllers
 
                 }
 
+                /*
+                 * Si no se logra ingresar la tupla, se indica que el elemento ya ha sido ingresado con anterioridad
+                 */
                 ModelState.AddModelError("", "El correo indicado ya fue registrado.");
-                return View(modelo);
 
+                /*
+                 * Se retorna a la vista el modelo actual
+                 */
+                return View(modelo);
             }
             else
             {
+                /*
+                 * Si el estado del modelo no es válido, se indica que se debe completar toda la información necesaria
+                 */
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+
+                /*
+                 * Se retorna a la vista el modelo actual
+                 */
                 return View(modelo);
             }
         }
 
-
+        /* Método para enviar un correo con la contraseña a un usuario
+         * Requiere: no aplica
+         * Modifica: no aplica
+         * Retorna: mo aplica
+         */
         void EnviarCorreo(MailModel _objModelMail)
         {
             if (ModelState.IsValid)
@@ -340,53 +420,70 @@ namespace ProyectoInge1.Controllers
                 smtp.Port = 587;
                 smtp.UseDefaultCredentials = false;
                 smtp.Credentials = new System.Net.NetworkCredential
-                ("SistemaRequerimientosSoporte@gmail.com", "Adrian96!");// Enter seders User name and password
+                ("SistemaRequerimientosSoporte@gmail.com", "Adrian96!");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }
         }
-        // ___________________- Este metodo hay que cambiarlo Isa ___________________________
+
+        /* Método para consultar un elemento en la vista Informacion
+         * Requiere: datos ingresados válidos
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         public ActionResult Informacion(int? message)
         {
+            /*
+             * Se asigna a la variable StatusMessage el valor correspondiente a si se descartaron o no los cambios realizados
+             */
             ViewBag.StatusMessage = message.Equals(1) ? "Su contraseña ha sido cambiada exitosamente" :
                  message.Equals(2) ? "Cambios descartados" : "";
 
+            /*
+             * Se verifica que el usuario logeado tenga una tupla en la tabla de Usuario de la base de datos y se le asigna el 
+             * email al modelo
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
             modelo.modeloUsuario = baseDatos.Usuario.Find(User.Identity.GetUserId());
-
             if (modelo.modeloUsuario == null)
-            {
                 return HttpNotFound();
-            }
             else
             {
-                //Se obtiene el email de AspNetUsers
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var usr = manager.FindById(User.Identity.GetUserId());
                 if (usr != null)
-                {
                     modelo.aspUserEmail = usr.Email;
-                }
                 else
-                {
                     modelo.aspUserEmail = " ";
-                }
-
             }
+
+            /*
+             * Se asigna el valor de 0 a la variable de cambios guardados, indicando que se no se han modificado los datos
+             */
             modelo.cambiosGuardados = 0;
+
+            /*
+             * Se retorna la vista al modelo
+             */
             return View(modelo);
         }
 
-        // ___________________- Este metodo hay que cambiarlo Isa ___________________________
-        //Metodo POST para la pantalla unificada. Corresponde a modificar
+        /* Método para modificar un elemento en la vista Informacion
+         * Requiere: datos ingresados válidos
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Informacion(ModeloIntermedio modelo, string aceptar, string cancelar)
         {
+            /*
+             * Si el estado del modelo es válido y no se descartó la información:
+             *   - Si encuentra la tupla de la tabla Usuario de la base de datos, del usuario logeado
+             *   - Se modifica la tupla en la tabla Usuario y se modifica el correo
+             */
             if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
             {
-
-                //Para guardar en aspNetUsers
                 var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
                 var manager = new UserManager<ApplicationUser>(store);
                 var usr = manager.FindById(modelo.modeloUsuario.Id);
@@ -397,14 +494,24 @@ namespace ProyectoInge1.Controllers
                     var context = store.Context as ApplicationDbContext;
                     context.SaveChangesAsync();
                 }
-
-                //Para guardar en tabla usuarios
+                
+                /*
+                 * Se guardan los cambios realizados en la base de datos
+                 */
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
                 baseDatos.SaveChanges();
+
+                /*
+                 * Se asigna el valor de 0 a la variable de cambios guardados, indicando que se no se han modificado los datos
+                 */
                 modelo.cambiosGuardados = 1;
             }
             else
             {
+                /*
+                 * Si se descartó la información, se limpian los campos con la información actual en la base de datos, sino se asigna
+                 * el valor de true a la variabel de error de validación, indicando que el estado del modelo no es válido
+                 */
                 if (!string.IsNullOrEmpty(cancelar))
                 {
                     ModelState.Clear();
@@ -413,6 +520,10 @@ namespace ProyectoInge1.Controllers
                 modelo.errorValidacion = true;
 
             }
+
+            /*
+             * Se retorna el modelo actualizado a la vista
+             */
             return View(modelo);
         }
     }

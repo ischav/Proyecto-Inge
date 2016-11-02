@@ -1,14 +1,20 @@
-﻿@model ProyectoInge1.Models.ModeloIntermedio
+﻿<!-- Vista que despliega la información de los privilegios asociados a roles en el sistema -->
+
+
+@model ProyectoInge1.Models.ModeloIntermedio
 @{
     ViewBag.Title = "Privilegios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <script>
+    /* Método que borra los campos cambiados en la vista Index
+     * Requiere: no aplica
+     * Modifica: los campos en la vista Index
+     * Retorna: el modelo cargado
+     */
     function Cancelar() {
-
         var respuesta = confirm('¿Confirma que desea cancelar? Se perderá la información ingresada');
-
         if (respuesta == true)
         {
             var url = '@Url.Action("Index", "ModuloSeguridad")';
@@ -23,6 +29,10 @@
         @Html.AntiForgeryToken()
         <h2>Gestión de Privilegios</h2>
         <div class="form-horizontal">
+            <!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
+                 en la base de datos, se imprime un mensaje de éxito 
+                 Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
+                 en la base de datos, se imprime un mensaje de error -->
             @if (Model.cambiosGuardados == 1)
             {
                 <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
@@ -35,16 +45,26 @@
                     <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
                 </div>
             }
+
+            <!-- Se crea una tabla para imprimir la relación de cada privilegio con cada rol -->
             <table class="table">
                 <tr>
+                    <!-- Se imprimen los nombres de todos los roles en la tabla (de izquiera a derecha) -->
                     <th style="font-weight:bold;"> Permisos </th>
                     @for (int i = 0; i < Model.listaRoles.Count; i++)
-                {
+                    {
                         <th id="@(Model.listaRoles.ElementAt(i).Id)" style="font-weight:bold;">
                             @Html.DisplayFor(modelItem => Model.listaRoles.ElementAt(i).Name)
                         </th>
                     }
                 </tr>
+                <!-- Para cada privilegio:
+                       - Se imprime el nombre del privilegio (de arriba hacia abajo)
+                       - Se recorre la lista de roles, verificando si ese privilegio y rol están asociados, se crea un string "id" con el id del privilegio
+                         y el id del rol separados por un asterisco
+                       - Se asigna el valor de false a la variable check si no están asociados, y true si sí están asociados
+                       - Si el rol y el privilegio están asociados, se crea un "form checkbox" con el atributo check en true, con name igual a pr y
+                         id igual al string "id" -->
                 @for (int i = 0; i < Model.listaPrivilegios.Count; i++)
                 {
                     <tr>
@@ -52,8 +72,8 @@
                             @Html.DisplayFor(modelItem => Model.listaPrivilegios.ElementAt(i).Descripcion)
                         </th>
                         @for (int j = 0; j < Model.listaRoles.Count; j++)
-                    {
-                        string id = Model.listaPrivilegios.ElementAt(i).Id + "*" + Model.listaRoles.ElementAt(j).Id;
+                        {
+                            string id = Model.listaPrivilegios.ElementAt(i).Id + "*" + Model.listaRoles.ElementAt(j).Id;
                             <th id="@(Model.listaPrivilegios.ElementAt(i).Id)_/_@(Model.listaRoles.ElementAt(j).Id)">
                                 @{bool check = false;}
                                 @for (int k = 0; k < Model.listaPrivilegios_asociados_roles.Count; k++)
@@ -74,25 +94,23 @@
                                     <input type="checkbox" id="@id" name="pr" value="@id" checked="@check" />
                                 }
                             </th>
-                                    }
+                        }
                     </tr>
-                                    }
+                }
             </table>
-    @if (Model.privilegios == true)
-    {
-            <div class="form-group">
-                <div class="form-inline" align="right">
-                    <div class="form-actions no-color">
-                        <input type="submit" value="Guardar" class="btn btn-default" />
-                        <a class="btn btn-default" onclick="Cancelar()">Cancelar</a>
+        <!-- Si el usuario logeado tiene permisos para modificar los privilegios asociados a los roles, entonces se habilitan los botones para modificar
+             y cancelar -->
+        @if (Model.privilegios == true)
+        {
+                <div class="form-group">
+                    <div class="form-inline" align="right">
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Guardar" class="btn btn-default" />
+                            <a class="btn btn-default" onclick="Cancelar()">Cancelar</a>
+                        </div>
                     </div>
                 </div>
+        }
             </div>
     }
-    else
-    {
-
-    }
-        </div>
-}
 </div>

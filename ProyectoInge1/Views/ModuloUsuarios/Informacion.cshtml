@@ -1,4 +1,6 @@
-﻿@model ProyectoInge1.Models.ModeloIntermedio
+﻿<!-- Vista que despliega la información personal del usuario logeado en el sistema -->
+
+@model ProyectoInge1.Models.ModeloIntermedio
 @{
     ViewBag.Title = "Informacion";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,51 +8,60 @@
 
 
 <script>
-        function confirmarSalir() {
-
+    /* Método que cancela la vista Información
+     * Requiere: no aplica
+     * Modifica: los campos en la vista Información
+     * Retorna: el modelo cargado
+     */
+    function confirmarSalir() {
         var respuesta = confirm('¿Confirma que desea cancelar? Los cambios hechos no se guardarán');
-
         if (respuesta == true) {
-                    var url = '@Url.Action("Informacion", "ModuloUsuarios")';
-                    window.location.href = url;
+            var url = '@Url.Action("Informacion", "ModuloUsuarios")';
+            window.location.href = url;
         }
     }
+
+    /* Método que esconde el "div" de eliminar y muestra el "div" de modificar en la vista Información
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function esconderEliminar()
     {
         $('.elementoEliminar').hide();
         $('.elementoModificar').show();
     }
 
-    //function h() { $('.elementoModificar :input').attr("disabled", true); }
-
+    /* Método que esconde el "div" de modificar y muestra el "div" de eliminar en la vista Información
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function esconderModificar() {
         $('.elementoEliminar').show();
         $('.elementoModificar').hide();
 
     }
 
-    function validacionDatos(errorValidacion) {
-        if (errorValidacion == false) {
-            $('.elementoEliminar').show();
-            $('.elementoModificar').hide();
-        } else {
-            $('.elementoEliminar').hide();
-            $('.elementoModificar').show();
-        }
-    }
-
+    /* Método que borra los campos cambiados en la vista Información
+     * Requiere: no aplica
+     * Modifica: los campos en la vista Información
+     * Retorna: el modelo cargado
+     */
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que desea cancelar? Los cambios realizados no se guardarán');
-
         if (respuesta == true) {
             window.location.reload();
         }
     }
 
+    /* Método que elimina la tupla de la base de datos en la vista Información
+     * Requiere: no aplica
+     * Modifica: no aplica
+     * Retorna: no aplica
+     */
     function confirmarEliminar(id) {
-
         var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
-
         if (respuesta == true)
         {
             $.ajax({
@@ -87,6 +98,12 @@ else
     styleElementoModificar = new HtmlString("");
 }
 
+<!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
+     en la base de datos, se imprime un mensaje de éxito
+     Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
+     en la base de datos, se imprime un mensaje de error 
+     Si la variable de cambios guardados es igual a 3, entonces los cambios se descartaron, se imprime un mensaje de 
+     verificación -->
 @if (Model.cambiosGuardados == 1)
 {
     <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
@@ -106,6 +123,7 @@ else if (Model.cambiosGuardados == 3)
     </div>
 }
 
+<!-- Se imprimen botones para modificar y cambiar la contraseña -->
 <div class="elementoEliminar" @styleElementoEliminar>
     <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
     <a class="btn btn-default" onclick="location.href='@Url.Action("Cambio_Contraseña", "Manage")'">Cambiar contraseña</a>
@@ -114,6 +132,7 @@ else if (Model.cambiosGuardados == 3)
     <h4> Modificar </h4>
 </div>
 
+<!-- Se despliega la información del elemento seleccionado cuando se va a eliminar -->
 <div>
     <div class="elementoEliminar" @styleElementoEliminar>
         <hr />
@@ -186,6 +205,8 @@ else if (Model.cambiosGuardados == 3)
         </dl>
     </div>
 </div>
+
+<!-- Se despliega la información modificable, del elemento seleccionado cuando se va a modificar -->
 <div class="elementoModificar" @styleElementoModificar>
     @using (Html.BeginForm())
     {
@@ -253,7 +274,6 @@ else if (Model.cambiosGuardados == 3)
                 </div>
             </div>
 
-            <!--El id no se muestra porque no se puede modificar-->
             @Html.HiddenFor(model => model.modeloUsuario.Id)
             <div class="form-group">
                 <div class="form-inline" align="right">

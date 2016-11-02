@@ -6,12 +6,5 @@ using System.Web.Mvc;
 
 namespace ProyectoInge1.Controllers
 {
-    public class ModuloCambiosController : Controller
-    {
-        // GET: ModuloCambios
-        public ActionResult Index()
-        {
-            return View();
-        }
-    }
+    public class ModuloCambiosController : Controller{}
 }

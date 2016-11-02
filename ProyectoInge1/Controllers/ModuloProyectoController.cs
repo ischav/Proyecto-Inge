@@ -19,51 +19,64 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        /* Método que carga el modelo para la vista Index
+         * Requiere: no aplica
+         * Modifica: el modelo
+         * Retorna: el modelo cargado
+         */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
+            /*
+             * Se crea el modelo:
+             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
+             * en la base de datos (tabla de la base de datos)
+             * Se verifica si el usuario actual cuenta con permisos para realizar la acción
+             */
             ModeloIntermedio modelo = new ModeloIntermedio();
-            //---------------------
-            // Obtener el usuario actual
             modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-
-            // Verificación de los privilegios disponibles en el modulo de proyecto y
-            // asociadoos al rol del usuario loggeado en el sistema.
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-I", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.agregar = false;
-            }
             else
-            {
                 modelo.agregar = true;
-            }
-            //---------------------
 
+            /* 
+             * Se asignan los valores necesarios para la paginación y el filtrado 
+             */
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
+            /*
+             * Se asigna el valor de la primer página a la paginación, en el caso de que no se aplique un filtro y un valor
+             * correspondiente al filtro en el caso de que se aplique
+             */
             if (searchString != null)
-            {
                 page = 1;
-            }
             else
-            {
                 searchString = currentFilter;
-            }
-
             ViewBag.CurrentFilter = searchString;
 
+            /*
+             * Se asigna a la variable proyecto, el valor de todos los proyectos de la base de datos
+             */
             var proyecto = from s in baseDatos.Proyecto
                            select s;
 
+            /* 
+             * Si existe una hilera con la cual filtrar, entonces se devuelven las tuplas de la tabla Proyecto de la base
+             * de datos, que cumplen con tener el valor de ese filtro en alguno de los atributos
+             */
             if (!String.IsNullOrEmpty(searchString))
             {
                 proyecto = proyecto.Where(s => s.Id.Contains(searchString) || s.Nombre.Contains(searchString)
                                        || s.Estado.Contains(searchString) || s.Duracion.Contains(searchString));
             }
 
+            /*
+             * De acuerdo al atributo con el que se desea ordenar, se ordena ya sea ascendente o descendentemente
+             */
             switch (sortOrder)
             {
                 case "name_desc":
@@ -136,14 +149,17 @@ namespace ProyectoInge1.Controllers
                     break;
             }
 
+            /*
+             * Se asigna un valor a la paginación y un número de página, en caso de que no sea 1
+             */
             int pageSize = 7;
             int pageNumber = (page ?? 1);
 
+            /*
+             * Se retorna a la vista, el modelo con el usuarios con los cambios de paginación y filtrado
+             */
             return View(proyecto.ToPagedList(pageNumber, pageSize));
         }
-
-
-        /**************Cambios Adrián****************************/
 
         //Metodo GET para la pantalla unificada. Corresponde a consultar
         public ActionResult MEC_Unificado(string id)
@@ -158,49 +174,27 @@ namespace ProyectoInge1.Controllers
             //Cambiar por los de este modulo
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.modificar = false;
-            }
             else
-            {
                 modelo.modificar = true;
-            }
 
             privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-C", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.consultar = false;
-            }
             else
-            {
                 modelo.consultar = true;
-            }
 
             privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-E", modelo.rolActualId);
             if (privilegio == null)
-            {
                 modelo.eliminar = false;
-            }
             else
-            {
                 modelo.eliminar = true;
-            }
-            //------------------
 
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
             if (modeloPr.modeloProyecto == null)
-            {
                 return HttpNotFound();
-            }
-            else
-            {
-                //Se obtiene el email de AspNetUsers
-
-            }
 
             return View(modeloPr);
         }
@@ -217,17 +211,13 @@ namespace ProyectoInge1.Controllers
                 baseDatos.SaveChanges();
             }
             else
-            {
                 modelo.cambiosGuardados = 1;
-            }
-
 
             return View(modelo);
         }
 
         public ActionResult eliminarProyecto(string Id)
         {
-
             //Borra el proyecto de la tabla Proyectos
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
@@ -237,10 +227,7 @@ namespace ProyectoInge1.Controllers
                 baseDatos.SaveChanges();
             }
             else
-            {
                 return HttpNotFound();
-            }
-
 
             return RedirectToAction("Index");
         }
@@ -291,7 +278,6 @@ namespace ProyectoInge1.Controllers
 		}
 
 		private void obtenerUsuarios(ModeloProyecto modelo) {
-
 			var listaUsuarios = baseDatos.Usuario.ToList();
 			var clientes = new List<Usuario>();
 			var recursos = new List<Usuario>();
