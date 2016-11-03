@@ -42,9 +42,9 @@ namespace ProyectoInge1.Models
         /* Objeto int que corresponde al valor para controlar cuando el modelo ha cambiado */
         public int cambiosGuardados = 0;
 
-		//[Required(ErrorMessage = "Este campo es obligatorio.")]
-		[Display(Name = "Cliente")]
-		public string cliente { get; set; }
+        //[Required(ErrorMessage = "Este campo es obligatorio.")]
+        [Display(Name = "Cliente")]
+        public string cliente { get; set; }
 
         /* Objeto que corresponde a las tuplas de la tabla Proyecto en la base de datos */
         public List<Proyecto> listaProyectos = new List<Proyecto>();
@@ -63,5 +63,10 @@ namespace ProyectoInge1.Models
 
         /* Objeto bool que corresponde al valor para verificar si ha ocurrido un error de validación */
         public bool errorValidacion { get; set; }
+
+        public string rolActualId { get; set; }
+        public string rolProyectoActual { get; set; }
+        public string usuarioActualId { get; set; }
+        public string liderId { get; set; }
     }
 }

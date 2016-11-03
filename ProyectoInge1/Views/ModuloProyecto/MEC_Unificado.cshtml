@@ -53,9 +53,13 @@
             $('.elementoModificar').hide();
             $('.elementoConsultar').show();
         }
+        $("#lider *").prop("disabled", true).trigger("click");
+        $("#quitar *").prop("disabled", true).hide();
+
     }
 
 </script>
+
 
 @if (Model.cambiosGuardados == 0)
 {
@@ -63,15 +67,17 @@
         <h2>Consultar</h2>
     </div>
 }
+
 <div class="elementoModificar" style="display:none">
     <h2>Modificar</h2>
 </div>
 
 
-
-<button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
-<button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloProyecto.Id)')">Eliminar</button>
-
+@if (Model.rolActualId.Equals("01Admin") || Model.liderId.Equals(Model.usuarioActualId))
+{
+    <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
+    <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloProyecto.Id)')">Eliminar</button>
+}
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -102,6 +108,14 @@
         </div>
 
         <div class="form-group">
+            @Html.Label("Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.cliente, new SelectList(ViewBag.listaClientes, "Id", "NombreCompleto"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.modeloProyecto.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modeloProyecto.FechaInicio, new { htmlAttributes = new { @class = "form-control" } })
@@ -117,6 +131,15 @@
             </div>
         </div>
 
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloProyecto.Duracion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloProyecto.Duracion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloProyecto.Duracion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.modeloProyecto.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -127,23 +150,61 @@
                        new { value = "En pausa" , text = "En pausa" },
                        new { value = "Finalizado" , text = "Finalizado" },
                        new { value = "Cerrado" , text = "Cerrado"}
-                    },
-                  "value",
-                  "text",
-                   2))
+                    }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="form-inline" align="right">
-                <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
-                <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+        <div class="form-group" , id="lider">
+            @Html.Label("Líder", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("lider", new SelectList(ViewBag.listaLideres, "Id", "NombreCompleto"), new { @class = "form-control" })
+                @*@Html.ValidationMessage("lider", "Error", new { @class = "text-danger" })*@
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-2">&nbsp;</div>
+            <div class="form-group col-md-4">
+                @Html.Label("Recursos", htmlAttributes: new { @class = "control-label" })
+                @Html.ListBox("recursos", new MultiSelectList(ViewBag.listaRecursos, "Id", "NombreCompleto"), new { @class = "form-control" })
+                @*@Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })*@
+            </div>
+
+            <div class="form-horizontal col-md-1">
+                <div class="form-group">
+                    <button type="button" id="agregar" value="agregar" class="btn btn-success btn-lg">
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+                <div class="form-group" , id="quitar">
+                    <button type="button" id="quitar" value="quitar" class="btn btn-warning btn-lg">
+                        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Equipo de desarrolladores", htmlAttributes: new { @class = "control-label" })
+                @Html.ListBox("equipoDesarrollo", new MultiSelectList(ViewBag.listaDesarrolladores, "Id", "NombreCompleto"), new { @class = "form-control" })
+                @*Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })*@
+            </div>
+
+        </div>
+
+
+        @if (Model.rolActualId.Equals("01Admin") || Model.liderId.Equals(Model.usuarioActualId))
+        {
+            <div class="form-group">
+                <div class="form-inline" align="right">
+                    <input type="submit" id="guardar" value="Aceptar" name="aceptar" class="btn btn-default" />
+                    <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+                </div>
+            </div>
+        }
     </div>
 }
-
-
 
 <p>
     @Html.ActionLink("Volver a proyectos", "Index")
@@ -152,4 +213,5 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/UsuariosEnProyectos")
 }

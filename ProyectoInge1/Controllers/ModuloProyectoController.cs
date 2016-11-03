@@ -168,33 +168,63 @@ namespace ProyectoInge1.Controllers
             ModeloIntermedio modelo = new ModeloIntermedio();
 
             modeloPr.modeloProyecto = baseDatos.Proyecto.Find(id);
+            obtenerUsuariosModificar(modeloPr);
+            obtenerDesarrolladores(modeloPr);
+
+            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+            modeloPr.rolActualId = modelo.rolActualId;
+            modeloPr.usuarioActualId = modelo.usuarioActualId;
+
+
 
             // Verificación de los privilegios disponibles en el modulo de usuarios y
             // asociadoos al rol del usuario loggeado en el sistema.
             //Cambiar por los de este modulo
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
+            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-M", modelo.rolActualId);
             if (privilegio == null)
+            {
                 modelo.modificar = false;
+            }
             else
+            {
                 modelo.modificar = true;
+            }
 
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-C", modelo.rolActualId);
+            privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-C", modelo.rolActualId);
             if (privilegio == null)
+            {
                 modelo.consultar = false;
+            }
             else
+            {
                 modelo.consultar = true;
+            }
 
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-E", modelo.rolActualId);
+            privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-E", modelo.rolActualId);
             if (privilegio == null)
+            {
                 modelo.eliminar = false;
+            }
             else
+            {
                 modelo.eliminar = true;
+            }
 
             if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
             if (modeloPr.modeloProyecto == null)
+            {
                 return HttpNotFound();
+            }
+            else
+            {
+                //Se obtiene el email de AspNetUsers
+
+            }
 
             return View(modeloPr);
         }
@@ -203,21 +233,78 @@ namespace ProyectoInge1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_Unificado(ModeloProyecto modelo, string aceptar, string cancelar)
+        public ActionResult MEC_Unificado(ModeloProyecto modelo, string lider, string[] equipoDesarrollo, string[] equipoDesarrolloNuevo)
         {
             if (ModelState.IsValid)
             {
+
+                for (int i = 0; i < equipoDesarrollo.Count(); i++)
+                {
+                    modelo.listaUsuarios_asociados_proyecto.Add(
+                        new Usuarios_asociados_proyecto
+                        {
+                            IdUsuario = equipoDesarrollo[i],
+                            IdProyecto = modelo.modeloProyecto.Id,
+                            RolProyecto = "Desarrollador"
+                        });
+                }
+
+
+
+                modelo.listaUsuarios_asociados_proyecto.Add(
+                new Usuarios_asociados_proyecto
+                {
+                    IdUsuario = lider,
+                    IdProyecto = modelo.modeloProyecto.Id,
+                    RolProyecto = "Líder"
+                });
+
+
+
+                var listaUsuarios = (from usuario in baseDatos.Usuario
+                                     join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                                     where usrProy.IdProyecto == modelo.modeloProyecto.Id
+                                     select new { usuario });
+
+                var us = new List<Usuarios_asociados_proyecto>();
+
+
+                for (int i = 0; i < modelo.listaUsuarios_asociados_proyecto.Count(); i++)
+                {
+                    bool enBase = false;
+                    foreach (var usr in listaUsuarios)
+                    {
+
+                        if (usr.usuario.Id == modelo.listaUsuarios_asociados_proyecto[i].IdUsuario)
+                        {
+                            enBase = true;
+                        }
+                    }
+
+                    if (!enBase)
+                    {
+                        if (modelo.listaUsuarios_asociados_proyecto[i].IdUsuario != null)
+                        {
+                            baseDatos.Usuarios_asociados_proyecto.Add(modelo.listaUsuarios_asociados_proyecto[i]);
+                            us.Add(modelo.listaUsuarios_asociados_proyecto[i]);
+                        }
+                    }
+                }
+
                 baseDatos.Entry(modelo.modeloProyecto).State = EntityState.Modified;
                 baseDatos.SaveChanges();
             }
             else
+            {
                 modelo.cambiosGuardados = 1;
+            }
 
-            return View(modelo);
+            return RedirectToAction("MEC_Unificado");
         }
 
         public ActionResult eliminarProyecto(string Id)
         {
+
             //Borra el proyecto de la tabla Proyectos
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
@@ -227,13 +314,16 @@ namespace ProyectoInge1.Controllers
                 baseDatos.SaveChanges();
             }
             else
+            {
                 return HttpNotFound();
+            }
+
 
             return RedirectToAction("Index");
         }
 
-		//Metodo GET pantalla Crear Proyecto
-		public ActionResult Create() {
+        //Metodo GET pantalla Crear Proyecto
+        public ActionResult Create() {
 			ModeloProyecto modelo = new ModeloProyecto();
 			obtenerUsuarios(modelo);
 
@@ -297,5 +387,83 @@ namespace ProyectoInge1.Controllers
 			ViewBag.listaDesarrolladores = new List<Usuario>();
 		}
 
-	}
+        private void obtenerDesarrolladores(ModeloProyecto modelo)
+        {
+
+            var usuariosAsociadosProyectos = new List<Usuario>();
+
+            var listaUsuarios = (from usuario in baseDatos.Usuario
+                                 join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                                 where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto.Equals("Desarrollador")
+                                 select new { usuario });
+
+            foreach (var usr in listaUsuarios)
+            {
+                usuariosAsociadosProyectos.Add(usr.usuario);
+            }
+            ViewBag.listaDesarrolladores = usuariosAsociadosProyectos;
+        }
+
+        private void obtenerUsuariosModificar(ModeloProyecto modelo)
+        {
+
+            var listaUsuarios = baseDatos.Usuario.ToList();
+            var clientes = new List<Usuario>();
+            var recursos = new List<Usuario>();
+            var lideres = new List<Usuario>();
+            var lider = new List<Usuario>();
+            var cliente = new List<Usuario>();
+
+            var listaRecursos = (from usuario in baseDatos.Usuario
+                                 join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                                 where usrProy.IdProyecto == modelo.modeloProyecto.Id
+                                 select new { usuario });
+
+            foreach (var usr in listaUsuarios)
+            {
+                if (context.Users.Find(usr.Id).Roles.First().RoleId == "03User")
+                {
+                    clientes.Add(usr);
+                }
+                else if (context.Users.Find(usr.Id).Roles.First().RoleId == "02Develop")
+                {
+                    lideres.Add(usr);
+                    recursos.Add(usr);
+
+                }
+            }
+
+            foreach (var usr in listaRecursos)
+            {
+                recursos.Remove(usr.usuario);
+            }
+
+            var lid = (from usuario in baseDatos.Usuario
+                       join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                       where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto == "Líder"
+                       select new { usuario });
+
+            var cli = (from usuario in baseDatos.Usuario
+                       join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                       where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto == "Cliente"
+                       select new { usuario });
+
+            if (lid.Count() > 0)
+            {
+                lider.Add(lid.First().usuario);
+                modelo.liderId = lid.First().usuario.Id;
+            }
+            if (cli.Count() > 0)
+            {
+                cliente.Add(cli.First().usuario);
+            }
+            ViewBag.listaClientes = cliente;
+            ViewBag.listaRecursos = recursos;
+            ViewBag.listaDesarrolladores = new List<Usuario>();
+            ViewBag.listaLideres = lider;
+        }
+
+
+
+    }
 }
