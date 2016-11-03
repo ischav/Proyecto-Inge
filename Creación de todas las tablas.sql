@@ -90,6 +90,7 @@ ALTER TABLE Requerimiento ADD IdSolicitante NVARCHAR(128);
 ALTER TABLE Requerimiento DROP CONSTRAINT FK_Usuarios;
 ALTER TABLE Requerimiento ADD CONSTRAINT FK_UsuarioResponsable FOREIGN KEY (IdResponsable) REFERENCES Usuario(Id);
 ALTER TABLE Requerimiento ADD CONSTRAINT FK_UsuarioSolicitante FOREIGN KEY (IdSolicitante) REFERENCES Usuario(Id);
+ALTER TABLE Requerimiento ADD VersionReq INT;
 
 CREATE TABLE Cambio(
 	Fecha			DATE,
