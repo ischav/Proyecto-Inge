@@ -11,7 +11,8 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Requerimiento
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -27,14 +28,21 @@ namespace ProyectoInge1.Models
         public string Esfuerzo { get; set; }
         public string Estado { get; set; }
         public string Descripcion { get; set; }
+        [Display(Name = "Fecha de inicio")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaInicio { get; set; }
+        [Display(Name = "Fecha final")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaFinal { get; set; }
         public string Sprint { get; set; }
         public string Modulo { get; set; }
         public string Observaciones { get; set; }
+        [Display(Name = "Proyecto")]
         public string IdProyecto { get; set; }
         public byte[] Imagen { get; set; }
+        [Display(Name = "Responsable")]
         public string IdResponsable { get; set; }
+        [Display(Name = "Solicitante")]
         public string IdSolicitante { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

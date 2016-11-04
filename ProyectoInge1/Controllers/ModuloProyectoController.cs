@@ -249,8 +249,6 @@ namespace ProyectoInge1.Controllers
                         });
                 }
 
-
-
                 modelo.listaUsuarios_asociados_proyecto.Add(
                 new Usuarios_asociados_proyecto
                 {

@@ -37,6 +37,14 @@ namespace ProyectoInge1.Models
         /* Objeto que corresponde a la tabla Usuario de la base de datos */
         public Usuario modeloUsuario { get; set; }
 
+        /* Objeto string que corresponde al nombre del solicitante del Requerimiento de la base de datos */
+        [Display(Name = "Solicitante")]
+        public string solicitante { get; set; }
+
+        /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
+        [Display(Name = "Responsable")]
+        public string responsable { get; set; }
+
         public int accion = 0;
 
         /* Objeto int que corresponde al valor para controlar cuando el modelo ha cambiado */
@@ -61,8 +69,15 @@ namespace ProyectoInge1.Models
         /* Objeto que corresponde a las tuplas de la tabla Usuarios_asociados_proyecto en la base de datos */
         public List<Usuarios_asociados_proyecto> listaUsuarios_asociados_proyecto = new List<Usuarios_asociados_proyecto>();
 
+        /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
+        public List<Usuario> listaUsuarios = new List<Usuario>();
+
         /* Objeto bool que corresponde al valor para verificar si ha ocurrido un error de validación */
         public bool errorValidacion { get; set; }
+
+        /* Objeto string que corresponde al valor para especificar la ruta de la imagen del requerimiento */
+        [Display(Name = "Imagen")]
+        public string rutaImagen { get; set; }
 
         public string rolActualId { get; set; }
         public string rolProyectoActual { get; set; }

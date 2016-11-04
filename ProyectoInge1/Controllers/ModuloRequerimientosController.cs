@@ -11,6 +11,7 @@ using System.Data.Entity;
 using System.Net;
 using System.Threading.Tasks;
 using System.Net.Mail;
+using System.Text;
 
 namespace ProyectoInge1.Controllers
 {
@@ -145,6 +146,7 @@ namespace ProyectoInge1.Controllers
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.listaProyectos = baseDatos.Proyecto.ToList();
+            modelo.listaUsuarios = baseDatos.Usuario.ToList();
 
             return View(modelo);
         }
@@ -155,19 +157,19 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
-                Proyecto proyectoRequerimiento = baseDatos.Proyecto.Find(modelo.proyectoRequerimiento.ToString());
-                modelo.modeloRequerimiento.Proyecto = proyectoRequerimiento;
+                modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
                 obtenerUsuarios(nuevoModelo);
-                //return View(nuevoModelo);
+
                 return RedirectToAction("Create");
             }
             else
             {
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+
                 return View(modelo);
             }
         }
@@ -183,38 +185,45 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("Index");
         }
 
-        /* REQUIERE:
-         * MODIFICA:
-         * RETORNA:
-         */
         public ActionResult MEC_UnificadoRequerimientos(string Id, string IdProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
+            modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
+            modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+            modelo.listaUsuarios = baseDatos.Usuario.ToList();
+            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
             modelo.accion = 0;
 
             return View(modelo);
         }
 
-        //Metodo POST para la pantalla unificada. Corresponde a modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Informacion(ModeloProyecto modelo, string aceptar, string cancelar)
+        public ActionResult MEC_UnificadoRequerimientos(ModeloProyecto modelo)
         {
-            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
+            if (ModelState.IsValid)
             {
+                modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
                 baseDatos.Entry(modelo.modeloRequerimiento).State = EntityState.Modified;
                 baseDatos.SaveChanges();
-                modelo.cambiosGuardados = 1;
+                ModeloProyecto nuevoModelo = new ModeloProyecto();
+                nuevoModelo.modeloRequerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
+                nuevoModelo.rutaImagen = Encoding.ASCII.GetString(nuevoModelo.modeloRequerimiento.Imagen);
+                nuevoModelo.listaUsuarios = baseDatos.Usuario.ToList();
+                nuevoModelo.accion = 0;
+
+                return View(nuevoModelo);
             }
             else
             {
-                if (!string.IsNullOrEmpty(cancelar))
-                {
-                    return View(modelo);
-                }
+                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+
+                return View(modelo);
             }
-            return View(modelo);
         }
 
         public ActionResult cambiarAccion(string Id, int Accion)

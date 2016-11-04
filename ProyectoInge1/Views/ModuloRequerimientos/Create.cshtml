@@ -4,12 +4,54 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        margin: 15px;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    .row{
+        padding-bottom: 1em;
+    }
+
+    img{
+        width: auto;
+        max-width: 279px;
+        height: auto;
+        max-height: 279px;
+    }
+</style>
+
 <script>
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea insertar este requerimiento funcinal?');
         if (respuesta == true) {
             var url = '@Url.Action("Create", "ModuloRequerimientos")';
             window.location.href = url;
+        }
+    }
+
+    function cambio() {
+        var input = document.getElementById("uploadBtn");
+        var fReader = new FileReader();
+        fReader.readAsDataURL(input.files[0]);
+        fReader.onloadend = function (event) {
+            var img = document.getElementById("RuPic");
+            img.src = event.target.result;
+            document.getElementById("rutaImagen").value = event.target.result;
         }
     }
 </script>
@@ -28,20 +70,20 @@
 
     <fieldset>
         <legend>Datos del Requerimiento</legend>
-        <div class="row">
 
+        <div class="row">
             <div class="form-group">
-                @Html.LabelFor(model => model.modeloRequerimiento.Proyecto, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.modeloRequerimiento.IdProyecto, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.DropDownListFor(model => model.proyectoRequerimiento, Model.listaProyectos.Select(x => new SelectListItem
-               {
-                   Value = x.Id.ToString(),
-                   Text = x.Nombre.ToString()
-               }))
+                    @Html.DropDownListFor(model => model.modeloRequerimiento.IdProyecto, Model.listaProyectos.Select(x => new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Nombre.ToString()
+                    }), "Seleccione un proyecto", new { @class = "form-control" })
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
                 @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
@@ -57,111 +99,132 @@
         </div>
 
         <div class="row">
-                @Html.LabelFor(model => model.modeloRequerimiento.Observaciones, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Observaciones, new { htmlAttributes = new { @class = "form-control"} })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Observaciones, "", new { @class = "text-danger" })
-                </div>
-
-            @Html.Label("Solicitado por", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloRequerimiento.Observaciones, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.EditorFor(model => model.modeloRequerimiento.IdSolicitante, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdSolicitante, "", new { @class = "text-danger" })
-                @*@Html.DropDownListFor(model => model.cliente, new SelectList(ViewBag.listaClientes, "Id", "NombreCompleto"), "Seleccione un solicitante", new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })*@
+                @Html.EditorFor(model => model.modeloRequerimiento.Observaciones, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Observaciones, "", new { @class = "text-danger" })
+            </div>
+
+            @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+               @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuarios.Select(x => new SelectListItem
+               {
+                   Value = x.Id.ToString(),
+                   Text = x.Nombre.ToString()
+               }), "Seleccione un solicitante", new { @class = "form-control" })
             </div>
         </div>
 
+        <div class="row">
+            @Html.LabelFor(model => model.rutaImagen, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.rutaImagen, new { htmlAttributes = new { @id = "rutaImagen", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.rutaImagen, "", new { @class = "text-danger" })
+                <div class="fileUpload btn btn-primary">
+                    <span>Cargar</span>
+                    <input id="uploadBtn" type="file" class="upload" onchange="cambio()" />
+                </div>
+            </div>
+            
+            @Html.Label("Vista", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4" width="200" height="200">
+                <img id="RuPic" src="@(Model.rutaImagen)" />
+            </div>
+        </div>
+
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Descripcion, new { htmlAttributes = new { @id = "rutaImagen", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
     </fieldset>
 
-
-        <fieldset>
-            <legend>Datos de Estimación</legend>
-            <div class="row">
-                @Html.LabelFor(model => model.modeloRequerimiento.Prioridad, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Prioridad, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Prioridad, "", new { @class = "text-danger" })
-                </div>
-
-                @Html.LabelFor(model => model.modeloRequerimiento.Esfuerzo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Esfuerzo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Esfuerzo, "", new { @class = "text-danger" })
-                </div>
+    <fieldset>
+        <legend>Datos de Estimación</legend>
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.Prioridad, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Prioridad, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Prioridad, "", new { @class = "text-danger" })
             </div>
 
-            <div class="row">
-                @Html.LabelFor(model => model.modeloRequerimiento.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.FechaInicio, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaInicio, "", new { @class = "text-danger" })
-                </div>
-
-                @Html.LabelFor(model => model.modeloRequerimiento.FechaFinal, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.FechaFinal, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaFinal, "", new { @class = "text-danger" })
-                </div>
+            @Html.LabelFor(model => model.modeloRequerimiento.Esfuerzo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Esfuerzo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Esfuerzo, "", new { @class = "text-danger" })
             </div>
-        </fieldset>
+        </div>
 
-
-
-        <fieldset>
-            <legend>Datos de Desarrollo</legend>
-            <div class="row">
-                    @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(new List<Object>{
-                       new { value = "Pendiente de asignación" , text = "Pendiente de asignación"  },
-                       new { value = "Asignado" , text = "Asignado"  },
-                       new { value = "En ejecución" , text = "En ejecución" },
-                       new { value = "Finalizado" , text = "Finalizado" },
-                       new { value = "Cerrado" , text = "Cerrado"}
-                    }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
-                    </div>
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.FechaInicio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaInicio, "", new { @class = "text-danger" })
             </div>
 
-            <div class="row">
-                @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
-                </div>
-
-                @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.Sprint, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Sprint, "", new { @class = "text-danger" })
-                </div>
+            @Html.LabelFor(model => model.modeloRequerimiento.FechaFinal, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.FechaFinal, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.FechaFinal, "", new { @class = "text-danger" })
             </div>
-
-            <div class="row">
-                    @Html.Label("Responsable", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.modeloRequerimiento.IdResponsable, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdResponsable, "", new { @class = "text-danger" })
-                        @* @Html.DropDownList("desarrolladores", new SelectList(ViewBag.listaRecursos, "Id", "NombreCompleto"), "Seleccione un responsable", new { @class = "form-control" })*@
-                    </div>
-            </div>
-
+        </div>
     </fieldset>
 
-            <div class="form-horizontal">
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })           
-
-                <div class="form-group">
-                    <div class="form-inline" align="right">
-                        <input type="submit" value="Aceptar" class="btn btn-default" />
-                        <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
-                    </div>
-                </div>
+    <fieldset>
+        <legend>Datos de Desarrollo</legend>
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(new List<Object>{
+                    new { value = "Pendiente de asignación" , text = "Pendiente de asignación"  },
+                    new { value = "Asignado" , text = "Asignado"  },
+                    new { value = "En ejecución" , text = "En ejecución" },
+                    new { value = "Finalizado" , text = "Finalizado" },
+                    new { value = "Cerrado" , text = "Cerrado"}
+                }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
-            }
+
+            @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+               @Html.DropDownListFor(model => model.modeloRequerimiento.IdResponsable, Model.listaUsuarios.Select(x => new SelectListItem
+               {
+                   Value = x.Id.ToString(),
+                   Text = x.Nombre.ToString()
+               }), "Seleccione un responsable", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
+            </div>
+
+            @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Sprint, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Sprint, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })           
+
+        <div class="form-group">
+            <div class="form-inline" align="right">
+                <input type="submit" value="Aceptar" class="btn btn-default" />
+                <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+            </div>
+        </div>
+    </div>
+}
 
 
-            @section Scripts {
-                @Scripts.Render("~/bundles/jqueryval")
-            }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
