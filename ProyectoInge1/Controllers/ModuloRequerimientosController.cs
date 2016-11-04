@@ -168,14 +168,24 @@ namespace ProyectoInge1.Controllers
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
-                obtenerUsuarios(nuevoModelo);
+                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                         "USP.IdProyecto = P.Id " +
+                                                                         "WHERE USP.RolProyecto = 'Cliente';").ToList();
+                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                                 "USP.IdProyecto = P.Id " +
+                                                                                 "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
+                nuevoModelo.cambiosGuardados = 1;
 
-                return RedirectToAction("Create");
+                return View(nuevoModelo);
             }
             else
             {
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+                modelo.cambiosGuardados = 2;
 
                 return View(modelo);
             }
@@ -212,7 +222,10 @@ namespace ProyectoInge1.Controllers
                                                                      "ON P.Id = R.IdProyecto " +
                                                                      "WHERE USP.RolProyecto = 'Desarrollador' AND " +
                                                                      "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+            if (modelo.modeloRequerimiento.Imagen != null)
+            {
+                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+            }
             modelo.accion = 0;
 
             return View(modelo);
@@ -229,7 +242,10 @@ namespace ProyectoInge1.Controllers
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
                 nuevoModelo.modeloRequerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
-                nuevoModelo.rutaImagen = Encoding.ASCII.GetString(nuevoModelo.modeloRequerimiento.Imagen);
+                if (modelo.modeloRequerimiento.Imagen != null)
+                {
+                    nuevoModelo.rutaImagen = Encoding.ASCII.GetString(nuevoModelo.modeloRequerimiento.Imagen);
+                }
                 nuevoModelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                               "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                               "USP.IdProyecto = P.Id JOIN Requerimiento R " +
@@ -243,6 +259,7 @@ namespace ProyectoInge1.Controllers
                                                                               "WHERE USP.RolProyecto = 'Desarrollador' AND " +
                                                                               "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
                 nuevoModelo.accion = 0;
+                nuevoModelo.cambiosGuardados = 1;
 
                 return View(nuevoModelo);
             }
@@ -250,6 +267,7 @@ namespace ProyectoInge1.Controllers
             {
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+                modelo.cambiosGuardados = 2;
 
                 return View(modelo);
             }
@@ -271,10 +289,8 @@ namespace ProyectoInge1.Controllers
             }
         }
 
-        //Método para obtener los usuarios
         private void obtenerUsuarios(ModeloProyecto modelo)
         {
-
             var listaUsuarios = baseDatos.Usuario.ToList();
             var clientes = new List<Usuario>();
             var recursos = new List<Usuario>();

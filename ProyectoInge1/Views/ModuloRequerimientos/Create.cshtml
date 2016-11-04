@@ -57,6 +57,18 @@
 </script>
 
 <h2>Agregar requerimiento</h2>
+@if (Model.cambiosGuardados == 1)
+            {
+    <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+        <p>Se guardaron los cambios exitosamente!</p>
+    </div>
+}
+else if (Model.cambiosGuardados == 2)
+{
+    <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+        <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
+    </div>
+}
 
 <p>
     @Html.ActionLink("Volver a consultar requerimientos funcionales", "Index")
@@ -110,7 +122,7 @@
                @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuariosCliente.Select(x => new SelectListItem
                {
                    Value = x.Id.ToString(),
-                   Text = x.Nombre.ToString()
+                   Text = x.Nombre.ToString() + " " + x.Apellido1.ToString() + " " + x.Apellido2.ToString()
                }), "Seleccione un solicitante", new { @class = "form-control" })
             </div>
         </div>
@@ -189,10 +201,10 @@
             @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                @Html.DropDownListFor(model => model.modeloRequerimiento.IdResponsable, Model.listaUsuariosDesarrolladores.Select(x => new SelectListItem
-               {
-                   Value = x.Id.ToString(),
-                   Text = x.Nombre.ToString()
-               }), "Seleccione un responsable", new { @class = "form-control" })
+          {
+              Value = x.Id.ToString(),
+              Text = x.Nombre.ToString() + " " + x.Apellido1.ToString() + " " + x.Apellido2.ToString()
+          }), "Seleccione un responsable", new { @class = "form-control" })
             </div>
         </div>
 

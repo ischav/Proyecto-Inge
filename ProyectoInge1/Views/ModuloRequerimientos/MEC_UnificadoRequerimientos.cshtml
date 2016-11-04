@@ -89,21 +89,19 @@
     }
 
     window.onload = function () {
-        if(@Model.cambiosGuardados == 0){
-            $("input").prop('disabled', true).trigger("click");
-            $('select').prop('disabled', true).trigger("click");
-            $("#descripcion *").prop("disabled", true).trigger("click");
-            $('#Proyecto').prop('disabled', true).trigger("click");
-            $('#Id').prop('disabled', true).trigger("click");
-            $('.elementoModificar').hide();
-            $('.elementoConsultar').show();
-            $('.SolicitanteModificar').hide();
-            $('.SolicitanteConsultar').show();
-            $('.EstadoModificar').hide();
-            $('.EstadoConsultar').show();
-            $('.ResponsableModificar').hide();
-            $('.ResponsableConsultar').show();
-        }
+        $("input").prop('disabled', true).trigger("click");
+        $('select').prop('disabled', true).trigger("click");
+        $("#descripcion *").prop("disabled", true).trigger("click");
+        $('#Proyecto').prop('disabled', true).trigger("click");
+        $('#Id').prop('disabled', true).trigger("click");
+        $('.elementoModificar').hide();
+        $('.elementoConsultar').show();
+        $('.SolicitanteModificar').hide();
+        $('.SolicitanteConsultar').show();
+        $('.EstadoModificar').hide();
+        $('.EstadoConsultar').show();
+        $('.ResponsableModificar').hide();
+        $('.ResponsableConsultar').show();
     }
 
     function cambio() {
@@ -118,15 +116,37 @@
     }
 </script>
 
-@if (Model.cambiosGuardados == 0)
-{
-    <div class="elementoConsultar">
-        <h2>Consultar</h2>
-    </div>
-}
+
+<div class="elementoConsultar">
+    <h2>Consultar</h2>
+    @if (Model.cambiosGuardados == 1)
+    {
+        <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+            <p>Se guardaron los cambios exitosamente!</p>
+        </div>
+    }
+    else if (Model.cambiosGuardados == 2)
+    {
+        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+            <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
+        </div>
+    }
+</div>
 
 <div class="elementoModificar" style="display:none">
     <h2>Modificar</h2>
+    @if (Model.cambiosGuardados == 1)
+            {
+        <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+            <p>Se guardaron los cambios exitosamente!</p>
+        </div>
+    }
+    else if (Model.cambiosGuardados == 2)
+    {
+        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+            <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
+        </div>
+    }
 </div>
 
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
@@ -186,9 +206,9 @@
                     @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-4">
                         @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuariosCliente.Select(x => new SelectListItem
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.Nombre.ToString() + " " + x.Apellido1.ToString() + " " + x.Apellido2.ToString()
+                   {
+                       Value = x.Id.ToString(),
+                       Text = x.Nombre.ToString() + " " + x.Apellido1.ToString() + " " + x.Apellido2.ToString()
                         }), "Seleccione un solicitante", new { @class = "form-control" })
                     </div>
                 </div>
