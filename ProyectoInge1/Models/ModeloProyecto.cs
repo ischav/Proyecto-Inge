@@ -70,7 +70,10 @@ namespace ProyectoInge1.Models
         public List<Usuarios_asociados_proyecto> listaUsuarios_asociados_proyecto = new List<Usuarios_asociados_proyecto>();
 
         /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
-        public List<Usuario> listaUsuarios = new List<Usuario>();
+        public List<Usuario> listaUsuariosCliente = new List<Usuario>();
+
+        /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
+        public List<Usuario> listaUsuariosDesarrolladores = new List<Usuario>();
 
         /* Objeto bool que corresponde al valor para verificar si ha ocurrido un error de validación */
         public bool errorValidacion { get; set; }

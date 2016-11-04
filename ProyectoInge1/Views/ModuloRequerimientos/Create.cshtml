@@ -107,7 +107,7 @@
 
             @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-               @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuarios.Select(x => new SelectListItem
+               @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuariosCliente.Select(x => new SelectListItem
                {
                    Value = x.Id.ToString(),
                    Text = x.Nombre.ToString()
@@ -188,7 +188,7 @@
 
             @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-               @Html.DropDownListFor(model => model.modeloRequerimiento.IdResponsable, Model.listaUsuarios.Select(x => new SelectListItem
+               @Html.DropDownListFor(model => model.modeloRequerimiento.IdResponsable, Model.listaUsuariosDesarrolladores.Select(x => new SelectListItem
                {
                    Value = x.Id.ToString(),
                    Text = x.Nombre.ToString()

@@ -146,7 +146,14 @@ namespace ProyectoInge1.Controllers
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.listaProyectos = baseDatos.Proyecto.ToList();
-            modelo.listaUsuarios = baseDatos.Usuario.ToList();
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                     "USP.IdProyecto = P.Id " + 
+                                                                     "WHERE USP.RolProyecto = 'Cliente';").ToList();
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                             "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                             "USP.IdProyecto = P.Id " +
+                                                                             "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
 
             return View(modelo);
         }
@@ -193,7 +200,18 @@ namespace ProyectoInge1.Controllers
             modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
             modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
-            modelo.listaUsuarios = baseDatos.Usuario.ToList();
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " + 
+                                                                     "ON P.Id = R.IdProyecto " +
+                                                                     "WHERE USP.RolProyecto = 'Cliente' AND " +
+                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                     "ON P.Id = R.IdProyecto " +
+                                                                     "WHERE USP.RolProyecto = 'Desarrollador' AND " +
+                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
             modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
             modelo.accion = 0;
 
@@ -212,7 +230,18 @@ namespace ProyectoInge1.Controllers
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
                 nuevoModelo.modeloRequerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
                 nuevoModelo.rutaImagen = Encoding.ASCII.GetString(nuevoModelo.modeloRequerimiento.Imagen);
-                nuevoModelo.listaUsuarios = baseDatos.Usuario.ToList();
+                nuevoModelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                              "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                              "ON P.Id = R.IdProyecto " +
+                                                                              "WHERE USP.RolProyecto = 'Cliente' AND " +
+                                                                              "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+                nuevoModelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                              "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                              "ON P.Id = R.IdProyecto " +
+                                                                              "WHERE USP.RolProyecto = 'Desarrollador' AND " +
+                                                                              "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
                 nuevoModelo.accion = 0;
 
                 return View(nuevoModelo);
