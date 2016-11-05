@@ -82,6 +82,7 @@ namespace ProyectoInge1.Models
         [Display(Name = "Imagen")]
         public string rutaImagen { get; set; }
 
+        /* Objetos string que correesponde a la específicación del rol de un usuario.*/
         public string rolActualId { get; set; }
         public string rolProyectoActual { get; set; }
         public string usuarioActualId { get; set; }
