@@ -447,6 +447,11 @@ namespace ProyectoInge1.Controllers
 			ViewBag.listaDesarrolladores = new List<Usuario>();
 		}
 
+	/* Método que carga listas con Desarroladores
+	 * Requiere: un objeto del modelo
+	 * Modifica: el modelo que se envia como parametro a la vista
+	 * Retorna: no aplica
+	 */
         private void obtenerDesarrolladores(ModeloProyecto modelo)
         {
 
@@ -456,7 +461,10 @@ namespace ProyectoInge1.Controllers
                                  join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                                  where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto.Equals("Desarrollador")
                                  select new { usuario });
-
+	    
+	    /*
+	    *Agrega los desarrolladores asociados al proyecto
+	    */
             foreach (var usr in listaUsuarios)
             {
                 usuariosAsociadosProyectos.Add(usr.usuario);
@@ -464,6 +472,11 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaDesarrolladores = usuariosAsociadosProyectos;
         }
 
+	/* Método que carga los desarrolladoresmodificados y los desasocia
+	 * Requiere: un objeto del modelo
+	 * Modifica: el modelo que se envia como parametro a la vista
+	 * Retorna: no aplica
+	 */
         private void obtenerUsuariosModificar(ModeloProyecto modelo)
         {
 
@@ -507,6 +520,9 @@ namespace ProyectoInge1.Controllers
                        join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                        where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto == "Cliente"
                        select new { usuario });
+	    /*
+	    * Agrega cada usuario al modelo
+	    */
 
             if (lid.Count() > 0)
             {
@@ -517,6 +533,11 @@ namespace ProyectoInge1.Controllers
             {
                 cliente.Add(cli.First().usuario);
             }
+	    
+	    /*
+	     * se pasan las listas de usuarios clasificados segun rol a la vista
+	    */
+			 
             ViewBag.listaClientes = cliente;
             ViewBag.listaRecursos = recursos;
             ViewBag.listaDesarrolladores = new List<Usuario>();
