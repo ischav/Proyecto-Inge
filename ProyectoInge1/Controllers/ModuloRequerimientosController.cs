@@ -20,6 +20,11 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        /* Método que carga el modelo para la vista Index
+         * Requiere: no aplica
+         * Modifica: el modelo
+         * Retorna: el modelo cargado
+         */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
             ViewBag.pro = new SelectList(baseDatos.Proyecto, "Id", "Nombre", Proyecto);
@@ -191,6 +196,11 @@ namespace ProyectoInge1.Controllers
             }
         }
 
+        /* Método elimina un elemento en la vista Index
+         * Requiere: parámetro recibido válido en la base de datos
+         * Modifica: la tabla Requerimientos de la base de datos
+         * Retorna: redirección a la vista Index
+         */
         public ActionResult eliminarRequerimiento(string Id)
         {
             //Borra al requerimiento de la tabla Requerimientos
@@ -202,8 +212,19 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Método para consultar un requerimiento para la vista MEC_UnificadoRequerimientos
+         * Requiere: parámetro recibido válido en la base de datos
+         * Modifica: el modelo
+         * Retorna: el modelo cargado
+         */
         public ActionResult MEC_UnificadoRequerimientos(string Id, string IdProyecto)
         {
+            /*
+             * Se crea el modelo:
+             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
+             * en la base de datos (tabla de la base de datos)
+             * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
+             */
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
             Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
@@ -231,6 +252,11 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 
+        /* Método que guarda los cambios en la vista de MEC_UnificadoRequerimientos
+         * Requiere: no aplica
+         * Modifica: la tabla de Requerimiento
+         * Retorna: el modelo actualizado
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MEC_UnificadoRequerimientos(ModeloProyecto modelo)
@@ -273,6 +299,11 @@ namespace ProyectoInge1.Controllers
             }
         }
 
+        /* Método que al cambiar una acción en la vista, actualiza los campos de un requerimiento.
+         * Requiere: no aplica
+         * Modifica: no aplica
+         * Retorna: el modelo actualizado
+         */
         public ActionResult cambiarAccion(string Id, int Accion)
         {
             try
@@ -289,6 +320,11 @@ namespace ProyectoInge1.Controllers
             }
         }
 
+        /* Método que obtiene los usuarios del sistema con un rol específico.
+         * Requiere: no aplica
+         * Modifica: la tabla de Usuario
+         * Retorna: el modelo actualizado
+         */
         private void obtenerUsuarios(ModeloProyecto modelo)
         {
             var listaUsuarios = baseDatos.Usuario.ToList();
