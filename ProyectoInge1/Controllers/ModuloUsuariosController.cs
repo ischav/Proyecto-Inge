@@ -340,6 +340,12 @@ namespace ProyectoInge1.Controllers
             return modelo;
         }
 
+        //Metodo GET pantalla Crear
+        public ActionResult Create()
+        {
+            return View();
+        }
+        
         /* Método que crea elementos en la vista de MEC_Unificado
          * Requiere: datos ingresados válidos
          * Modifica: la tabla de Usuario
