@@ -169,7 +169,9 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
-                modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+				if(!string.IsNullOrEmpty(modelo.rutaImagen)) {
+					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+				} 
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
