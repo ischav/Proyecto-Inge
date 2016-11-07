@@ -400,6 +400,16 @@ namespace ProyectoInge1.Controllers
 				});
 				
 				/*
+				 * se obtiene el cliente aosciado al proyecto
+				 */
+				modelo.listaUsuarios_asociados_proyecto.Add(
+				new Usuarios_asociados_proyecto {
+					IdUsuario = modelo.cliente,
+					IdProyecto = modelo.modeloProyecto.Id,
+					RolProyecto = "Cliente"
+				});
+				
+				/*
 				* se guardan los datos del proyecto junto con los desarrolladores asociados obtenidos anteriormente
 				*/ 
 				baseDatos.Usuarios_asociados_proyecto.AddRange(modelo.listaUsuarios_asociados_proyecto);
