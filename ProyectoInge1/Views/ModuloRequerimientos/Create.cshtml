@@ -70,10 +70,6 @@ else if (Model.cambiosGuardados == 2)
     </div>
 }
 
-<p>
-    @Html.ActionLink("Volver a consultar requerimientos funcionales", "Index")
-</p>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -209,16 +205,16 @@ else if (Model.cambiosGuardados == 2)
         </div>
 
         <div class="row">
-            @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
-            </div>
-
-            @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.modeloRequerimiento.Sprint, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.modeloRequerimiento.Sprint, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Sprint, "", new { @class = "text-danger" })
+            </div>
+                
+                @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
             </div>
         </div>
     </fieldset>

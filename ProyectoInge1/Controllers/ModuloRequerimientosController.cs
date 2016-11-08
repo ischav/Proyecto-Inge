@@ -21,9 +21,9 @@ namespace ProyectoInge1.Controllers
         ApplicationDbContext context = new ApplicationDbContext();
 
         /* Método que carga el modelo para la vista Index
-         * Requiere: no aplica
+         * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
          * Modifica: el modelo
-         * Retorna: el modelo cargado
+         * Retorna: el modelo de páginación cargado
          */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
@@ -169,7 +169,9 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
-                modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+				if(!string.IsNullOrEmpty(modelo.rutaImagen)) {
+					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+				} 
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();

@@ -160,27 +160,37 @@ namespace ProyectoInge1.Controllers
              */
             return View(proyecto.ToPagedList(pageNumber, pageSize));
         }
-
-        //Metodo GET para la pantalla unificada. Corresponde a consultar
+	/*
+        *Metodo GET para la pantalla unificada. Corresponde a consultar	
+	*Requiere: Que el Id del proyecto sea enviado como parámetro
+	*Modifica: no aplica
+	*Retorna: el modelo de proyecto cargado
+	*/
         public ActionResult MEC_Unificado(string id)
         {
             ModeloProyecto modeloPr = new ModeloProyecto();
             ModeloIntermedio modelo = new ModeloIntermedio();
 
             modeloPr.modeloProyecto = baseDatos.Proyecto.Find(id);
-            obtenerUsuariosModificar(modeloPr);
+            /*
+	    *Se cargan los modelos de usuarios asociados al proyecto
+	    */
+	    obtenerUsuariosModificar(modeloPr);
             obtenerDesarrolladores(modeloPr);
-
+	    /*
+	    *Se obtienen los roles actuales para manejar la vista según el rol actual
+	    */
             modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
             modeloPr.rolActualId = modelo.rolActualId;
             modeloPr.usuarioActualId = modelo.usuarioActualId;
 
 
-
-            // Verificación de los privilegios disponibles en el modulo de usuarios y
-            // asociadoos al rol del usuario loggeado en el sistema.
-            //Cambiar por los de este modulo
+	    /*
+            *Verificación de los privilegios disponibles en el modulo de usuarios y
+            *asociadoos al rol del usuario loggeado en el sistema.
+            *Cambiar por los de este modulo
+	    */
             Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-M", modelo.rolActualId);
             if (privilegio == null)
             {
@@ -228,16 +238,23 @@ namespace ProyectoInge1.Controllers
 
             return View(modeloPr);
         }
-
-        //Metodo POST para la pantalla unificada. Corresponde a modificar
-
+	/*
+        *Metodo POST para la pantalla unificada. Corresponde a modificar	
+	*Requiere: que se envíe el modelo de proyecto con los campos modificados, además que teng el equipo de desarrollo y los recuros
+	*Modifica: la base de datos, y actualiza los datos que han sido cambiados. Asocia y desasocia miembors del equipo
+	*Retorna: el modelo con los datos actualizados
+	*/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MEC_Unificado(ModeloProyecto modelo, string lider, string[] equipoDesarrollo, string[] equipoDesarrolloNuevo)
         {
             if (ModelState.IsValid)
             {
-
+	    	/*
+		*Se carga el modelo con de usuarios asociados con la lista
+		*de equipo de desarollo y con los de recursos
+		*/
+		
                 for (int i = 0; i < equipoDesarrollo.Count(); i++)
                 {
                     modelo.listaUsuarios_asociados_proyecto.Add(
@@ -249,6 +266,9 @@ namespace ProyectoInge1.Controllers
                         });
                 }
 
+		/*
+		*Se asigna el líder del proyecto al modelo
+		*/
                 modelo.listaUsuarios_asociados_proyecto.Add(
                 new Usuarios_asociados_proyecto
                 {
@@ -258,7 +278,9 @@ namespace ProyectoInge1.Controllers
                 });
 
 
-
+		/*
+		*Se trae de la base de datos los usuarios asociados al proyecto
+		*/
                 var listaUsuarios = (from usuario in baseDatos.Usuario
                                      join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                                      where usrProy.IdProyecto == modelo.modeloProyecto.Id
@@ -266,7 +288,10 @@ namespace ProyectoInge1.Controllers
 
                 var us = new List<Usuarios_asociados_proyecto>();
 
-
+		/*
+		*Si el usuarios está asociado al proyecto pero no está en el equipo de 
+		*desarrollo modificado, se quita de la base de datos
+		*/
                 for (int i = 0; i < modelo.listaUsuarios_asociados_proyecto.Count(); i++)
                 {
                     bool enBase = false;
@@ -300,12 +325,20 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("MEC_Unificado");
         }
 
+	/*
+	*Requiere: el id del proyecto
+	*Modifica: la base de datos eliminando el proyecto asociado
+	*Retorna: el modelo en la pantalla del index
+	*/
         public ActionResult eliminarProyecto(string Id)
         {
 
-            //Borra el proyecto de la tabla Proyectos
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
+	    /*
+	    *Revisa si el estado del proyecto está finalizado, en caso  contrario
+	    *muestra una alerta
+	    */
             if (modelo.modeloProyecto.Estado.Equals("Finalizado"))
             {
                 baseDatos.Proyecto.Remove(modelo.modeloProyecto);
@@ -320,36 +353,68 @@ namespace ProyectoInge1.Controllers
             return RedirectToAction("Index");
         }
 
-        //Metodo GET pantalla Crear Proyecto
+       	/* Método que carga el modelo con los datos para desplegar en la vista de crear proyecto
+	 * Requiere: no aplica
+	 * Modifica: no aplica
+	 * Retorna: el modelo con los datos cargados de la base
+	 */
         public ActionResult Create() {
 			ModeloProyecto modelo = new ModeloProyecto();
 			obtenerUsuarios(modelo);
 
 			return View(modelo);
 		}
-
+		
+		/* Método que guarda en la base los datos de un nuevo proyecto y sus usuarios asociados
+		 * Requiere: El modelo, el lider de proyecto, la lista de desarrolladores y una indicacion de que se quiere guardar los datos
+		 * Modifica: la base de datos y el modelo
+		 * Retorna: no aplica
+		 */
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(ModeloProyecto modelo, string aceptar, string lider, string[] equipoDesarrollo) {
 
 			if(!string.IsNullOrEmpty(aceptar)) {
 				if(ModelState.IsValid) {
+				
+				/*
+				 * se obtienen los desarrolladores que se asociaran al proyecto
+				 */
 				for(int i = 0; i < equipoDesarrollo.Count(); i++) {
-					modelo.listaUsuarios_asociados_proyecto.Add(
-						new Usuarios_asociados_proyecto {
-							IdUsuario = equipoDesarrollo[i],
-							IdProyecto = modelo.modeloProyecto.Id,
-							RolProyecto = "Desarrollador"
-						});
+					//se evita agregar al lider dos veces al proyecto
+					if(equipoDesarrollo[i] != lider) {
+						modelo.listaUsuarios_asociados_proyecto.Add(
+							new Usuarios_asociados_proyecto {
+								IdUsuario = equipoDesarrollo[i],
+								IdProyecto = modelo.modeloProyecto.Id,
+								RolProyecto = "Desarrollador"
+							});
+					}
 				}
-
+				
+				/*
+				 * se obtiene el lider del proyecto
+				 */
 				modelo.listaUsuarios_asociados_proyecto.Add(
 				new Usuarios_asociados_proyecto {
 					IdUsuario = lider,
 					IdProyecto = modelo.modeloProyecto.Id,
 					RolProyecto = "Líder"
 				});
-
+				
+				/*
+				 * se obtiene el cliente aosciado al proyecto
+				 */
+				modelo.listaUsuarios_asociados_proyecto.Add(
+				new Usuarios_asociados_proyecto {
+					IdUsuario = modelo.cliente,
+					IdProyecto = modelo.modeloProyecto.Id,
+					RolProyecto = "Cliente"
+				});
+				
+				/*
+				* se guardan los datos del proyecto junto con los desarrolladores asociados obtenidos anteriormente
+				*/ 
 				baseDatos.Usuarios_asociados_proyecto.AddRange(modelo.listaUsuarios_asociados_proyecto);
 				baseDatos.Proyecto.Add(modelo.modeloProyecto);
 				try {
@@ -361,16 +426,23 @@ namespace ProyectoInge1.Controllers
 
 			ModeloProyecto nuevoModelo = new ModeloProyecto();
 			obtenerUsuarios(nuevoModelo);
-			//return View(nuevoModelo);
 			return RedirectToAction("Create");
 		}
-
+		
+		/* Método que carga listas con clientes y recursos para desplegar en la vista
+		 * Requiere: un objeto del modelo
+		 * Modifica: el modelo que se envia como parametro a la vista
+		 * Retorna: no aplica
+		 */
 		private void obtenerUsuarios(ModeloProyecto modelo) {
-			var listaUsuarios = baseDatos.Usuario.ToList();
+			var listaUsuarios = baseDatos.Usuario.ToList();// se cargan todos los usuarios de la base
 			var clientes = new List<Usuario>();
 			var recursos = new List<Usuario>();
 			var lideres = new List<Usuario>();
-
+			
+			/*
+			 * se clasifican los usuarios segun rol
+			 */
 			foreach(var usr in listaUsuarios) {
 				if(context.Users.Find(usr.Id).Roles.First().RoleId == "03User") {
 					clientes.Add(usr);
@@ -379,12 +451,20 @@ namespace ProyectoInge1.Controllers
 					lideres.Add(usr);
 				}
 			}
-
+			
+			/*
+			 * se pasan las listas de usuarios clasificados segun rol a la vista
+			 */
 			ViewBag.listaClientes = clientes;
 			ViewBag.listaRecursos = recursos;
 			ViewBag.listaDesarrolladores = new List<Usuario>();
 		}
 
+	/* Método que carga listas con Desarroladores
+	 * Requiere: un objeto del modelo
+	 * Modifica: el modelo que se envia como parametro a la vista
+	 * Retorna: no aplica
+	 */
         private void obtenerDesarrolladores(ModeloProyecto modelo)
         {
 
@@ -394,7 +474,10 @@ namespace ProyectoInge1.Controllers
                                  join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                                  where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto.Equals("Desarrollador")
                                  select new { usuario });
-
+	    
+	    /*
+	    *Agrega los desarrolladores asociados al proyecto
+	    */
             foreach (var usr in listaUsuarios)
             {
                 usuariosAsociadosProyectos.Add(usr.usuario);
@@ -402,6 +485,11 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaDesarrolladores = usuariosAsociadosProyectos;
         }
 
+	/* Método que carga los desarrolladoresmodificados y los desasocia
+	 * Requiere: un objeto del modelo
+	 * Modifica: el modelo que se envia como parametro a la vista
+	 * Retorna: no aplica
+	 */
         private void obtenerUsuariosModificar(ModeloProyecto modelo)
         {
 
@@ -445,6 +533,9 @@ namespace ProyectoInge1.Controllers
                        join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                        where usrProy.IdProyecto == modelo.modeloProyecto.Id && usrProy.RolProyecto == "Cliente"
                        select new { usuario });
+	    /*
+	    * Agrega cada usuario al modelo
+	    */
 
             if (lid.Count() > 0)
             {
@@ -455,6 +546,11 @@ namespace ProyectoInge1.Controllers
             {
                 cliente.Add(cli.First().usuario);
             }
+	    
+	    /*
+	     * se pasan las listas de usuarios clasificados segun rol a la vista
+	    */
+			 
             ViewBag.listaClientes = cliente;
             ViewBag.listaRecursos = recursos;
             ViewBag.listaDesarrolladores = new List<Usuario>();
