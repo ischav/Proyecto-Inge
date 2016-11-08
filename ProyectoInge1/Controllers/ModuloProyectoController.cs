@@ -381,12 +381,15 @@ namespace ProyectoInge1.Controllers
 				 * se obtienen los desarrolladores que se asociaran al proyecto
 				 */
 				for(int i = 0; i < equipoDesarrollo.Count(); i++) {
-					modelo.listaUsuarios_asociados_proyecto.Add(
-						new Usuarios_asociados_proyecto {
-							IdUsuario = equipoDesarrollo[i],
-							IdProyecto = modelo.modeloProyecto.Id,
-							RolProyecto = "Desarrollador"
-						});
+					//se evita agregar al lider dos veces al proyecto
+					if(equipoDesarrollo[i] != lider) {
+						modelo.listaUsuarios_asociados_proyecto.Add(
+							new Usuarios_asociados_proyecto {
+								IdUsuario = equipoDesarrollo[i],
+								IdProyecto = modelo.modeloProyecto.Id,
+								RolProyecto = "Desarrollador"
+							});
+					}
 				}
 				
 				/*
