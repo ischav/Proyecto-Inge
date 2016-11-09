@@ -17,6 +17,7 @@ namespace ProyectoInge1.Models
     public class ModeloProyecto
     {
         /* Objeto que corresponde al id de las tuplas en la tabla Proyecto de la base de datos */
+        [Display(Name = "Proyecto")]
         public string proyectoRequerimiento { get; set; }
 
         /* Objeto que corresponde a la tabla Proyecto de la base de datos */

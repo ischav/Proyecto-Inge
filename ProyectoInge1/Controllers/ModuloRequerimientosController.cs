@@ -147,15 +147,16 @@ namespace ProyectoInge1.Controllers
             return View(requerimiento.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult Create()
+        public ActionResult Create(String proyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.listaProyectos = baseDatos.Proyecto.ToList();
-            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+            modelo.proyectoRequerimiento = proyecto;
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                      "USP.IdProyecto = P.Id " + 
                                                                      "WHERE USP.RolProyecto = 'Cliente';").ToList();
-            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                              "USP.IdProyecto = P.Id " +
                                                                              "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
@@ -167,20 +168,21 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ModeloProyecto modelo)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && modelo.proyectoRequerimiento != "Seleccione un proyecto")
             {
 				if(!string.IsNullOrEmpty(modelo.rutaImagen)) {
 					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
-				} 
+				}
+                modelo.modeloRequerimiento.IdProyecto = modelo.proyectoRequerimiento;
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
-                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                          "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                          "USP.IdProyecto = P.Id " +
                                                                          "WHERE USP.RolProyecto = 'Cliente';").ToList();
-                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                                  "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                                  "USP.IdProyecto = P.Id " +
                                                                                  "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
@@ -233,13 +235,13 @@ namespace ProyectoInge1.Controllers
             modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
             modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
-            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                      "USP.IdProyecto = P.Id JOIN Requerimiento R " + 
                                                                      "ON P.Id = R.IdProyecto " +
                                                                      "WHERE USP.RolProyecto = 'Cliente' AND " +
                                                                      "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                      "USP.IdProyecto = P.Id JOIN Requerimiento R " +
                                                                      "ON P.Id = R.IdProyecto " +
