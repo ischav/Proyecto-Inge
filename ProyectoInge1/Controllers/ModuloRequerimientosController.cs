@@ -154,12 +154,12 @@ namespace ProyectoInge1.Controllers
             modelo.proyectoRequerimiento = proyecto;
             modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                     "USP.IdProyecto = P.Id " + 
-                                                                     "WHERE USP.RolProyecto = 'Cliente';").ToList();
+                                                                     "USP.IdProyecto = P.Id " +
+                                                                     "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='"+proyecto+"';").ToList();
             modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                              "USP.IdProyecto = P.Id " +
-                                                                             "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
+                                                                             "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + proyecto + "';").ToList();
 
             return View(modelo);
         }
