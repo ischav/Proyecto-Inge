@@ -27,7 +27,23 @@ namespace ProyectoInge1.Controllers
          */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
-            ViewBag.pro = new SelectList(baseDatos.Proyecto, "Id", "Nombre", Proyecto);
+
+            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String rol = context.Users.Find(id).Roles.First().RoleId;
+            var proyecto = from Proyecto p in baseDatos.Proyecto
+                           select p;
+
+            if (!(rol == "01Admin"))
+            {
+                String id_usuario = User.Identity.GetUserId();
+                proyecto = from Proyecto p in baseDatos.Proyecto
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+                            p.Id equals USP.IdProyecto
+                           where USP.IdUsuario == id_usuario
+                           select p;
+            }
+
+            ViewBag.pro = new SelectList(proyecto, "Id", "Nombre", Proyecto);
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
