@@ -6,6 +6,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style type="text/css">
+    .required:after {
+        content: " *";
+        font-weight: bold;
+        color: red;
+    }
+</style>
+
 <script>
     /* Método que borra los campos cambiados en la vista Create
      * Requiere: no aplica
@@ -23,10 +31,6 @@
 
 <h2>Agregar usuario</h2>
 
-<p>
-    @Html.ActionLink("Volver a consultar usuarios", "Index")
-</p>
-
 <!-- Para cada atributo en la tabla Usuario de la base de datos, se despliega un campo para ingresar el valor de ese
      atributo -->
 @using (Html.BeginForm())
@@ -37,7 +41,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.modeloUsuario.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloUsuario.Nombre, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modeloUsuario.Nombre, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloUsuario.Nombre, "", new { @class = "text-danger" })
@@ -45,7 +49,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modeloUsuario.Apellido1, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloUsuario.Apellido1, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modeloUsuario.Apellido1, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido1, "", new { @class = "text-danger" })
@@ -61,7 +65,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modeloUsuario.Cedula, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloUsuario.Cedula, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modeloUsuario.Cedula, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloUsuario.Cedula, "", new { @class = "text-danger" })
@@ -93,7 +97,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modCrear.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modCrear.Email, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modCrear.Email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modCrear.Email, "", new { @class = "text-danger" })
@@ -101,7 +105,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modCrear.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modCrear.Password, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modCrear.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Ejemplo: Abcd!123" } })
                 @Html.ValidationMessageFor(model => model.modCrear.Password, "", new { @class = "text-danger" })
@@ -109,7 +113,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modCrear.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modCrear.ConfirmPassword, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.modCrear.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modCrear.ConfirmPassword, "", new { @class = "text-danger" })
@@ -126,7 +130,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.modCrear.Rol, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modCrear.Rol, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.modCrear.Rol, new SelectList(
                   new List<Object>{
