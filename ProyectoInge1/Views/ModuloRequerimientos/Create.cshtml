@@ -33,6 +33,15 @@
         height: auto;
         max-height: 279px;
     }
+
+
+
+</style>
+
+<style>
+    data {
+        display: none;
+    }
 </style>
 
 <script>
@@ -79,15 +88,16 @@ else if (Model.cambiosGuardados == 2)
     <fieldset>
         <legend>Datos del Requerimiento</legend>
 
+        @Html.HiddenFor(model => model.modeloRequerimiento.IdProyecto)
         <div class="row">
             <div class="form-group">
-                @Html.LabelFor(model => model.modeloRequerimiento.IdProyecto, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.proyectoRequerimiento, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.DropDownListFor(model => model.modeloRequerimiento.IdProyecto, Model.listaProyectos.Select(x => new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Nombre.ToString()
-                    }), "Seleccione un proyecto", new { @class = "form-control" })
+                    @Html.EditorFor(model => model.proyectoRequerimiento, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                  <data>
+                      @Html.EditorFor(model => model.proyectoRequerimiento, new { htmlAttributes = new { @class = "form-control" } })
+                  </data>
+                    @Html.ValidationMessageFor(model => model.proyectoRequerimiento, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>

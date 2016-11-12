@@ -61,8 +61,20 @@ namespace ProyectoInge1.Controllers
             /*
              * Se asigna a la variable proyecto, el valor de todos los proyectos de la base de datos
              */
-            var proyecto = from s in baseDatos.Proyecto
-                           select s;
+            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String rol = context.Users.Find(id).Roles.First().RoleId;
+            var proyecto = from Proyecto p in baseDatos.Proyecto
+                           select p;
+
+            if (!(rol == "01Admin"))
+            {
+                String id_usuario = User.Identity.GetUserId();
+                proyecto = from Proyecto p in baseDatos.Proyecto
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+                            p.Id equals USP.IdProyecto
+                           where USP.IdUsuario == id_usuario
+                           select p;
+            }
 
             /* 
              * Si existe una hilera con la cual filtrar, entonces se devuelven las tuplas de la tabla Proyecto de la base

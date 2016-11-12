@@ -27,7 +27,23 @@ namespace ProyectoInge1.Controllers
          */
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
-            ViewBag.pro = new SelectList(baseDatos.Proyecto, "Id", "Nombre", Proyecto);
+
+            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String rol = context.Users.Find(id).Roles.First().RoleId;
+            var proyecto = from Proyecto p in baseDatos.Proyecto
+                           select p;
+
+            if (!(rol == "01Admin"))
+            {
+                String id_usuario = User.Identity.GetUserId();
+                proyecto = from Proyecto p in baseDatos.Proyecto
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+                            p.Id equals USP.IdProyecto
+                           where USP.IdUsuario == id_usuario
+                           select p;
+            }
+
+            ViewBag.pro = new SelectList(proyecto, "Id", "Nombre", Proyecto);
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -147,18 +163,19 @@ namespace ProyectoInge1.Controllers
             return View(requerimiento.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult Create()
+        public ActionResult Create(String proyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.listaProyectos = baseDatos.Proyecto.ToList();
-            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+            modelo.proyectoRequerimiento = proyecto;
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                     "USP.IdProyecto = P.Id " + 
-                                                                     "WHERE USP.RolProyecto = 'Cliente';").ToList();
-            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "USP.IdProyecto = P.Id " +
+                                                                     "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='"+proyecto+"';").ToList();
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                              "USP.IdProyecto = P.Id " +
-                                                                             "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
+                                                                             "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + proyecto + "';").ToList();
 
             return View(modelo);
         }
@@ -167,11 +184,12 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ModeloProyecto modelo)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && modelo.proyectoRequerimiento != "Seleccione un proyecto")
             {
 				if(!string.IsNullOrEmpty(modelo.rutaImagen)) {
 					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
-				} 
+				}
+                modelo.modeloRequerimiento.IdProyecto = modelo.proyectoRequerimiento;
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
@@ -179,11 +197,11 @@ namespace ProyectoInge1.Controllers
                 modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                          "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                          "USP.IdProyecto = P.Id " +
-                                                                         "WHERE USP.RolProyecto = 'Cliente';").ToList();
+                                                                         "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
                 modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                                  "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                                  "USP.IdProyecto = P.Id " +
-                                                                                 "WHERE USP.RolProyecto = 'Desarrollador';").ToList();
+                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
                 nuevoModelo.cambiosGuardados = 1;
 
                 return View(nuevoModelo);
