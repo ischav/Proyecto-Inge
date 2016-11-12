@@ -33,6 +33,12 @@
         height: auto;
         max-height: 279px;
     }
+
+    .required:after {
+        content: " *";
+        font-weight: bold;
+        color: red;
+    }
 </style>
 
 <script>
@@ -172,7 +178,7 @@
 
         @Html.HiddenFor(model => model.modeloRequerimiento.Id)
         <div class="row">
-            @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloRequerimiento.Id, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 <div class="Id">
                     @Html.EditorFor(model => model.modeloRequerimiento.Id, new { htmlAttributes = new { @class = "form-control", @id = "Id" } })
@@ -180,7 +186,7 @@
                 </div>
             </div>
 
-            @Html.LabelFor(model => model.modeloRequerimiento.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloRequerimiento.Nombre, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.modeloRequerimiento.Nombre, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Nombre, "", new { @class = "text-danger" })
@@ -203,7 +209,7 @@
                     </div>
                 </div>
                 <div class="SolicitanteModificar">
-                    @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label required col-md-2" })
                     <div class="col-md-4">
                         @Html.DropDownListFor(model => model.modeloRequerimiento.IdSolicitante, Model.listaUsuariosCliente.Select(x => new SelectListItem
                    {
@@ -216,7 +222,7 @@
         </div>
 
         <div class="row">
-            @Html.LabelFor(model => model.rutaImagen, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.rutaImagen, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.rutaImagen, new { htmlAttributes = new { @id = "rutaImagen", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.rutaImagen, "", new { @class = "text-danger" })
@@ -247,7 +253,7 @@
         <legend>Datos de Estimación</legend>
 
         <div class="row">
-            @Html.LabelFor(model => model.modeloRequerimiento.Prioridad, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloRequerimiento.Prioridad, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.modeloRequerimiento.Prioridad, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Prioridad, "", new { @class = "text-danger" })
@@ -279,7 +285,7 @@
         <legend>Datos de Desarrollo</legend>
 
         <div class="row">
-            @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 <div class="EstadoConsultar">
                     @Html.EditorFor(model => model.modeloRequerimiento.Estado, new { htmlAttributes = new { @class = "form-control" } })
@@ -305,7 +311,7 @@
                     </div>
                 </div>
                 <div class="ResponsableModificar">
-                    @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label required col-md-2" })
                     <div class="col-md-4">
                        @Html.DropDownListFor(model => model.modeloRequerimiento.IdResponsable, Model.listaUsuariosDesarrolladores.Select(x => new SelectListItem
                   {
@@ -326,7 +332,7 @@
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Sprint, "", new { @class = "text-danger" })
             </div>
                 
-                @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.modeloRequerimiento.Modulo, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.modeloRequerimiento.Modulo, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
