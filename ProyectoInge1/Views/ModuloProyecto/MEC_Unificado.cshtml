@@ -81,11 +81,14 @@
 </div>
 
 
-@if (Model.rolActualId.Equals("01Admin") || Model.liderId.Equals(Model.usuarioActualId))
+@if((bool)Session["PRO-M"] || Model.liderId.Equals(Model.usuarioActualId))
 {
     <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
+}
+@if((bool)Session["PRO-E"] || Model.liderId.Equals(Model.usuarioActualId)) {
     <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloProyecto.Id)')">Eliminar</button>
 }
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -203,7 +206,7 @@
         </div>
 
 
-        @if (Model.rolActualId.Equals("01Admin") || Model.liderId.Equals(Model.usuarioActualId))
+        @if ((bool)Session["PRO-M"] || (bool)Session["PRO-E"] || Model.liderId.Equals(Model.usuarioActualId))
         {
             <div class="form-group">
                 <div class="form-inline" align="right">

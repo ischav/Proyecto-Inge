@@ -10,9 +10,11 @@
 }
 <h2>Gestión de proyectos</h2>
 
-<p>
-    @Html.ActionLink("Agregar proyectos", "Create")
-</p>
+@if((bool)Session["PRO-I"]) {
+    <p>
+        @Html.ActionLink("Agregar proyectos", "Create")
+    </p>
+}
 
 @using (Html.BeginForm("Index", "ModuloProyecto", FormMethod.Get))
  {

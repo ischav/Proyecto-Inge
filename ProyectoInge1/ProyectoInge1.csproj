@@ -213,6 +213,7 @@
     <Compile Include="Controllers\ModuloRequerimientosController.cs" />
     <Compile Include="Controllers\ModuloSeguridadController.cs" />
     <Compile Include="Controllers\ModuloUsuariosController.cs" />
+    <Compile Include="Controllers\Permisos.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

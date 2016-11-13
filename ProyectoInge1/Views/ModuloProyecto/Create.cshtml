@@ -26,6 +26,16 @@
 
 <h2>Agregar proyecto</h2>
 
+@if(ViewBag.msj == "exito") {
+    <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+        <p>Proyecto creado exitosamente!</p>
+    </div>
+} else if(ViewBag.msj == "error") {
+    <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+        <p>Error al intentar crear el proyecto</p>
+    </div>
+}
+
 @using(Html.BeginForm()) {
     @Html.AntiForgeryToken()
 

@@ -5,5 +5,8 @@
 }
 
 <h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h2 class="text-danger">Ocurrió un error al procesar su petición.</h2>
 
+@if((bool)(ViewData["errorPrivilegio"] ?? false)) {
+        <p>Error al intentar validar los permisos asociados al rol. Vuelva a cargar la página.</p>
+}

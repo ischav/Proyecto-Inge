@@ -14,32 +14,19 @@ using System.Net.Mail;
 
 namespace ProyectoInge1.Controllers
 {
-    public class ModuloProyectoController : Controller
-    {
-        Entities baseDatos = new Entities();
-        ApplicationDbContext context = new ApplicationDbContext();
+	public class ModuloProyectoController : Controller {
+		Entities baseDatos = new Entities();
+		ApplicationDbContext context = new ApplicationDbContext();
 
-        /* Método que carga el modelo para la vista Index
+		/* Método que carga el modelo para la vista Index
          * Requiere: no aplica
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
+		[Authorize]
+		[Permisos("PRO-I")]
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
-            /*
-             * Se crea el modelo:
-             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
-             * en la base de datos (tabla de la base de datos)
-             * Se verifica si el usuario actual cuenta con permisos para realizar la acción
-             */
-            ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-I", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.agregar = false;
-            else
-                modelo.agregar = true;
 
             /* 
              * Se asignan los valores necesarios para la paginación y el filtrado 
@@ -172,13 +159,16 @@ namespace ProyectoInge1.Controllers
              */
             return View(proyecto.ToPagedList(pageNumber, pageSize));
         }
-	/*
-        *Metodo GET para la pantalla unificada. Corresponde a consultar	
-	*Requiere: Que el Id del proyecto sea enviado como parámetro
-	*Modifica: no aplica
-	*Retorna: el modelo de proyecto cargado
-	*/
-        public ActionResult MEC_Unificado(string id)
+
+		/*
+		*Metodo GET para la pantalla unificada. Corresponde a consultar	
+		*Requiere: Que el Id del proyecto sea enviado como parámetro
+		*Modifica: no aplica
+		*Retorna: el modelo de proyecto cargado
+		*/
+		[Authorize]
+		[Permisos("PRO-M","PRO-E", "PRO-C")]
+		public ActionResult MEC_Unificado(string id)
         {
             ModeloProyecto modeloPr = new ModeloProyecto();
             ModeloIntermedio modelo = new ModeloIntermedio();
@@ -189,49 +179,6 @@ namespace ProyectoInge1.Controllers
 	    */
 	    obtenerUsuariosModificar(modeloPr);
             obtenerDesarrolladores(modeloPr);
-	    /*
-	    *Se obtienen los roles actuales para manejar la vista según el rol actual
-	    */
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            modeloPr.rolActualId = modelo.rolActualId;
-            modeloPr.usuarioActualId = modelo.usuarioActualId;
-
-
-	    /*
-            *Verificación de los privilegios disponibles en el modulo de usuarios y
-            *asociadoos al rol del usuario loggeado en el sistema.
-            *Cambiar por los de este modulo
-	    */
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-M", modelo.rolActualId);
-            if (privilegio == null)
-            {
-                modelo.modificar = false;
-            }
-            else
-            {
-                modelo.modificar = true;
-            }
-
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-C", modelo.rolActualId);
-            if (privilegio == null)
-            {
-                modelo.consultar = false;
-            }
-            else
-            {
-                modelo.consultar = true;
-            }
-
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("PRO-E", modelo.rolActualId);
-            if (privilegio == null)
-            {
-                modelo.eliminar = false;
-            }
-            else
-            {
-                modelo.eliminar = true;
-            }
 
             if (id == null)
             {
