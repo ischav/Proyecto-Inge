@@ -42,8 +42,6 @@
         $('.elementoConsultar').hide();
         $('.elementoModificar').show();
         $("#eliminar").prop("disabled",true);
-        $("#campoId *").prop("disabled",true);
-
         }
 
     function funcionCancelar() {
@@ -62,8 +60,6 @@
             $('.elementoModificar').hide();
             $('.elementoConsultar').show();
         }
-        $("#lider *").prop("disabled", true).trigger("click");
-        $("#quitar *").prop("disabled", true).hide();
     }
 
 </script>
@@ -207,7 +203,7 @@
         {
             <div class="form-group">
                 <div class="form-inline" align="right">
-                    <input type="submit" id="guardar" value="Aceptar" name="aceptar" class="btn btn-default" />
+                    <input type="submit" id="guardar" value="Aceptar" name="guardar" class="btn btn-default" />
                     <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
                 </div>
             </div>
