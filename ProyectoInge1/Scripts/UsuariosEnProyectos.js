@@ -23,5 +23,6 @@ $('#quitar').click(function (e) {
 });
 
 $('#guardar').click(function (e) {
+    $('#recursos option').prop('selected', true)
     $('#equipoDesarrollo option').prop('selected', true)
 });
