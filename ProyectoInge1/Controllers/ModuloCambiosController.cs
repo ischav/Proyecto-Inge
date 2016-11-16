@@ -13,6 +13,7 @@ namespace ProyectoInge1.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        /*
         public ActionResult Edit(ModeloProyecto modelo)
         {
             if (ModelState.IsValid)
@@ -24,7 +25,7 @@ namespace ProyectoInge1.Controllers
             {
 
             }
-        }
+        } */
 
     }
 }

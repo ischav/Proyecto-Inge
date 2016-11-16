@@ -4,18 +4,46 @@
     <EntitySetMapping Name="Cambio">
       <EntityTypeMapping TypeName="ModelEntities.Cambio">
         <MappingFragment StoreEntitySet="Cambio">
-          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="EstadoSolicitud" ColumnName="EstadoSolicitud" />
+          <ScalarProperty Name="FechaCambio" ColumnName="FechaCambio" />
+          <ScalarProperty Name="SolicitanteCambio" ColumnName="SolicitanteCambio" />
+          <ScalarProperty Name="JustificacionCambio" ColumnName="JustificacionCambio" />
+          <ScalarProperty Name="DescripcionCambio" ColumnName="DescripcionCambio" />
+          <ScalarProperty Name="Version" ColumnName="Version" />
+          <ScalarProperty Name="IdSolicitante" ColumnName="IdSolicitante" />
+          <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
+          <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+          <ScalarProperty Name="Observaciones" ColumnName="Observaciones" />
+          <ScalarProperty Name="Modulo" ColumnName="Modulo" />
+          <ScalarProperty Name="Sprint" ColumnName="Sprint" />
+          <ScalarProperty Name="FechaFinal" ColumnName="FechaFinal" />
+          <ScalarProperty Name="FechaInicio" ColumnName="FechaInicio" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Esfuerzo" ColumnName="Esfuerzo" />
+          <ScalarProperty Name="Prioridad" ColumnName="Prioridad" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
           <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="IdRequerimiento" ColumnName="IdRequerimiento" />
-          <ScalarProperty Name="Justificacion" ColumnName="Justificacion" />
-          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
-          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="IdSolicitud" ColumnName="IdSolicitud" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CriterioAceptacion">
       <EntityTypeMapping TypeName="ModelEntities.CriterioAceptacion">
         <MappingFragment StoreEntitySet="CriterioAceptacion">
+          <ScalarProperty Name="Borrar" ColumnName="Borrar" />
+          <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
+          <ScalarProperty Name="IdRequerimiento" ColumnName="IdRequerimiento" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Escenario" ColumnName="Escenario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CriterioAceptacionHistorial">
+      <EntityTypeMapping TypeName="ModelEntities.CriterioAceptacionHistorial">
+        <MappingFragment StoreEntitySet="CriterioAceptacionHistorial">
+          <ScalarProperty Name="IdSolicitud" ColumnName="IdSolicitud" />
           <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
           <ScalarProperty Name="IdRequerimiento" ColumnName="IdRequerimiento" />
           <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
@@ -55,6 +83,7 @@
     <EntitySetMapping Name="Requerimiento">
       <EntityTypeMapping TypeName="ModelEntities.Requerimiento">
         <MappingFragment StoreEntitySet="Requerimiento">
+          <ScalarProperty Name="Version" ColumnName="Version" />
           <ScalarProperty Name="IdSolicitante" ColumnName="IdSolicitante" />
           <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
           <ScalarProperty Name="Imagen" ColumnName="Imagen" />

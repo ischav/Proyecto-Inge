@@ -14,13 +14,37 @@ namespace ProyectoInge1.Models
     
     public partial class Cambio
     {
-        public System.DateTime Fecha { get; set; }
-        public string Descripcion { get; set; }
-        public string Justificacion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Cambio()
+        {
+            this.CriterioAceptacionHistorial = new HashSet<CriterioAceptacionHistorial>();
+        }
+    
+        public int IdSolicitud { get; set; }
         public string IdRequerimiento { get; set; }
         public string IdProyecto { get; set; }
-        public string IdUsuario { get; set; }
+        public string Nombre { get; set; }
+        public string Prioridad { get; set; }
+        public string Esfuerzo { get; set; }
+        public string Estado { get; set; }
+        public string Descripcion { get; set; }
+        public Nullable<System.DateTime> FechaInicio { get; set; }
+        public Nullable<System.DateTime> FechaFinal { get; set; }
+        public string Sprint { get; set; }
+        public string Modulo { get; set; }
+        public string Observaciones { get; set; }
+        public byte[] Imagen { get; set; }
+        public string IdResponsable { get; set; }
+        public string IdSolicitante { get; set; }
+        public Nullable<int> Version { get; set; }
+        public string DescripcionCambio { get; set; }
+        public string JustificacionCambio { get; set; }
+        public string SolicitanteCambio { get; set; }
+        public Nullable<System.DateTime> FechaCambio { get; set; }
+        public string EstadoSolicitud { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CriterioAceptacionHistorial> CriterioAceptacionHistorial { get; set; }
         public virtual Requerimiento Requerimiento { get; set; }
         public virtual Usuario Usuario { get; set; }
     }

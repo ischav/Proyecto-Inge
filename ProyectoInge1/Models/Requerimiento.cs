@@ -23,20 +23,20 @@ namespace ProyectoInge1.Models
         }
 
         [Required(ErrorMessage = "El id es un campo requerido.")]
-        [RegularExpression(@"[0-9a-zA-Z\-_Ã¡Ã©Ã­Ã³ÃºÃ±\s]+", ErrorMessage = "Solo se pueden ingresar letras, nÃºmeros y guiones")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
         [Display(Name = "Id")]
         public string Id { get; set; }
 
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
-        [RegularExpression(@"[0-9a-zA-Z\-_Ã¡Ã©Ã­Ã³ÃºÃ±\s]+", ErrorMessage = "Solo se pueden ingresar letras, nÃºmeros y guiones")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; }
 
-        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar nÃºmeros")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
         [Display(Name = "Prioridad")]
         public string Prioridad { get; set; }
 
-        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar nÃºmeros")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
         [Display(Name = "Esfuerzo")]
         public string Esfuerzo { get; set; }
 
@@ -44,8 +44,8 @@ namespace ProyectoInge1.Models
         [Display(Name = "Estado")]
         public string Estado { get; set; }
 
-        [Required(ErrorMessage = "La descripciÃ³n es un campo requerido.")]
-        [Display(Name = "DescripciÃ³n")]
+        [Required(ErrorMessage = "La descripción es un campo requerido.")]
+        [Display(Name = "Descripción")]
         [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
 
@@ -57,12 +57,12 @@ namespace ProyectoInge1.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaFinal { get; set; }
 
-        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar nÃºmeros")]
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
         [Display(Name = "Sprint")]
         public string Sprint { get; set; }
 
-        [RegularExpression(@"[0-9a-zA-Z\-_Ã¡Ã©Ã­Ã³ÃºÃ±\s]+", ErrorMessage = "Solo se pueden ingresar letras, nÃºmeros y guiones")]
-        [Display(Name = "MÃ³dulo")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Módulo")]
         public string Modulo { get; set; }
 
         public string Observaciones { get; set; }
@@ -73,7 +73,7 @@ namespace ProyectoInge1.Models
         public string IdResponsable { get; set; }
         [Display(Name = "Solicitante")]
         public string IdSolicitante { get; set; }
-        [Display(Name = "VersiÃ³n")]
+        [Display(Name = "Versión")]
         public Nullable<int> Version { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

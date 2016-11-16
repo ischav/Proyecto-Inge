@@ -2,17 +2,32 @@
 <Schema Namespace="ModelEntities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="Cambio">
     <Key>
-      <PropertyRef Name="Fecha" />
+      <PropertyRef Name="IdSolicitud" />
       <PropertyRef Name="IdRequerimiento" />
       <PropertyRef Name="IdProyecto" />
-      <PropertyRef Name="IdUsuario" />
     </Key>
-    <Property Name="Fecha" Type="date" Nullable="false" />
-    <Property Name="Descripcion" Type="varchar" MaxLength="200" Nullable="false" />
-    <Property Name="Justificacion" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="IdSolicitud" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="IdRequerimiento" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="40" Nullable="false" />
+    <Property Name="Prioridad" Type="varchar" MaxLength="2" />
+    <Property Name="Esfuerzo" Type="varchar" MaxLength="2" />
+    <Property Name="Estado" Type="varchar" MaxLength="20" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="100" />
+    <Property Name="FechaInicio" Type="date" />
+    <Property Name="FechaFinal" Type="date" />
+    <Property Name="Sprint" Type="varchar" MaxLength="2" />
+    <Property Name="Modulo" Type="varchar" MaxLength="30" />
+    <Property Name="Observaciones" Type="varchar" MaxLength="150" />
+    <Property Name="Imagen" Type="image" />
+    <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
+    <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" />
+    <Property Name="Version" Type="int" />
+    <Property Name="DescripcionCambio" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="JustificacionCambio" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="SolicitanteCambio" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="FechaCambio" Type="date" />
+    <Property Name="EstadoSolicitud" Type="varchar" MaxLength="15" Nullable="false" />
   </EntityType>
   <EntityType Name="CriterioAceptacion">
     <Key>
@@ -24,6 +39,20 @@
     <Property Name="Descripcion" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="IdRequerimiento" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Borrar" Type="bit" />
+  </EntityType>
+  <EntityType Name="CriterioAceptacionHistorial">
+    <Key>
+      <PropertyRef Name="Escenario" />
+      <PropertyRef Name="IdRequerimiento" />
+      <PropertyRef Name="IdProyecto" />
+      <PropertyRef Name="IdSolicitud" />
+    </Key>
+    <Property Name="Escenario" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="IdRequerimiento" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IdSolicitud" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Privilegio">
     <Key>
@@ -61,7 +90,7 @@
     <Property Name="Nombre" Type="varchar" MaxLength="40" Nullable="false" />
     <Property Name="Prioridad" Type="varchar" MaxLength="2" />
     <Property Name="Esfuerzo" Type="varchar" MaxLength="2" />
-    <Property Name="Estado" Type="varchar" MaxLength="20" />
+    <Property Name="Estado" Type="varchar" MaxLength="40" />
     <Property Name="Descripcion" Type="varchar" MaxLength="100" />
     <Property Name="FechaInicio" Type="date" />
     <Property Name="FechaFinal" Type="date" />
@@ -72,6 +101,7 @@
     <Property Name="Imagen" Type="image" />
     <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
     <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" />
+    <Property Name="Version" Type="int" />
   </EntityType>
   <EntityType Name="Usuario">
     <Key>
@@ -96,6 +126,38 @@
     <Property Name="IdProyecto" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="RolProyecto" Type="varchar" MaxLength="15" Nullable="false" />
   </EntityType>
+  <Association Name="FK_CriterioAceptacionCambio">
+    <End Role="Cambio" Type="Self.Cambio" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CriterioAceptacionHistorial" Type="Self.CriterioAceptacionHistorial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cambio">
+        <PropertyRef Name="IdSolicitud" />
+        <PropertyRef Name="IdRequerimiento" />
+        <PropertyRef Name="IdProyecto" />
+      </Principal>
+      <Dependent Role="CriterioAceptacionHistorial">
+        <PropertyRef Name="IdSolicitud" />
+        <PropertyRef Name="IdRequerimiento" />
+        <PropertyRef Name="IdProyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IdRequerimientoCambios">
+    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1" />
+    <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="IdProyecto" />
+      </Principal>
+      <Dependent Role="Cambio">
+        <PropertyRef Name="IdRequerimiento" />
+        <PropertyRef Name="IdProyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Privilegio">
     <End Role="Privilegio" Type="Self.Privilegio" Multiplicity="1" />
     <End Role="Privilegios_asociados_roles" Type="Self.Privilegios_asociados_roles" Multiplicity="*" />
@@ -136,22 +198,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_RequerimientoCambio">
-    <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Requerimiento">
-        <PropertyRef Name="Id" />
-        <PropertyRef Name="IdProyecto" />
-      </Principal>
-      <Dependent Role="Cambio">
-        <PropertyRef Name="IdRequerimiento" />
-        <PropertyRef Name="IdProyecto" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_RequerimientoCriterioAceptacion">
     <End Role="Requerimiento" Type="Self.Requerimiento" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -168,7 +214,31 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_UsuarioCambio">
+  <Association Name="FK_UsuarioCambioResponsableReq">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cambio">
+        <PropertyRef Name="IdResponsable" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UsuarioCambioSolicitanteReq">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cambio">
+        <PropertyRef Name="IdSolicitante" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UsuarioCambiosSolicitante">
     <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
     <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
     <ReferentialConstraint>
@@ -176,7 +246,7 @@
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Cambio">
-        <PropertyRef Name="IdUsuario" />
+        <PropertyRef Name="SolicitanteCambio" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -219,12 +289,21 @@
   <EntityContainer Name="ModelEntitiesStoreContainer">
     <EntitySet Name="Cambio" EntityType="Self.Cambio" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CriterioAceptacion" EntityType="Self.CriterioAceptacion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CriterioAceptacionHistorial" EntityType="Self.CriterioAceptacionHistorial" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Privilegio" EntityType="Self.Privilegio" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Privilegios_asociados_roles" EntityType="Self.Privilegios_asociados_roles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Proyecto" EntityType="Self.Proyecto" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Requerimiento" EntityType="Self.Requerimiento" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios_asociados_proyecto" EntityType="Self.Usuarios_asociados_proyecto" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_CriterioAceptacionCambio" Association="Self.FK_CriterioAceptacionCambio">
+      <End Role="Cambio" EntitySet="Cambio" />
+      <End Role="CriterioAceptacionHistorial" EntitySet="CriterioAceptacionHistorial" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IdRequerimientoCambios" Association="Self.FK_IdRequerimientoCambios">
+      <End Role="Requerimiento" EntitySet="Requerimiento" />
+      <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
     <AssociationSet Name="FK_Privilegio" Association="Self.FK_Privilegio">
       <End Role="Privilegio" EntitySet="Privilegio" />
       <End Role="Privilegios_asociados_roles" EntitySet="Privilegios_asociados_roles" />
@@ -237,15 +316,19 @@
       <End Role="Proyecto" EntitySet="Proyecto" />
       <End Role="Usuarios_asociados_proyecto" EntitySet="Usuarios_asociados_proyecto" />
     </AssociationSet>
-    <AssociationSet Name="FK_RequerimientoCambio" Association="Self.FK_RequerimientoCambio">
-      <End Role="Requerimiento" EntitySet="Requerimiento" />
-      <End Role="Cambio" EntitySet="Cambio" />
-    </AssociationSet>
     <AssociationSet Name="FK_RequerimientoCriterioAceptacion" Association="Self.FK_RequerimientoCriterioAceptacion">
       <End Role="Requerimiento" EntitySet="Requerimiento" />
       <End Role="CriterioAceptacion" EntitySet="CriterioAceptacion" />
     </AssociationSet>
-    <AssociationSet Name="FK_UsuarioCambio" Association="Self.FK_UsuarioCambio">
+    <AssociationSet Name="FK_UsuarioCambioResponsableReq" Association="Self.FK_UsuarioCambioResponsableReq">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UsuarioCambioSolicitanteReq" Association="Self.FK_UsuarioCambioSolicitanteReq">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Cambio" EntitySet="Cambio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UsuarioCambiosSolicitante" Association="Self.FK_UsuarioCambiosSolicitante">
       <End Role="Usuario" EntitySet="Usuario" />
       <End Role="Cambio" EntitySet="Cambio" />
     </AssociationSet>

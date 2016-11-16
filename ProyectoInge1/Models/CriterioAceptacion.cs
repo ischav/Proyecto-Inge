@@ -15,15 +15,15 @@ namespace ProyectoInge1.Models
 
     public partial class CriterioAceptacion
     {
-        [RegularExpression(@"[0-9a-zA-Z\-_Ã¡Ã©Ã­Ã³ÃºÃ±\s]+", ErrorMessage = "Solo se pueden ingresar letras, nÃºmeros y guiones")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
         public string Escenario { get; set; }
-        [Required(ErrorMessage = "La descripciÃ³n es un campo requerido.")]
-        [Display(Name = "DescripciÃ³n")]
+        [Required(ErrorMessage = "La descripción es un campo requerido.")]
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public string IdRequerimiento { get; set; }
         public string IdProyecto { get; set; }
         public Nullable<bool> Borrar { get; set; }
-    
+
         public virtual Requerimiento Requerimiento { get; set; }
     }
 }

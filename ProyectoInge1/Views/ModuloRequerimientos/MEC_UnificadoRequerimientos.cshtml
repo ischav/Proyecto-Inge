@@ -344,6 +344,14 @@
                 @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        <div class="row">
+            @Html.LabelFor(model => model.modeloRequerimiento.Version, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.modeloRequerimiento.Version, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloRequerimiento.Version, "", new { @class = "text-danger" })
+            </div>
+        </div>
     </fieldset>
 
     <div class="form-group">
