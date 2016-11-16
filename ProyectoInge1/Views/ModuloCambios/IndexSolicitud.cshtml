@@ -1,0 +1,107 @@
+﻿@model PagedList.IPagedList<ProyectoInge1.Models.Cambio>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Gesti";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    form {
+        display: inline-block;
+    }
+
+    ocultar {
+        display: none;
+    }
+</style>
+
+<h2>Gestión de solicitudes de cambios</h2>
+
+<p>
+    @Html.ActionLink("Agregar solicitud", "Create", new { Proyecto = Request.Params["Proyecto"] })
+</p>
+<div display="inline">
+    <form>
+        @using (Html.BeginForm("Index", "ModuloCambios", FormMethod.Get))
+        {
+            <p>
+                Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Proyecto"] as string)
+                <ocultar>
+                    @Html.TextBox("Proyecto", Request.Params["Proyecto"] as string)
+                </ocultar>
+                <button type="submit" class="btn btn-primary" onsubmit="campodebusqueda();">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </p>
+        }
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Nombre", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Nombre", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Prioridad", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Prioridad", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Esfuerzo", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Esfuerzo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Sprint", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Sprint", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Modulo", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Modulo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Estado de solicitud", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Estado", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Solicitante", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdSolicitud)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prioridad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Esfuerzo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sprint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoSolicitud)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SolicitanteCambio)
+            </td>
+            <td>
+                @Html.ActionLink("Andre Modifiquelo", "Edit", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
+            </td>
+        </tr>
+    }
+</table>
+
+<br />
+        Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("IndexSolicitud", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
