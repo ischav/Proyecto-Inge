@@ -363,6 +363,10 @@
     <Content Include="Views\ModuloProyecto\MEC_Unificado.cshtml" />
     <Content Include="Views\ModuloProyecto\Create.cshtml" />
     <Content Include="Views\ModuloCambios\Edit.cshtml" />
+    <Content Include="Views\ModuloCambios\IndexSolicitud.cshtml" />
+    <Content Include="Views\ModuloCambios\CrearSolicitud.cshtml" />
+    <Content Include="Views\ModuloCambios\IndexHistorialCambios.cshtml" />
+    <Content Include="Views\ModuloCambios\DetallesVersion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
