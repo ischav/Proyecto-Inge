@@ -1,4 +1,4 @@
-﻿@model ProyectoInge1.Models.ModeloIntermedio
+@model ProyectoInge1.Models.ModeloIntermedio
 @{
     ViewBag.Title = "MEC_Unificado";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,10 +17,11 @@
      * Modifica: no aplica
      * Retorna: no aplica
      */
-    function esconderEliminar()
+    function habilitarCampos()
     {
         $('.elementoEliminar').hide();
         $('.elementoModificar').show();
+        $("input").prop("disabled", false);
     }
 
     /* Método que esconde el "div" de modificar y muestra el "div" de eliminar en la vista MEC_Unificado
@@ -29,8 +30,25 @@
      * Retorna: no aplica
      */
     function esconderModificar() {
-        $('.elementoEliminar').show();
+        $("input").prop('disabled', true).trigger("click");
         $('.elementoModificar').hide();
+        $('.elementoConsultar').show();
+    }
+
+    function funcionCancelar() {
+        var respuesta = confirm('¿Confirma que no desea modificar este proyecto?');
+        if (respuesta == true) {
+            var url = '@Url.Action("MEC_Unificado", "ModuloUsuarios")';
+            window.location.href = url;
+        }
+    }
+
+    window.onload = function () {
+        if(@Model.cambiosGuardados == 0 || @Model.cambiosGuardados == 1){
+            $("input").prop('disabled', true).trigger("click");
+            $('.elementoModificar').hide();
+            $('.elementoConsultar').show();
+        }
     }
 
     /* Método que elimina la tupla de la base de datos en la vista MEC_Unificado
@@ -70,8 +88,12 @@
 <!-- Se imprimen los botones de modificar y eliminar, cuando se ingresa a consultar los datos -->
 <div class="elementoEliminar" @styleElementoEliminar>
     <h2>Detalles</h2>
-    <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
-    <a class="btn btn-default" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
+    @if ((bool)Session["GUS-M"]) {
+        <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
+    }
+    @if ((bool)Session["GUS-E"]) {
+        <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
+    }
 </div>
 <div class="elementoModificar" @styleElementoModificar>
     <h2>Modificar</h2>
@@ -80,9 +102,7 @@
 <!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
      en la base de datos, se imprime un mensaje de éxito
      Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
-     en la base de datos, se imprime un mensaje de error
-     Si la variable de cambios guardados es igual a 3, entonces los cambios se descartaron, se imprime un mensaje de
-     verificación -->
+     en la base de datos, se imprime un mensaje de error-->
 @if(Model.cambiosGuardados == 1) {
     <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
         <p>Se guardaron los cambios exitosamente!</p>
@@ -91,83 +111,9 @@
     <div class="elementoModificar" style="text-align: right; width: 100%; color:red; font-weight:bold;">
         <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
     </div>
-} else if(Model.cambiosGuardados == 3) {
-    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>Cambios descartados!</p>
-    </div>
 }
 
-<!-- Se despliega la información del elemento seleccionado cuando se va a eliminar -->
-    <div>
-        <div class="elementoEliminar" @styleElementoEliminar>
-                <hr />
-                <dl class="dl-horizontal">
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Nombre)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Nombre)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Apellido1)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Apellido1)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Apellido2)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Apellido2)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Cedula)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Cedula)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modCrear.Email)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.aspUserEmail)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.FechaNac)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.FechaNac)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Telefono1)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Telefono1)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Telefono2)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.modeloUsuario.Telefono2)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.modeloUsuario.Sexo)
-                    </dt>
-                    <dd>
-                        @if(Model.modeloUsuario.Sexo == "F") {
-                            @Html.DisplayName("Femenino")
-                        } else if(Model.modeloUsuario.Sexo == "M") {
-                            @Html.DisplayName("Masculino")
-                        } else {
-                            @Html.DisplayName("Otro")
-                        }
-                    </dd>
-                </dl>
-            </div>
-        </div>
-
 <!-- Se despliega la información modificable, del elemento seleccionado cuando se va a modificar -->
-        <div class="elementoModificar" @styleElementoModificar>
             @using(Html.BeginForm()) {
                 @Html.AntiForgeryToken()
 
@@ -235,17 +181,16 @@
                     </div>
 
                     @Html.HiddenFor(model => model.modeloUsuario.Id)
-                    <div class="form-group">
-                        <div class="form-inline" align="right">
-                            <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
-                            <input type="submit" value="Cancelar" name="cancelar" class="btn btn-default" />
+
+                    <div class="elementoModificar">
+                        <div class="form-group">
+                            <div class="form-inline" align="right">
+                                <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
+                                <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 }
-        </div>
-    <p>
-        @Html.ActionLink("Volver a Usuarios", "Index")
-    </p>
 
 
