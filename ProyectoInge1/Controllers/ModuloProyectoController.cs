@@ -205,7 +205,7 @@ namespace ProyectoInge1.Controllers
         */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_Unificado(ModeloProyecto modelo, string lider, string[] equipoDesarrollo, string[] recursos,string cliente)
+        public ActionResult MEC_Unificado(ModeloProyecto modelo, string lider, string[] equipoDesarrollo, string[] recursos, string cliente)
         {
             if (ModelState.IsValid)
             {
@@ -213,18 +213,7 @@ namespace ProyectoInge1.Controllers
             *Se carga el modelo con de usuarios asociados con la lista
             *de equipo de desarollo y con los de recursos
             */
-
-                /*for (int i = 0; i < equipoDesarrollo.Count(); i++)
-                {
-                    modelo.listaUsuarios_asociados_proyecto.Add(
-                        new Usuarios_asociados_proyecto
-                        {
-                            IdUsuario = equipoDesarrollo[i],
-                            IdProyecto = modelo.modeloProyecto.Id,
-                            RolProyecto = "Desarrollador"
-                        });
-                }*/
-
+                int liderDesarrollador = 0;
                 for (int i = 0; i < equipoDesarrollo.Count(); i++)
                 {
                     //se evita agregar al lider dos veces al proyecto
@@ -238,9 +227,24 @@ namespace ProyectoInge1.Controllers
                                 RolProyecto = "Desarrollador"
                             });
                     }
+                    else
+                    {
+                        liderDesarrollador = i;
+                    }
                 }
 
                 Usuarios_asociados_proyecto usrLider = obtenerLiderClienteAsociado(modelo.modeloProyecto.Id, "Líder");
+
+                //si el líder ya estaba en el equipo de desarrollo
+                if (lider == equipoDesarrollo[liderDesarrollador])
+                {
+                    Usuarios_asociados_proyecto nuevoLider = new Usuarios_asociados_proyecto();
+                    nuevoLider = baseDatos.Usuarios_asociados_proyecto.Find(lider, modelo.modeloProyecto.Id);
+                    if (nuevoLider != null)
+                    {
+                        baseDatos.Usuarios_asociados_proyecto.Remove(nuevoLider);
+                    }
+                }
 
                 ModeloProyecto modeloPr = new ModeloProyecto();
 
@@ -261,15 +265,6 @@ namespace ProyectoInge1.Controllers
                 }
 
                 //si no es igual al lider, es porque lo cambiaron                
-                if (!lider.Equals(usrLider.IdUsuario))
-                {
-                    baseDatos.Usuarios_asociados_proyecto.Remove(usrLider); //borra al actual de la base
-                    Usuarios_asociados_proyecto usuarioLider = new Usuarios_asociados_proyecto();
-                    usuarioLider.IdProyecto = modelo.modeloProyecto.Id;
-                    usuarioLider.IdUsuario = lider;
-                    usuarioLider.RolProyecto = "Líder";
-                    baseDatos.Usuarios_asociados_proyecto.Add(usuarioLider);
-                }
 
                 Usuarios_asociados_proyecto usrCliente = obtenerLiderClienteAsociado(modelo.modeloProyecto.Id, "Cliente");
                 //si no es igual al lider, es porque lo cambiaron                
@@ -292,11 +287,43 @@ namespace ProyectoInge1.Controllers
                                      select new { usuario });
 
                 var us = new List<Usuarios_asociados_proyecto>();
+                Usuarios_asociados_proyecto usuarioBorrar = new Usuarios_asociados_proyecto();
 
                 /*
                 *Si el usuarios está asociado al proyecto pero no está en el equipo de 
                 *desarrollo modificado, se quita de la base de datos
                 */
+
+                if (recursos != null)
+                {
+                    for (int i = 0; i < recursos.Count(); i++)
+                    {
+                        foreach (var usr in listaUsuarios)
+                        {
+
+                            if (usr.usuario.Id == modeloPr.listaUsuarios_asociados_proyecto[i].IdUsuario)
+                            {
+                                usuarioBorrar = baseDatos.Usuarios_asociados_proyecto.Find(usr.usuario.Id, modelo.modeloProyecto.Id);
+                                //baseDatos.Usuarios_asociados_proyecto.Remove(modeloPr.listaUsuarios_asociados_proyecto[i]);
+                                if (usuarioBorrar != null && usuarioBorrar.IdUsuario != lider)
+                                {
+                                    baseDatos.Usuarios_asociados_proyecto.Remove(usuarioBorrar);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!lider.Equals(usrLider.IdUsuario))
+                {
+                    baseDatos.Usuarios_asociados_proyecto.Remove(usrLider); //borra al actual de la base
+                    Usuarios_asociados_proyecto usuarioLider = new Usuarios_asociados_proyecto();
+                    usuarioLider.IdProyecto = modelo.modeloProyecto.Id;
+                    usuarioLider.IdUsuario = lider;
+                    usuarioLider.RolProyecto = "Líder";
+                    baseDatos.Usuarios_asociados_proyecto.Add(usuarioLider);
+                }
+
                 for (int i = 0; i < modelo.listaUsuarios_asociados_proyecto.Count(); i++)
                 {
                     bool enBase = false;
@@ -315,28 +342,6 @@ namespace ProyectoInge1.Controllers
                         {
                             baseDatos.Usuarios_asociados_proyecto.Add(modelo.listaUsuarios_asociados_proyecto[i]);
                             us.Add(modelo.listaUsuarios_asociados_proyecto[i]);
-                        }
-                    }
-                }
-
-                Usuarios_asociados_proyecto usuarioBorrar = new Usuarios_asociados_proyecto();
-
-                if (recursos != null)
-                {
-                    for (int i = 0; i < recursos.Count(); i++)
-                    {
-                        foreach (var usr in listaUsuarios)
-                        {
-
-                            if (usr.usuario.Id == modeloPr.listaUsuarios_asociados_proyecto[i].IdUsuario)
-                            {
-                                usuarioBorrar = baseDatos.Usuarios_asociados_proyecto.Find(usr.usuario.Id, modelo.modeloProyecto.Id);
-                                //baseDatos.Usuarios_asociados_proyecto.Remove(modeloPr.listaUsuarios_asociados_proyecto[i]);
-                                if (usuarioBorrar != null)
-                                {
-                                    baseDatos.Usuarios_asociados_proyecto.Remove(usuarioBorrar);
-                                }
-                            }
                         }
                     }
                 }
