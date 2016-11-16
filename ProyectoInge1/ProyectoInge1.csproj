@@ -359,10 +359,10 @@
     <Content Include="Views\ModuloProyecto\Index.cshtml" />
     <Content Include="Views\ModuloProyecto\MEC_Unificado.cshtml" />
     <Content Include="Views\ModuloProyecto\Create.cshtml" />
+    <Content Include="Views\ModuloCambios\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\ModuloCambios\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
