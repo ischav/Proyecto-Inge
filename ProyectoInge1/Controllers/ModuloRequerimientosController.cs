@@ -221,13 +221,21 @@ namespace ProyectoInge1.Controllers
          * Modifica: la tabla Requerimientos de la base de datos
          * Retorna: redirección a la vista Index
          */
-        public ActionResult eliminarRequerimiento(string Id)
+        public ActionResult eliminarRequerimiento(string Id, string IdProyecto)
         {
             //Borra al requerimiento de la tabla Requerimientos
+            
             ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
-            baseDatos.Requerimiento.Remove(modelo.modeloRequerimiento);
-            baseDatos.SaveChanges();
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
+            if (modelo.modeloRequerimiento.Estado.Equals("Pendiente de asignar"))
+            {
+                baseDatos.Requerimiento.Remove(modelo.modeloRequerimiento);
+                baseDatos.SaveChanges();
+            }
+            else
+            {
+                return HttpNotFound();
+            }
 
             return RedirectToAction("Index");
         }

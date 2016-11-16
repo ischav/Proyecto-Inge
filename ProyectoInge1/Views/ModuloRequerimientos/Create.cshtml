@@ -198,7 +198,7 @@ else if (Model.cambiosGuardados == 2)
             @Html.LabelFor(model => model.modeloRequerimiento.Estado, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(new List<Object>{
-                    new { value = "Pendiente de asignación" , text = "Pendiente de asignación"  },
+                    new { value = "Pendiente de asignar" , text = "Pendiente de asignar"  },
                     new { value = "Asignado" , text = "Asignado"  },
                     new { value = "En ejecución" , text = "En ejecución" },
                     new { value = "Finalizado" , text = "Finalizado" },

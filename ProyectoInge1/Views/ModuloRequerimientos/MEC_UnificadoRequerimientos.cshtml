@@ -45,7 +45,7 @@
     var id;
     var idProyecto;
 
-    function confirmarEliminar(id) {
+    function confirmarEliminar(id, idProyecto) {
 
         var respuesta = confirm('¿Confirma que desea eliminar este requerimiento?');
 
@@ -54,14 +54,14 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("eliminarRequerimiento")',
-                data: 'id=' + id,
+                data: {'id' : id, 'idProyecto' : idProyecto},
                 success: function (data) {
-                    alert('Requerimiento eliminado exitosamente');
+                    alert('Requerimiento eliminado exitosamente!');
                     var url = '@Url.Action("Index", "ModuloRequerimientos")';
                     window.location.href = url;
                 },
                 error: function () {
-                    alert('El requerimiento no puede ser eliminado, pues se encuentra en ejecución.');
+                    alert('Sólo puede ser eleminado un requerimiento pendiente de asignar!');
                 },
             });
         }
@@ -137,6 +137,12 @@
             <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
         </div>
     }
+    else if (Model.cambiosGuardados == 3)
+    {
+        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+            <p>Sólo puede eliminarse requerimientos pendientes de asignación!</p>
+        </div>
+    }
 </div>
 
 <div class="elementoModificar" style="display:none">
@@ -156,7 +162,7 @@
 </div>
 
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
-<button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)')">Eliminar</button>
+<button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
 
 @using (Html.BeginForm())
 {
@@ -293,7 +299,7 @@
                 </div>
                 <div class="EstadoModificar">
                     @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(new List<Object>{
-                    new { value = "Pendiente de asignación" , text = "Pendiente de asignación"  },
+                    new { value = "Pendiente de asignar" , text = "Pendiente de asignar"  },
                     new { value = "Asignado" , text = "Asignado"  },
                     new { value = "En ejecución" , text = "En ejecución" },
                     new { value = "Finalizado" , text = "Finalizado" },

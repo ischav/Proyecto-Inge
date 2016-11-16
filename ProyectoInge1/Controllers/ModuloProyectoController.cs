@@ -362,10 +362,10 @@ namespace ProyectoInge1.Controllers
 
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
-	    /*
-	    *Revisa si el estado del proyecto está finalizado, en caso  contrario
-	    *muestra una alerta
-	    */
+	        /*
+	        *Revisa si el estado del proyecto está finalizado, en caso  contrario
+	        *muestra una alerta
+	        */
             if (modelo.modeloProyecto.Estado.Equals("Finalizado"))
             {
                 baseDatos.Proyecto.Remove(modelo.modeloProyecto);
