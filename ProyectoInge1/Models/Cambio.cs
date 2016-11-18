@@ -11,7 +11,8 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Cambio
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,30 +20,71 @@ namespace ProyectoInge1.Models
         {
             this.CriterioAceptacionHistorial = new HashSet<CriterioAceptacionHistorial>();
         }
-    
+
         public int IdSolicitud { get; set; }
         public string IdRequerimiento { get; set; }
+
+        [Display(Name = "Proyecto")]
         public string IdProyecto { get; set; }
+
+        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Nombre")]
         public string Nombre { get; set; }
+
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Prioridad")]
         public string Prioridad { get; set; }
+
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Esfuerzo")]
         public string Esfuerzo { get; set; }
+
+        [Required(ErrorMessage = "El estado es un campo requerido.")]
+        [Display(Name = "Estado")]
         public string Estado { get; set; }
+
+        [Required(ErrorMessage = "La descripción es un campo requerido.")]
+        [Display(Name = "Descripción")]
+        [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
+
+        [Display(Name = "Fecha de inicio")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaInicio { get; set; }
+
+        [Display(Name = "Fecha final")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaFinal { get; set; }
+
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Sprint")]
         public string Sprint { get; set; }
+
+        [RegularExpression(@"[0-9a-zA-Z\-_áéíóúñ\s]+", ErrorMessage = "Solo se pueden ingresar letras, números y guiones")]
+        [Display(Name = "Módulo")]
         public string Modulo { get; set; }
+
+
         public string Observaciones { get; set; }
         public byte[] Imagen { get; set; }
+
+        [Display(Name = "Responsable")]
         public string IdResponsable { get; set; }
+
+        [Display(Name = "Solicitante")]
         public string IdSolicitante { get; set; }
+
+        [RegularExpression(@"[0-9]+", ErrorMessage = "Solo se pueden ingresar números")]
+        [Display(Name = "Versión")]
         public Nullable<int> Version { get; set; }
+
         public string DescripcionCambio { get; set; }
         public string JustificacionCambio { get; set; }
         public string SolicitanteCambio { get; set; }
         public Nullable<System.DateTime> FechaCambio { get; set; }
         public string EstadoSolicitud { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CriterioAceptacionHistorial> CriterioAceptacionHistorial { get; set; }
         public virtual Requerimiento Requerimiento { get; set; }

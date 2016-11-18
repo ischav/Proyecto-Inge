@@ -107,6 +107,7 @@
           <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
           <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" />
           <Property Name="Version" Type="int" />
+          <Property Name="ObservacionesSolicitud" Type="varchar" MaxLength="400" />
         </EntityType>
         <EntityType Name="Usuario">
           <Key>
@@ -219,6 +220,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UsuarioCambio">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Cambio">
+              <PropertyRef Name="IdResponsable" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UsuarioCambioResponsableReq">
           <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
           <End Role="Cambio" Type="Self.Cambio" Multiplicity="*" />
@@ -324,6 +337,10 @@
           <AssociationSet Name="FK_RequerimientoCriterioAceptacion" Association="Self.FK_RequerimientoCriterioAceptacion">
             <End Role="Requerimiento" EntitySet="Requerimiento" />
             <End Role="CriterioAceptacion" EntitySet="CriterioAceptacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsuarioCambio" Association="Self.FK_UsuarioCambio">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Cambio" EntitySet="Cambio" />
           </AssociationSet>
           <AssociationSet Name="FK_UsuarioCambioResponsableReq" Association="Self.FK_UsuarioCambioResponsableReq">
             <End Role="Usuario" EntitySet="Usuario" />
@@ -528,6 +545,7 @@
           <NavigationProperty Name="CriterioAceptacion" Relationship="ModelEntities.FK_RequerimientoCriterioAceptacion" FromRole="Requerimiento" ToRole="CriterioAceptacion" />
           <NavigationProperty Name="Proyecto" Relationship="ModelEntities.FK_ProyectoRequerimiento" FromRole="Requerimiento" ToRole="Proyecto" />
           <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioResponsable" FromRole="Requerimiento" ToRole="Usuario" />
+          <Property Name="ObservacionesSolicitud" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Usuario">
           <Key>
@@ -805,6 +823,7 @@
           <EntitySetMapping Name="Requerimiento">
             <EntityTypeMapping TypeName="ModelEntities.Requerimiento">
               <MappingFragment StoreEntitySet="Requerimiento">
+                <ScalarProperty Name="ObservacionesSolicitud" ColumnName="ObservacionesSolicitud" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="IdSolicitante" ColumnName="IdSolicitante" />
                 <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
