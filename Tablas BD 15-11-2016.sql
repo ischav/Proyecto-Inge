@@ -155,7 +155,7 @@ CREATE TABLE Cambio(
 	CONSTRAINT FK_IdRequerimientoCambios FOREIGN KEY(IdRequerimiento, IdProyecto) REFERENCES Requerimiento(Id, IdProyecto)
 );
 
-ALTER TABLE Requerimiento ADD ObservacionesSolicitud VARCHAR(400);
+ALTER TABLE Cambio ADD ObservacionesSolicitud VARCHAR(400);
 
 CREATE TABLE CriterioAceptacionHistorial(
 	Escenario		VARCHAR(30),

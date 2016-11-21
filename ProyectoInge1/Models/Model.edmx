@@ -33,6 +33,7 @@
           <Property Name="SolicitanteCambio" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="FechaCambio" Type="date" />
           <Property Name="EstadoSolicitud" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="ObservacionesSolicitud" Type="varchar" MaxLength="400" />
         </EntityType>
         <EntityType Name="CriterioAceptacion">
           <Key>
@@ -107,7 +108,6 @@
           <Property Name="IdResponsable" Type="nvarchar" MaxLength="128" />
           <Property Name="IdSolicitante" Type="nvarchar" MaxLength="128" />
           <Property Name="Version" Type="int" />
-          <Property Name="ObservacionesSolicitud" Type="varchar" MaxLength="400" />
         </EntityType>
         <EntityType Name="Usuario">
           <Key>
@@ -461,6 +461,7 @@
           <NavigationProperty Name="CriterioAceptacionHistorial" Relationship="ModelEntities.FK_CriterioAceptacionCambio" FromRole="Cambio" ToRole="CriterioAceptacionHistorial" />
           <NavigationProperty Name="Requerimiento" Relationship="ModelEntities.FK_IdRequerimientoCambios" FromRole="Cambio" ToRole="Requerimiento" />
           <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioCambioResponsableReq" FromRole="Cambio" ToRole="Usuario" />
+          <Property Name="ObservacionesSolicitud" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CriterioAceptacion">
           <Key>
@@ -545,7 +546,6 @@
           <NavigationProperty Name="CriterioAceptacion" Relationship="ModelEntities.FK_RequerimientoCriterioAceptacion" FromRole="Requerimiento" ToRole="CriterioAceptacion" />
           <NavigationProperty Name="Proyecto" Relationship="ModelEntities.FK_ProyectoRequerimiento" FromRole="Requerimiento" ToRole="Proyecto" />
           <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioResponsable" FromRole="Requerimiento" ToRole="Usuario" />
-          <Property Name="ObservacionesSolicitud" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Usuario">
           <Key>
@@ -744,6 +744,7 @@
           <EntitySetMapping Name="Cambio">
             <EntityTypeMapping TypeName="ModelEntities.Cambio">
               <MappingFragment StoreEntitySet="Cambio">
+                <ScalarProperty Name="ObservacionesSolicitud" ColumnName="ObservacionesSolicitud" />
                 <ScalarProperty Name="EstadoSolicitud" ColumnName="EstadoSolicitud" />
                 <ScalarProperty Name="FechaCambio" ColumnName="FechaCambio" />
                 <ScalarProperty Name="SolicitanteCambio" ColumnName="SolicitanteCambio" />
@@ -823,7 +824,6 @@
           <EntitySetMapping Name="Requerimiento">
             <EntityTypeMapping TypeName="ModelEntities.Requerimiento">
               <MappingFragment StoreEntitySet="Requerimiento">
-                <ScalarProperty Name="ObservacionesSolicitud" ColumnName="ObservacionesSolicitud" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="IdSolicitante" ColumnName="IdSolicitante" />
                 <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />

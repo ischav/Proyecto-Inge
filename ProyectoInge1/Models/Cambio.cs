@@ -79,12 +79,25 @@ namespace ProyectoInge1.Models
         [Display(Name = "Versión")]
         public Nullable<int> Version { get; set; }
 
+        [Display(Name = "Descripción de los cambios")]
+        [DataType(DataType.MultilineText)]
         public string DescripcionCambio { get; set; }
+
+        [Display(Name = "Justificación de los cambios")]
+        [DataType(DataType.MultilineText)]
         public string JustificacionCambio { get; set; }
+
         public string SolicitanteCambio { get; set; }
+
+        [Display(Name = "Fecha de solicitud")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaCambio { get; set; }
         public string EstadoSolicitud { get; set; }
 
+        [Display(Name = "Observaciones Solicitud")]
+        [DataType(DataType.MultilineText)]
+        public string ObservacionesSolicitud { get; set; }
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CriterioAceptacionHistorial> CriterioAceptacionHistorial { get; set; }
         public virtual Requerimiento Requerimiento { get; set; }

@@ -123,7 +123,8 @@
                 @Html.DisplayFor(modelItem => item.Modulo)
             </td>
             <td>
-                @Html.ActionLink("Consultar", "DetallesVersion", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Consultar", "DetallesVersion", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto }) |
+                @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
             </td>
         </tr>
     }

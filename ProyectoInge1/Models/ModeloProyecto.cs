@@ -88,5 +88,8 @@ namespace ProyectoInge1.Models
         public string rolProyectoActual { get; set; }
         public string usuarioActualId { get; set; }
         public string liderId { get; set; }
+
+        /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
+        public List<Usuario> listaUsuariosSolicitantesCambios = new List<Usuario>();
     }
 }
