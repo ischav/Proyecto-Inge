@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -372,7 +372,7 @@ namespace ProyectoInge1.Controllers
 	        *muestra una alerta
 	        */
             if (modelo.modeloProyecto.Estado.Equals("Finalizado"))
-            {
+            {          
                 baseDatos.Proyecto.Remove(modelo.modeloProyecto);
                 baseDatos.SaveChanges();
             }
