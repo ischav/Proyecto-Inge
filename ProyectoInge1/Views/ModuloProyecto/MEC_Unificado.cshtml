@@ -1,4 +1,4 @@
-﻿@model ProyectoInge1.Models.ModeloProyecto
+@model ProyectoInge1.Models.ModeloProyecto
 @{
     ViewBag.Title = "MEC_Unificado";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -42,6 +42,7 @@
         $('.elementoConsultar').hide();
         $('.elementoModificar').show();
         $("#eliminar").prop("disabled",true);
+        $('#guardar').removeAttr('disabled');
         }
 
     function funcionCancelar() {
@@ -57,10 +58,27 @@
             $("input").prop('disabled', true).trigger("click");
             $('select').prop('disabled', true).trigger("click");
             $("#descripcion *").prop("disabled", true).trigger("click");
+            //$("#guardar").prop("disabled", true);
+            $("#guardar").attr('disabled','disabled');
+
             $('.elementoModificar').hide();
             $('.elementoConsultar').show();
+            $('.botonPrueba').hide();
         }
     }
+
+    function verificarRecursos(field) {
+        $('#recursos option').prop('selected', true)
+        $('#equipoDesarrollo option').prop('selected', true)
+        var seleccion = $('#equipoDesarrollo option:selected');
+        if (seleccion.length == 0) {
+            alert("Debe seleccionar un recurso");
+            field.preventDefault();
+        }else{
+            $('#prueba').click();
+        }
+    }
+
 
 </script>
 
@@ -77,11 +95,12 @@
 </div>
 
 
-@if((bool)Session["PRO-M"] || Model.liderId.Equals(Model.usuarioActualId))
+@if ((bool)Session["PRO-M"] || Model.liderId.Equals(Model.usuarioActualId))
 {
     <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 }
-@if((bool)Session["PRO-E"] || Model.liderId.Equals(Model.usuarioActualId)) {
+@if ((bool)Session["PRO-E"] || Model.liderId.Equals(Model.usuarioActualId))
+{
     <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloProyecto.Id)')">Eliminar</button>
 }
 
@@ -90,11 +109,11 @@
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        
-        <div class="form-group", id="campoId">
+
+        <div class="form-group" , id="campoId">
             @Html.LabelFor(model => model.modeloProyecto.Id, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.modeloProyecto.Id, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.modeloProyecto.Id, new { htmlAttributes = new { @class = "form-control" , @readonly = "readonly" } })
                 @Html.ValidationMessageFor(model => model.modeloProyecto.Id, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -196,7 +215,6 @@
             <div class="form-group col-md-4">
                 @Html.Label("Equipo de desarrolladores", htmlAttributes: new { @class = "control-label" })
                 @Html.ListBox("equipoDesarrollo", new MultiSelectList(ViewBag.listaDesarrolladores, "Id", "NombreCompleto"), new { @class = "form-control" })
-                @*Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })*@
             </div>
 
         </div>
@@ -206,10 +224,14 @@
         {
             <div class="form-group">
                 <div class="form-inline" align="right">
-                    <input type="submit" id="guardar" value="Aceptar" name="guardar" class="btn btn-default" />
+                    <a class="btn btn-default" id="guardar" name="guardar" onclick="verificarRecursos()">Aceptar</a>
                     <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
                 </div>
             </div>
+            <div class="botonPrueba">
+                <input type="submit" id="prueba" value="Prueba" name="prueba" class="btn btn-default" />
+            </div>
+
         }
     </div>
 }
