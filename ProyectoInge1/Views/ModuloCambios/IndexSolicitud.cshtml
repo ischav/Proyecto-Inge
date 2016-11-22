@@ -24,7 +24,7 @@
 </p>
 <div display="inline">
     <form>
-        @using (Html.BeginForm("Index", "ModuloCambios", FormMethod.Get))
+        @using (Html.BeginForm("IndexSolicitud", "ModuloCambios", FormMethod.Get))
         {
             <p>
                 Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Proyecto"] as string)

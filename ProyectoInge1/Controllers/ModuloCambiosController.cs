@@ -172,11 +172,18 @@ namespace ProyectoInge1.Controllers
         public ActionResult CrearSolicitud(string Id, string IdProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
+
             modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
+
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
             modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
+
+            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
             modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
+            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
+
             modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                      "USP.IdProyecto = P.Id JOIN Requerimiento R " +
@@ -216,16 +223,25 @@ namespace ProyectoInge1.Controllers
                 modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
                 baseDatos.Cambio.Add(modelo.modeloCambio);
                 baseDatos.SaveChanges();
+
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
+
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
+
                 modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                          "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                          "USP.IdProyecto = P.Id " +
                                                                          "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+
                 modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                                  "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                                  "USP.IdProyecto = P.Id " +
                                                                                  "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+
+                modelo.listaUsuariosSolicitantesCambios = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                                 "USP.IdProyecto = P.Id " +
+                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
                 nuevoModelo.cambiosGuardados = 1;
 
                 return View(nuevoModelo);

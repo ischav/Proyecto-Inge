@@ -46,7 +46,7 @@
         </p>
     </form>
     <form>
-        @using (Html.BeginForm("Index", "ModuloRequerimientos", FormMethod.Get))
+        @using (Html.BeginForm("IndexHistorialCambios", "ModuloCambios", FormMethod.Get))
         {
             <p>
                 Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Proyecto"] as string)
@@ -123,8 +123,8 @@
                 @Html.DisplayFor(modelItem => item.Modulo)
             </td>
             <td>
-                @Html.ActionLink("Consultar", "DetallesVersion", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto }) |
-                @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Consultar", "DetallesVersion", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto }) |
+                @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
             </td>
         </tr>
     }

@@ -91,5 +91,9 @@ namespace ProyectoInge1.Models
 
         /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
         public List<Usuario> listaUsuariosSolicitantesCambios = new List<Usuario>();
+
+        /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
+        [Display(Name = "Solicitante Cambio")]
+        public string solicitanteCambio { get; set; }
     }
 }
