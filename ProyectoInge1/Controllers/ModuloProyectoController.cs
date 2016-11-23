@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -213,6 +213,13 @@ namespace ProyectoInge1.Controllers
             *Se carga el modelo con de usuarios asociados con la lista
             *de equipo de desarollo y con los de recursos
             */
+                if (equipoDesarrollo != null) {
+                    if (equipoDesarrollo.Count() == 1 && equipoDesarrollo[0] == lider)
+                    {
+                        return RedirectToAction("MEC_Unificado");
+                    }
+                }
+
                 int liderDesarrollador = 0;
                 for (int i = 0; i < equipoDesarrollo.Count(); i++)
                 {
@@ -372,7 +379,7 @@ namespace ProyectoInge1.Controllers
 	        *muestra una alerta
 	        */
             if (modelo.modeloProyecto.Estado.Equals("Finalizado"))
-            {
+            {          
                 baseDatos.Proyecto.Remove(modelo.modeloProyecto);
                 baseDatos.SaveChanges();
             }
@@ -549,12 +556,12 @@ namespace ProyectoInge1.Controllers
             * Agrega cada usuario al modelo
             */
 
-            if (lid.Count() > 0)
+            if (lid.First() != null)
             {
                 lideres.Add(lid.First().usuario);
                 modelo.liderId = lid.First().usuario.Id;
             }
-            if (cli.Count() > 0)
+            if (cli.First() != null)
             {
                 clientes.Add(cli.First().usuario);
             }
