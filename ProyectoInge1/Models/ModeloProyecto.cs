@@ -98,5 +98,7 @@ namespace ProyectoInge1.Models
         /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
         [Display(Name = "Solicitante Cambio")]
         public string solicitanteCambio { get; set; }
+
+        public string usuario { get; set; }
     }
 }

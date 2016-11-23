@@ -269,6 +269,8 @@ namespace ProyectoInge1.Controllers
                     modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
                 }
                 modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
+                modelo.modeloCambio.EstadoSolicitud = "Pendiente";
+                modelo.modeloCambio.FechaCambio = DateTime.Today;
                 baseDatos.Cambio.Add(modelo.modeloCambio);
                 baseDatos.SaveChanges();
 

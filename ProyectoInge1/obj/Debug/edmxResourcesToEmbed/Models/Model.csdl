@@ -90,6 +90,8 @@
     <NavigationProperty Name="CriterioAceptacionHistorial" Relationship="ModelEntities.FK_CriterioAceptacionCambio" FromRole="Cambio" ToRole="CriterioAceptacionHistorial" />
     <NavigationProperty Name="Requerimiento" Relationship="ModelEntities.FK_IdRequerimientoCambios" FromRole="Cambio" ToRole="Requerimiento" />
     <NavigationProperty Name="Usuario" Relationship="ModelEntities.FK_UsuarioCambioResponsableReq" FromRole="Cambio" ToRole="Usuario" />
+    <Property Name="ObservacionesSolicitud" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
+    <Property Name="VersionCambio" Type="Int32" />
   </EntityType>
   <EntityType Name="CriterioAceptacion">
     <Key>

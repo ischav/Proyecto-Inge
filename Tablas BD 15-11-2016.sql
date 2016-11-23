@@ -156,6 +156,7 @@ CREATE TABLE Cambio(
 );
 
 ALTER TABLE Cambio ADD ObservacionesSolicitud VARCHAR(400);
+ALTER TABLE Cambio ADD VersionCambio INT;
 
 CREATE TABLE CriterioAceptacionHistorial(
 	Escenario		VARCHAR(30),

@@ -362,14 +362,15 @@
     <Content Include="Views\ModuloProyecto\Index.cshtml" />
     <Content Include="Views\ModuloProyecto\MEC_Unificado.cshtml" />
     <Content Include="Views\ModuloProyecto\Create.cshtml" />
-    <Content Include="Views\ModuloCambios\Edit.cshtml" />
-    <Content Include="Views\ModuloCambios\IndexSolicitud.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\Edit.cshtml" />
     <Content Include="Views\ModuloRequerimientos\CrearSolicitud.cshtml" />
-    <Content Include="Views\ModuloCambios\IndexHistorialCambios.cshtml" />
-    <Content Include="Views\ModuloCambios\DetallesVersion.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\IndexHistorialCambios.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\MEC_Solicitud.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\IndexSolicitud.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\ModuloCambios\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

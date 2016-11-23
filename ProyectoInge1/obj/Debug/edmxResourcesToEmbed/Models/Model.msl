@@ -4,6 +4,8 @@
     <EntitySetMapping Name="Cambio">
       <EntityTypeMapping TypeName="ModelEntities.Cambio">
         <MappingFragment StoreEntitySet="Cambio">
+          <ScalarProperty Name="VersionCambio" ColumnName="VersionCambio" />
+          <ScalarProperty Name="ObservacionesSolicitud" ColumnName="ObservacionesSolicitud" />
           <ScalarProperty Name="EstadoSolicitud" ColumnName="EstadoSolicitud" />
           <ScalarProperty Name="FechaCambio" ColumnName="FechaCambio" />
           <ScalarProperty Name="SolicitanteCambio" ColumnName="SolicitanteCambio" />
