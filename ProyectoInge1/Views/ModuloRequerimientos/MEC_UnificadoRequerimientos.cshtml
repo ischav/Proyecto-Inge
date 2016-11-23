@@ -120,6 +120,15 @@
             document.getElementById("rutaImagen").value = event.target.result;
         }
     }
+
+
+    function irASolicitud(idReq, idProy) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("CrearSolicitud", "ModuloCambios")',
+                data: { 'id': idReq, 'idProyecto': idProy },
+            });
+    }
 </script>
 
 
@@ -163,13 +172,14 @@
 
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
-<button type="button" class="btn btn-default" onclick="irASolicitud">Solicitar cambio</button>
+<button type="button" class="btn btn-default" onclick="irASolicitud('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Solicitar cambio</button>
+@Html.ActionLink("Solicitar cambio", "CrearSolicitud",  new { id = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto })
 
-@using (Html.BeginForm())
+@using(Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <fieldset>
+
+                <fieldset>
         <legend>Datos del Requerimiento</legend>
         
         @Html.HiddenFor(model => model.modeloRequerimiento.IdProyecto)

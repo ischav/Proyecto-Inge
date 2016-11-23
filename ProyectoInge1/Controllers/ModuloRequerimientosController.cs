@@ -253,24 +253,33 @@ namespace ProyectoInge1.Controllers
              * en la base de datos (tabla de la base de datos)
              * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
              */
-            ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
-            modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
-            modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
-            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " + 
-                                                                     "ON P.Id = R.IdProyecto " +
-                                                                     "WHERE USP.RolProyecto = 'Cliente' AND " +
-                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " +
-                                                                     "ON P.Id = R.IdProyecto " +
-                                                                     "WHERE USP.RolProyecto = 'Desarrollador' AND " +
-                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+
+                ModeloProyecto modelo = new ModeloProyecto();
+            try
+            {
+                modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
+                Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
+                modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+                Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
+                modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                         "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                         "ON P.Id = R.IdProyecto " +
+                                                                         "WHERE USP.RolProyecto = 'Cliente' AND " +
+                                                                         "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                         "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                         "ON P.Id = R.IdProyecto " +
+                                                                         "WHERE USP.RolProyecto = 'Desarrollador' AND " +
+                                                                         "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+            }
+            catch
+            {
+                
+            }
+
             if (modelo.modeloRequerimiento.Imagen != null)
             {
                 modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
@@ -374,6 +383,102 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaClientes = clientes;
             ViewBag.listaRecursos = recursos;
             ViewBag.listaDesarrolladores = new List<Usuario>();
+        }
+
+
+        /* Método para crear una solicitud de cambio de un requerimiento
+  * Requiere: parámetro recibido válido en la base de datos
+  * Modifica: el modelo
+  * Retorna: el modelo cargado
+  */
+        public ActionResult CrearSolicitud(string id, string idProyecto)
+        {
+            ModeloProyecto modelo = new ModeloProyecto();
+
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(id, idProyecto);
+
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
+            modelo.solicitante = solicitante.NombreCompleto;
+
+            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
+            modelo.responsable = responsable.NombreCompleto;
+
+            //usuario actual
+            string idSolicitante = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(idSolicitante);
+            modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
+
+            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                     "ON P.Id = R.IdProyecto " +
+                                                                     "WHERE USP.RolProyecto = 'Cliente' AND " +
+                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                     "USP.IdProyecto = P.Id JOIN Requerimiento R " +
+                                                                     "ON P.Id = R.IdProyecto " +
+                                                                     "WHERE USP.RolProyecto = 'Desarrollador' AND " +
+                                                                     "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
+            if (modelo.modeloRequerimiento.Imagen != null)
+            {
+                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+            }
+            modelo.accion = 0;
+
+            //return View("../ModuloCambios/CrearSolicitud", modelo);
+            return View(modelo);
+        }
+
+        /* Método que guarda una solicitud de cambios
+         * Requiere: no aplica
+         * Modifica: la tabla de Requerimiento
+         * Retorna: el modelo actualizado
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearSolicitud(ModeloProyecto modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!string.IsNullOrEmpty(modelo.rutaImagen))
+                {
+                    modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+                }
+                modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
+                baseDatos.Cambio.Add(modelo.modeloCambio);
+                baseDatos.SaveChanges();
+
+                ModeloProyecto nuevoModelo = new ModeloProyecto();
+
+                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+
+                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                         "USP.IdProyecto = P.Id " +
+                                                                         "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+
+                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                                 "USP.IdProyecto = P.Id " +
+                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+
+                modelo.listaUsuariosSolicitantesCambios = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
+                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
+                                                                                 "USP.IdProyecto = P.Id " +
+                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+                nuevoModelo.cambiosGuardados = 1;
+
+                return View(nuevoModelo);
+            }
+            else
+            {
+                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+                modelo.cambiosGuardados = 2;
+
+                return View(modelo);
+            }
         }
     }
 }

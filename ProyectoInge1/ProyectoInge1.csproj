@@ -364,7 +364,7 @@
     <Content Include="Views\ModuloProyecto\Create.cshtml" />
     <Content Include="Views\ModuloCambios\Edit.cshtml" />
     <Content Include="Views\ModuloCambios\IndexSolicitud.cshtml" />
-    <Content Include="Views\ModuloCambios\CrearSolicitud.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\CrearSolicitud.cshtml" />
     <Content Include="Views\ModuloCambios\IndexHistorialCambios.cshtml" />
     <Content Include="Views\ModuloCambios\DetallesVersion.cshtml" />
   </ItemGroup>

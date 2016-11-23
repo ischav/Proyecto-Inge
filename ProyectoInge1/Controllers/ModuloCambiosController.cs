@@ -169,20 +169,22 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
-        public ActionResult CrearSolicitud(string Id, string IdProyecto)
+        public ActionResult CrearSolicitud(string id, string idProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
 
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(id, idProyecto);
 
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
-            modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
+            modelo.solicitante = solicitante.NombreCompleto;
 
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
+            modelo.responsable = responsable.NombreCompleto;
 
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
+            //usuario actual
+            string idSolicitante = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(idSolicitante);
+            modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
 
             modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                      "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
@@ -202,7 +204,8 @@ namespace ProyectoInge1.Controllers
             }
             modelo.accion = 0;
 
-            return View(modelo);
+           //return View("../ModuloCambios/CrearSolicitud", modelo);
+           return View(modelo);
         }
 
         /* Método que guarda una solicitud de cambios
