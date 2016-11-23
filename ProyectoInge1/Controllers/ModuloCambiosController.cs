@@ -149,12 +149,40 @@ namespace ProyectoInge1.Controllers
             return View(cambios.ToPagedList(pageNumber, pageSize));
         }
 
+        public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
+        {
+            ModeloProyecto modelo = new ModeloProyecto();
+            modelo.modeloCambio = baseDatos.Cambio.Find(IdSolicitud, IdRequerimiento, IdProyecto);
+            modelo.usuario = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(IdRequerimiento, IdProyecto);
+
+            if (modelo.modeloRequerimiento.Imagen != null)
+            {
+                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+            }
+            if(modelo.modeloCambio.Imagen != null)
+            {
+                modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+            }
+
+            return View(modelo);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(ModeloProyecto modelo)
         {
             if (ModelState.IsValid)
             {
-                baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
-                baseDatos.SaveChanges();
+                int version = 0;
+                modelo.listaCambios = baseDatos.Cambio.ToList();
+                for(int i = 0; i < modelo.listaCambios.Count; i++)
+                {
+                    if (modelo.listaCambios.ElementAt(i).Version > version)
+                        version = (int)modelo.listaCambios.ElementAt(i).Version;
+                }
+
+                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagenCambio);
             }
             else
             {

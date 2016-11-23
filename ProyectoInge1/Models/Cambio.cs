@@ -22,6 +22,8 @@ namespace ProyectoInge1.Models
         }
 
         public int IdSolicitud { get; set; }
+		
+		[Display(Name = "Id")]
         public string IdRequerimiento { get; set; }
 
         [Display(Name = "Proyecto")]
@@ -87,11 +89,13 @@ namespace ProyectoInge1.Models
         [DataType(DataType.MultilineText)]
         public string JustificacionCambio { get; set; }
 
+		[Display(Name = "Solicitante")]
         public string SolicitanteCambio { get; set; }
 
         [Display(Name = "Fecha de solicitud")]
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> FechaCambio { get; set; }
+		[Display(Name = "Estado de la solicitud")]
         public string EstadoSolicitud { get; set; }
 
         [Display(Name = "Observaciones Solicitud")]

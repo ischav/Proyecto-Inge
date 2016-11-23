@@ -82,6 +82,9 @@ namespace ProyectoInge1.Models
         /* Objeto string que corresponde al valor para especificar la ruta de la imagen del requerimiento */
         [Display(Name = "Imagen")]
         public string rutaImagen { get; set; }
+		
+		[Display(Name = "Imagen")]
+        public string rutaImagenCambio { get; set; }
 
         /* Objetos string que correesponde a la específicación del rol de un usuario.*/
         public string rolActualId { get; set; }

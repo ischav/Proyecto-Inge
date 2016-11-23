@@ -190,7 +190,34 @@ namespace ProyectoInge1.Controllers
 					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
 				}
                 modelo.modeloRequerimiento.IdProyecto = modelo.proyectoRequerimiento;
+                modelo.modeloRequerimiento.Version = 1;
                 baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
+
+                /* Se guarda en el historial, ese nuevo requerimiento */
+                Cambio cambio = new Cambio();
+                cambio.EstadoSolicitud = "Aprobado";
+                cambio.IdRequerimiento = modelo.modeloRequerimiento.Id;
+                cambio.IdProyecto = modelo.modeloRequerimiento.IdProyecto;
+                cambio.Nombre = modelo.modeloRequerimiento.Nombre;
+                cambio.Prioridad = modelo.modeloRequerimiento.Prioridad;
+                cambio.Esfuerzo = modelo.modeloRequerimiento.Esfuerzo;
+                cambio.Estado = modelo.modeloRequerimiento.Estado;
+                cambio.Descripcion = modelo.modeloRequerimiento.Descripcion;
+                cambio.FechaInicio = modelo.modeloRequerimiento.FechaInicio;
+                cambio.FechaFinal = modelo.modeloRequerimiento.FechaFinal;
+                cambio.FechaCambio = modelo.modeloRequerimiento.FechaInicio;
+                cambio.Sprint = modelo.modeloRequerimiento.Sprint;
+                cambio.Modulo = modelo.modeloRequerimiento.Modulo;
+                cambio.Observaciones = modelo.modeloRequerimiento.Observaciones;
+                cambio.Imagen = modelo.modeloRequerimiento.Imagen;
+                cambio.IdResponsable = modelo.modeloRequerimiento.IdResponsable;
+                cambio.IdSolicitante = modelo.modeloRequerimiento.IdSolicitante;
+                cambio.Version = 1;
+                cambio.SolicitanteCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                cambio.ObservacionesSolicitud = "Cambio inicial";
+                cambio.DescripcionCambio = "Cambio inicial";
+                cambio.JustificacionCambio = "Cambio inicial";
+                baseDatos.Cambio.Add(cambio);
                 baseDatos.SaveChanges();
                 ModeloProyecto nuevoModelo = new ModeloProyecto();
                 modelo.listaProyectos = baseDatos.Proyecto.ToList();
