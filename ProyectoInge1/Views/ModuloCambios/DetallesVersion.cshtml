@@ -1,4 +1,4 @@
-﻿@model ProyectoInge1.Models.ModeloProyecto
+@model ProyectoInge1.Models.ModeloProyecto
 @{
     ViewBag.Title = "DetallesVersion";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -46,6 +46,8 @@
         $("input").prop('disabled', false);
         $('select').prop('disabled', false);
         $("#descripcion *").prop("disabled", false);
+        $("#descripcionCambio *").prop("disabled", false);
+        $("#justificacionCambio *").prop("disabled", false);    
         $('.elementoConsultar').hide();
         $('.elementoModificar').show();
         $("#eliminar").prop("disabled",true);
@@ -65,6 +67,8 @@
             $("input").prop('disabled', true).trigger("click");
             $('select').prop('disabled', true).trigger("click");
             $("#descripcion *").prop("disabled", true).trigger("click");
+            $("#descripcionCambio *").prop("disabled", true).trigger("click");
+            $("#justificacionCambio *").prop("disabled", true).trigger("click");
             $("#guardar").attr('disabled','disabled');
             $('.elementoModificar').hide();
             $('.elementoConsultar').show();
@@ -85,11 +89,11 @@
 </div>
 
 
-@if ((bool)Session["PRO-M"]/* || Model.liderId.Equals(Model.usuarioActualId)*/)
+@if ((bool)Session["PRO-M"])
 {
     <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 }
-@if ((bool)Session["PRO-E"] /*|| Model.liderId.Equals(Model.usuarioActualId)*/)
+@if ((bool)Session["PRO-E"])
 {
     <button type="button" class="btn btn-default" id="eliminar">Eliminar</button>
 }
@@ -108,7 +112,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.modeloCambio.IdProyecto, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloCambio.IdProyecto, new { htmlAttributes = new { @class = "form-control", @id = "Proyecto" } })
+                    @Html.EditorFor(model => model.modeloCambio.IdProyecto, new { htmlAttributes = new { @class = "form-control", @id = "Proyecto", @readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.modeloCambio.IdProyecto, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -119,7 +123,7 @@
             @Html.LabelFor(model => model.modeloCambio.IdRequerimiento, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 <div class="Id">
-                    @Html.EditorFor(model => model.modeloCambio.IdRequerimiento, new { htmlAttributes = new { @class = "form-control", @id = "Id" } })
+                    @Html.EditorFor(model => model.modeloCambio.IdRequerimiento, new { htmlAttributes = new { @class = "form-control", @id = "Id", @readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.modeloCambio.IdRequerimiento, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -165,7 +169,7 @@
         </div>
 
         <div class="row">
-            <div class="form-group">
+            <div class="form-group", id="descripcion">
                 @Html.LabelFor(model => model.modeloCambio.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.modeloCambio.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
@@ -211,14 +215,13 @@
         <legend>Datos de Desarrollo</legend>
 
         <div class="row">
-            @Html.LabelFor(model => model.modeloCambio.Estado, htmlAttributes: new { @class = "control-label required col-md-2" })
+            @Html.LabelFor(model => model.modeloCambio.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                 @Html.DropDownListFor(model => model.modeloCambio.Estado, new SelectList(new List<Object>{
-                    new { value = "Pendiente de asignar" , text = "Pendiente de asignar"  },
-                    new { value = "Asignado" , text = "Asignado"  },
-                    new { value = "En ejecución" , text = "En ejecución" },
-                    new { value = "Finalizado" , text = "Finalizado" },
-                    new { value = "Cerrado" , text = "Cerrado"}
+                    new { value = "Pendiente" , text = "Pendiente"  },
+                    new { value = "En revisión" , text = "En revisión"  },
+                    new { value = "Aceptado" , text = "Aceptado" },
+                    new { value = "Rechazado" , text = "Rechazado" }
                 }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
 
@@ -229,7 +232,6 @@
                     @Html.ValidationMessageFor(model => model.responsable, "", new { @class = "text-danger" })
                 </div>
             </div>
-
         </div>
 
         <div class="row">
@@ -259,12 +261,10 @@
     <!--Detalles de solicitud-->
     <fieldset>
         <legend>Detalles de Solicitud</legend>
-
         <div class="row">
-
             @Html.Label("Solicitante del cambio", htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
-                @Html.DropDownListFor(model => model.solicitanteCambio, new SelectList(ViewBag.listaSolicitantesCambio, "Id", "NombreCompleto"), new { @class = "form-control" })
+                @Html.EditorFor(model => model.solicitanteCambio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                 @Html.ValidationMessageFor(model => model.solicitanteCambio, "", new { @class = "text-danger" })
             </div>
 
@@ -277,14 +277,14 @@
 
         <div class="row">
             @Html.LabelFor(model => model.modeloCambio.DescripcionCambio, htmlAttributes: new { @class = "control-label required col-md-2" })
-            <div class="col-md-4">
+            <div class="col-md-4", id="descripcionCambio">
                 @Html.EditorFor(model => model.modeloCambio.DescripcionCambio, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.modeloCambio.DescripcionCambio, "", new { @class = "text-danger" })
             </div>
 
             @Html.LabelFor(model => model.modeloCambio.JustificacionCambio, htmlAttributes: new { @class = "control-label required col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.modeloCambio.JustificacionCambio, new { htmlAttributes = new { @class = "form-control"/*, placeholder = "Ejemplo: Abcd!123" } */} })
+            <div class="col-md-4", id="justificacionCambio">
+                @Html.EditorFor(model => model.modeloCambio.JustificacionCambio, new { htmlAttributes = new { @class = "form-control"} })
                 @Html.ValidationMessageFor(model => model.modeloCambio.JustificacionCambio, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -292,7 +292,7 @@
         <div class="row">
             @Html.LabelFor(model => model.modeloCambio.EstadoSolicitud, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DropDownListFor(model => model.modeloCambio.Estado, new SelectList(new List<Object>{
+                @Html.DropDownListFor(model => model.modeloCambio.EstadoSolicitud, new SelectList(new List<Object>{
                     new { value = "Pendiente" , text = "Pendiente"  },
                     new { value = "En revisión" , text = "En revisión"  },
                     new { value = "Aceptado" , text = "Aceptado" },
