@@ -1,0 +1,163 @@
+@model PagedList.IPagedList<ProyectoInge1.Models.Cambio>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Gesti";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    window.onload = function () {
+        $('#campodebusqueda').change(function (e) {
+            window.location.replace(location.protocol + '//' + location.host + location.pathname + "?Proyecto=" + $(this).val());
+ 
+        });
+        $('#cambioCategoria').change(function (e) {
+                window.location.replace(location.protocol + '//' + location.host + location.pathname + "?Proyecto=" + $('#campodebusqueda').val() + "&" + "Categ=" + $(this).val());
+        });
+
+    }
+</script>
+
+
+<style>
+    form {
+        display: inline-block;
+    }
+
+    ocultar {
+        display: none;
+    }
+</style>
+
+<h2>Gestión de solicitudes de cambios</h2>
+
+<div display="inline">
+    <form>
+        <p>
+            Proyecto  &nbsp;
+        </p>
+    </form>
+    <form>
+        @using (Html.BeginForm())
+        {
+            <p>
+                @Html.DropDownList("pro", null, "Seleccione un proyecto", htmlAttributes: new { @class = "form-control", @id = "campodebusqueda" })
+            </p>
+        }
+    </form>
+    <form>
+        <p>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        </p>
+    </form>
+    <form>
+        <p>
+            Categorias &nbsp;
+        </p>
+    </form>
+    <form id='ver'>
+        @using (Html.BeginForm())
+        {
+            <p>
+                @Html.DropDownList("categoria", null, "Seleccione una categoria", htmlAttributes: new { @class = "form-control", @id = "cambioCategoria" })
+            </p>
+        }
+    </form>
+    <form>
+        <p>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        </p>
+    </form>
+
+     <form>
+        @using (Html.BeginForm("IndexSolicitud", "ModuloCambios", FormMethod.Get))
+        {
+            <p>
+                Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Proyecto"] as string, Request.Params["Categ"] as string)
+                <ocultar>
+                    @Html.TextBox("Proyecto", Request.Params["Proyecto"] as string)
+                </ocultar>
+                <ocultar>
+                    @Html.TextBox("Categ", Request.Params["Categ"] as string)
+                </ocultar>
+                <button type="submit" class="btn btn-primary" onsubmit="campodebusqueda();">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </p>
+        }
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Nombre", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Nombre", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Prioridad", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Prioridad", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Esfuerzo", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Esfuerzo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Sprint", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Sprint", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Modulo", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Modulo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Version", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Version", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Estado de solicitud", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Estado", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Solicitante", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdRequerimiento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prioridad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Esfuerzo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sprint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Version)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoSolicitud)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SolicitanteCambio)
+            </td>
+            <td>
+                @Html.ActionLink("Ver", "Edit", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
+            </td>
+        </tr>
+    }
+</table>
+
+<br />
+        Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("IndexSolicitud", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
