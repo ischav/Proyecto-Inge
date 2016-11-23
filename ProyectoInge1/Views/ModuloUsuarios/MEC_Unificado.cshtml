@@ -88,12 +88,8 @@
 <!-- Se imprimen los botones de modificar y eliminar, cuando se ingresa a consultar los datos -->
 <div class="elementoEliminar" @styleElementoEliminar>
     <h2>Detalles</h2>
-    @if ((bool)Session["GUS-M"]) {
-        <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
-    }
-    @if ((bool)Session["GUS-E"]) {
-        <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
-    }
+    <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
+    <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
 </div>
 <div class="elementoModificar" @styleElementoModificar>
     <h2>Modificar</h2>
