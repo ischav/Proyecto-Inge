@@ -9,10 +9,28 @@
     <title>@ViewBag.Title - Administración de Requerimientos</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <style> 
-        body {background-color: white;}
+    <style>
+        body {
+            background-color: white;
+        }
     </style>
 </head>
+
+@{  string pantallaActual = Html.ViewBag.pantallaActual ?? "";
+    string resaltado = "color:#6ad3f5;";
+    string noResaltado = "";
+    string colorInicio = string.Equals(pantallaActual, "inicio") ? resaltado : noResaltado;
+    string colorUsuarios = string.Equals(pantallaActual, "usuarios") ? resaltado : noResaltado;
+    string colorPrivilegios = string.Equals(pantallaActual, "privilegios") ? resaltado : noResaltado;
+    string colorProyectos = string.Equals(pantallaActual, "proyectos") ? resaltado : noResaltado;
+    string colorRequerimientos = string.Equals(pantallaActual, "requerimientos") ? resaltado : noResaltado;
+    string colorContacto = string.Equals(pantallaActual, "contacto") ? resaltado : noResaltado;
+    string colorAcercaDe = string.Equals(pantallaActual, "acercaDe") ? resaltado : noResaltado;
+    string colorRegistro = string.Equals(pantallaActual, "registro") ? resaltado : noResaltado;
+    string colorIniciarSesion = string.Equals(pantallaActual, "iniciarSesion") ? resaltado : noResaltado;
+    string colorMiCuenta = string.Equals(pantallaActual, "miCuenta") ? resaltado : noResaltado;
+}
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -24,45 +42,39 @@
                 </button>
                 @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-           @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-           {
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                        Entities baseDatos = new Entities();
-                        ApplicationDbContext context = new ApplicationDbContext();
-                        ModeloIntermedio modelo = new ModeloIntermedio();
-                        modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                        string rolId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-                        if (rolId == "01Admin")
-                        {
-                            <li>@Html.ActionLink("Usuarios", "Index", "ModuloUsuarios")</li>
+            @using(Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @if(Request.IsAuthenticated) {
+                            Entities baseDatos = new Entities();
+                            ApplicationDbContext context = new ApplicationDbContext();
+                            ModeloIntermedio modelo = new ModeloIntermedio();
+                            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                            string rolId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+                            if(rolId == "01Admin") {
+                                <li>@Html.ActionLink("Usuarios", "Index", "ModuloUsuarios", null, new { @style = colorUsuarios })</li>
+                            }
+                            <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad", null, new { @style = colorPrivilegios })</li>
+                            <li>@Html.ActionLink("Proyecto", "Index", "ModuloProyecto", null, new { @style = colorProyectos })</li>
+                            <li>@Html.ActionLink("Requerimientos", "Index", "ModuloRequerimientos", null, new { @style = colorRequerimientos })</li>
                         }
-                        <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad")</li>
-                        <li>@Html.ActionLink("Proyecto", "Index", "ModuloProyecto")</li>
-                        <li>@Html.ActionLink("Requerimientos", "Index", "ModuloRequerimientos")</li>
-                    }
-                    <li>@Html.ActionLink("Contáctenos", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <li> @Html.ActionLink("Mi cuenta", "Informacion", "ModuloUsuarios") </li>
-                        @Html.AntiForgeryToken()
-                        <li><a href="javascript:document.getElementById('logoutForm').submit()">Salir </a></li>
-                    }
-                    else
-                    {
-                        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-                        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-                    }
-                </ul>
-            </div>
-           }
+                        <li>@Html.ActionLink("Contáctenos", "Contact", "Home", null, new { @style = colorContacto })</li>
+                        <li>@Html.ActionLink("Acerca de", "About", "Home", null, new { @style = colorAcercaDe })</li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        @if(Request.IsAuthenticated) {
+                            <li> @Html.ActionLink("Mi cuenta", "Informacion", "ModuloUsuarios", null, new { @style = colorMiCuenta }) </li>
+                            @Html.AntiForgeryToken()
+                            <li><a href="javascript:document.getElementById('logoutForm').submit()">Salir </a></li>
+                        } else {
+                            <li>@Html.ActionLink("Register", "Register", "Account", null, new { id = "registerLink", @style = colorRegistro })</li>
+                            <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { id = "loginLink", @style = colorIniciarSesion })</li>
+                        }
+                    </ul>
+                 </div>
+            }
         </div>
-           
+
     </div>
     <div class="container body-content">
         @RenderBody()
