@@ -412,6 +412,15 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaDesarrolladores = new List<Usuario>();
         }
 
+        /*-------------------------------------------------------------------------------------------
+                                            GESTION DE CAMBIOS
+        -------------------------------------------------------------------------------------------*/
+
+        /* Método que carga el modelo para la vista Index de Historial de Cambios
+         * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
+         * Modifica: el modelo
+         * Retorna: el modelo de páginación cargado
+         */
         public ActionResult IndexHistorialCambios(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
             var historialCambios = from s in baseDatos.Cambio
@@ -423,6 +432,11 @@ namespace ProyectoInge1.Controllers
             return View(historialCambios.ToPagedList(pageNumber, pageSize));
         }
 
+        /* Método que carga el modelo para la vista Index de Solicitudes de Cambios
+         * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
+         * Modifica: el modelo
+         * Retorna: el modelo de páginación cargado
+         */
         public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
             String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -545,6 +559,11 @@ namespace ProyectoInge1.Controllers
             return View(cambios.ToPagedList(pageNumber, pageSize));
         }
 
+        /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
+         * Requiere: 
+         * Modifica:
+         * Retorna: 
+         */
         public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
@@ -564,6 +583,11 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 
+        /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
+         * Requiere: 
+         * Modifica:
+         * Retorna: 
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ModeloProyecto modelo)
@@ -589,17 +613,14 @@ namespace ProyectoInge1.Controllers
         }
 
         /* Método para crear una solicitud de cambio de un requerimiento
-         * Requiere: parámetro recibido válido en la base de datos
+         * Requiere: idRequerimiento, idProyecto y versión
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
         [Authorize]
         [Permisos("PRO-M", "PRO-E", "PRO-C")]
-        public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version = 1)
+        public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version)
         {
-            idProyecto = "PRO-II";
-            idRequerimiento = "RF-FQS-01";
-            version = 1;
             ModeloProyecto modelo = new ModeloProyecto();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
@@ -611,9 +632,10 @@ namespace ProyectoInge1.Controllers
             modelo.modeloCambio = cambios.First().cambio;
             Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
+            
+            var soliCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(soliCambio);
             modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
-
 
             //no agrego el solicitante para que salga de primero
             var clientes = (from usuario in baseDatos.Usuario
@@ -810,7 +832,7 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 	
-	        [Authorize]
+	    [Authorize]
         [HttpGet]
         public ActionResult DetallesVersion(string idRequerimiento, string idProyecto, int version=1)
         {

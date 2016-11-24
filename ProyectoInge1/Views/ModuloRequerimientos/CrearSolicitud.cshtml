@@ -43,18 +43,27 @@
 
 <script>
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que no desea modificar este proyecto?');
+        var respuesta = confirm('¿Confirma que no desea enviar una solicitud de cambio?');
         if (respuesta == true) {
-            var url = '@Url.Action("MEC_Unificado", "ModuloProyecto")';
+            var url = '@Url.Action("MEC_UnificadoRequerimientos", "ModuloRequerimientos")';
             window.location.href = url;
         }
     }
 
+    function cambio() {
+        var input = document.getElementById("uploadBtn");
+        var fReader = new FileReader();
+        fReader.readAsDataURL(input.files[0]);
+        fReader.onloadend = function (event) {
+            var img = document.getElementById("RuPic");
+            img.src = event.target.result;
+            document.getElementById("rutaImagen").value = event.target.result;
+        }
+    }
 </script>
 
-<div class="elementoConsultar">
-    <h2>Crear solicitud</h2>
-</div>
+
+<h2>Crear solicitud de Cambio</h2>
 
 
 @using (Html.BeginForm())
@@ -176,11 +185,12 @@
         <div class="row">
             @Html.LabelFor(model => model.modeloCambio.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DropDownListFor(model => model.modeloCambio.Estado, new SelectList(new List<Object>{
-                    new { value = "Pendiente" , text = "Pendiente"  },
-                    new { value = "En revisión" , text = "En revisión"  },
-                    new { value = "Aceptado" , text = "Aceptado" },
-                    new { value = "Rechazado" , text = "Rechazado" }
+                @Html.DropDownListFor(model => model.modeloRequerimiento.Estado, new SelectList(new List<Object>{
+                    new { value = "Pendiente de asignar" , text = "Pendiente de asignar"  },
+                    new { value = "Asignado" , text = "Asignado"  },
+                    new { value = "En ejecución" , text = "En ejecución" },
+                    new { value = "Finalizado" , text = "Finalizado" },
+                    new { value = "Cerrado" , text = "Cerrado"}
                 }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
 
@@ -211,7 +221,7 @@
         <div class="row">
             @Html.LabelFor(model => model.modeloCambio.Version, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.EditorFor(model => model.modeloCambio.Version, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.modeloCambio.Version, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                 @Html.ValidationMessageFor(model => model.modeloCambio.Version, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -229,7 +239,7 @@
 
             @Html.LabelFor(model => model.modeloCambio.FechaCambio, htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
-                @Html.EditorFor(model => model.modeloCambio.FechaCambio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.modeloCambio.FechaCambio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                 @Html.ValidationMessageFor(model => model.modeloCambio.FechaCambio, "", new { @class = "text-danger" })
             </div>
         </div>

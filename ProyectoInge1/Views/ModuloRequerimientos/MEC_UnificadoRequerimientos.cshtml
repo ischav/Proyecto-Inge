@@ -172,7 +172,6 @@
 
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
-<button type="button" class="btn btn-default" onclick="irASolicitud('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Solicitar cambio</button>
 @Html.ActionLink("Solicitar cambio", "CrearSolicitud",  new { idRequerimiento = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto, version = Model.modeloRequerimiento.Version })
 
 @using(Html.BeginForm())
