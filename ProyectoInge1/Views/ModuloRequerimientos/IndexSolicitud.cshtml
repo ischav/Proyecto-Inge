@@ -2,7 +2,8 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
-    ViewBag.Title = "Gesti";
+    ViewBag.Title = "Solicitudes";
+    ViewBag.pantallaActual = "solicitudes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,7 +11,7 @@
     window.onload = function () {
         $('#campodebusqueda').change(function (e) {
             window.location.replace(location.protocol + '//' + location.host + location.pathname + "?Proyecto=" + $(this).val());
- 
+
         });
         $('#cambioCategoria').change(function (e) {
                 window.location.replace(location.protocol + '//' + location.host + location.pathname + "?Proyecto=" + $('#campodebusqueda').val() + "&" + "Categ=" + $(this).val());
@@ -70,7 +71,7 @@
         </p>
     </form>
 
-     <form>
+    <form>
         @using (Html.BeginForm("IndexSolicitud", "ModuloCambios", FormMethod.Get))
         {
             <p>
