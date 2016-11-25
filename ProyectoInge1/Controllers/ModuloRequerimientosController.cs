@@ -437,17 +437,65 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo de páginación cargado
          */
-        public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
+        public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto, string Categ)
         {
             String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
             String rol = context.Users.Find(id).Roles.First().RoleId;
 
             var cambios = from Cambio c in baseDatos.Cambio
+                          where c.IdProyecto == Proyecto
                           select c;
+
+            var proyecto = from Proyecto p in baseDatos.Proyecto
+                           select p;
+
+            if (!(rol == "01Admin"))
+            {
+                String id_usuario = User.Identity.GetUserId();
+                proyecto = from Proyecto p in baseDatos.Proyecto
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+                            p.Id equals USP.IdProyecto
+                           where USP.IdUsuario == id_usuario
+                           select p;
+            }
+
+
+            foreach (var i in cambios)
+            {
+                String id_usuario = User.Identity.GetUserId();
+                var nombre = from Usuario u in baseDatos.Usuario
+                             join Cambio c in baseDatos.Cambio on
+                             u.Id equals c.SolicitanteCambio
+                             where u.Id == i.SolicitanteCambio
+                             select u;
+
+                foreach (var j in nombre)
+                {
+                    i.SolicitanteCambio = j.NombreCompleto;
+                }
+            }
 
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.pro = new SelectList(proyecto, "Id", "Nombre", Proyecto);
+
+            List<SelectListItem> categoria = new List<SelectListItem>();
+            categoria.Add(new SelectListItem() { Text = "Mis solicitudes", Value = "1" });
+            categoria.Add(new SelectListItem() { Text = "Realizadas por el equipo", Value = "2" });
+
+            if (!String.IsNullOrEmpty(Categ))
+            {
+                var seleccionar = 1;
+                foreach (var k in categoria)
+                {
+                    if (Int32.Parse(Categ) == seleccionar)
+                        k.Selected = true;
+                    seleccionar++;
+                }
+            }
+
+            ViewBag.categoria = categoria;
 
             if (searchString != null)
             {
@@ -490,6 +538,9 @@ namespace ProyectoInge1.Controllers
                             break;
                         case "Modulo":
                             cambios = cambios.OrderByDescending(s => s.Modulo);
+                            break;
+                        case "Version":
+                            cambios = cambios.OrderByDescending(s => s.Version);
                             break;
                         default:
                             cambios = cambios.OrderByDescending(s => s.IdSolicitud);
@@ -545,6 +596,9 @@ namespace ProyectoInge1.Controllers
                         case "Modulo":
                             cambios = cambios.OrderBy(s => s.Modulo);
                             break;
+                        case "Version":
+                            cambios = cambios.OrderBy(s => s.Version);
+                            break;
                         default:
                             cambios = cambios.OrderBy(s => s.IdSolicitud);
                             break;
@@ -559,12 +613,12 @@ namespace ProyectoInge1.Controllers
             return View(cambios.ToPagedList(pageNumber, pageSize));
         }
 
-        /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
-         * Requiere: 
-         * Modifica:
-         * Retorna: 
-         */
-        public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
+    /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
+     * Requiere: 
+     * Modifica:
+     * Retorna: 
+     */
+    public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloCambio = baseDatos.Cambio.Find(IdSolicitud, IdRequerimiento, IdProyecto);
@@ -628,6 +682,7 @@ namespace ProyectoInge1.Controllers
                            select new { cambio });
 
             modelo.modeloCambio = cambios.First().cambio;
+            modelo.proyectoRequerimiento = idProyecto;
 
             // Solicitante del requerimiento
             // este no cambia, porque fue quien generó inicialmente el requerimiento
@@ -679,15 +734,17 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CrearSolicitud(ModeloProyecto modelo)
         {
+
+            if (!string.IsNullOrEmpty(modelo.rutaImagen))
+            {
+                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+            }
+            modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
+            modelo.modeloCambio.EstadoSolicitud = "Pendiente";
+            modelo.modeloCambio.FechaCambio = DateTime.Today;
+
             if (ModelState.IsValid)
             {
-                if (!string.IsNullOrEmpty(modelo.rutaImagen))
-                {
-                    modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
-                }
-                modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
-                modelo.modeloCambio.EstadoSolicitud = "Pendiente";
-                modelo.modeloCambio.FechaCambio = DateTime.Today;
                 baseDatos.Cambio.Add(modelo.modeloCambio);
                 baseDatos.SaveChanges();
 
