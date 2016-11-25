@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity;
 @using ProyectoInge1.Models;
 
 <!DOCTYPE html>
@@ -24,6 +24,7 @@
     string colorPrivilegios = string.Equals(pantallaActual, "privilegios") ? resaltado : noResaltado;
     string colorProyectos = string.Equals(pantallaActual, "proyectos") ? resaltado : noResaltado;
     string colorRequerimientos = string.Equals(pantallaActual, "requerimientos") ? resaltado : noResaltado;
+    string colorSolicitudes = string.Equals(pantallaActual, "solicitudes") ? resaltado : noResaltado;
     string colorContacto = string.Equals(pantallaActual, "contacto") ? resaltado : noResaltado;
     string colorAcercaDe = string.Equals(pantallaActual, "acercaDe") ? resaltado : noResaltado;
     string colorRegistro = string.Equals(pantallaActual, "registro") ? resaltado : noResaltado;
@@ -57,6 +58,7 @@
                             <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad", null, new { @style = colorPrivilegios })</li>
                             <li>@Html.ActionLink("Proyecto", "Index", "ModuloProyecto", null, new { @style = colorProyectos })</li>
                             <li>@Html.ActionLink("Requerimientos", "Index", "ModuloRequerimientos", null, new { @style = colorRequerimientos })</li>
+                            <li>@Html.ActionLink("Solicitudes de Cambios", "IndexSolicitud", "ModuloRequerimientos", null, new { @style = colorSolicitudes })</li>
                         }
                         <li>@Html.ActionLink("Contáctenos", "Contact", "Home", null, new { @style = colorContacto })</li>
                         <li>@Html.ActionLink("Acerca de", "About", "Home", null, new { @style = colorAcercaDe })</li>
