@@ -743,6 +743,21 @@ namespace ProyectoInge1.Controllers
                 {
                     if(modelo.modeloCambio.ObservacionesSolicitud == null)
                     {
+		    	modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
+                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
+                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+
+                        if (modelo.modeloRequerimiento.Imagen != null)
+                        {
+                            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+                        }
+                        if (modelo.modeloCambio.Imagen != null)
+                        {
+                            modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+                        }
+		    
                         TempData["mensaje"] = "erroreem";
                         ViewBag.Msj = "erroreem";
                         return View(modelo);
@@ -753,12 +768,42 @@ namespace ProyectoInge1.Controllers
                         baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
                         baseDatos.SaveChanges();
                         
+			modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
+                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
+                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+
+                        if (modelo.modeloRequerimiento.Imagen != null)
+                        {
+                            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+                        }
+                        if (modelo.modeloCambio.Imagen != null)
+                        {
+                            modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+                        }
+			
                         TempData["mensaje"] = "exito";
                         ViewBag.Msj = "exito";
                         return View(modelo);
                     }
                 }
             }
+	    
+	    modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
+                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
+                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+
+                        if (modelo.modeloRequerimiento.Imagen != null)
+                        {
+                            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+                        }
+                        if (modelo.modeloCambio.Imagen != null)
+                        {
+                            modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+                        }
 
             TempData["mensaje"] = "error";
             ViewBag.Msj = "error";
