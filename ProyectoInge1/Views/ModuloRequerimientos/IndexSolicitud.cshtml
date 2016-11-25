@@ -33,6 +33,13 @@
 
 <h2>Gestión de solicitudes de cambios</h2>
 
+@if (String.Compare(ViewBag.Msj, "exito") == 0)
+{
+    <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+        <p>El cambio fue modificado exitosamente!</p>
+    </div>
+}
+
 <div display="inline">
     <form>
         <p>
@@ -152,7 +159,7 @@
                 @Html.DisplayFor(modelItem => item.SolicitanteCambio)
             </td>
             <td>
-                @Html.ActionLink("Ver", "Edit", new { idSolicitud = item.IdSolicitud, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Ver", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
             </td>
         </tr>
     }

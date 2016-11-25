@@ -61,18 +61,39 @@ list-style-type:none;
 <div class="elementoConsultar">
     <h2>Modificar</h2>
 
+    @if (String.Compare(ViewBag.Msj, "exito") == 0)
+    {
+        <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
+            <p>El cambio fue modificado exitosamente!</p>
+        </div>
+    }
+    else if (String.Compare(ViewBag.Msj, "erroreem") == 0)
+    {
+        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+            <p>El cambio no pudo ser modificado. El campo "Observaciones de la solicitud" no puede ser nulo!</p>
+        </div>
+    }
+    else if (String.Compare(ViewBag.Msj, "error") == 0)
+    {
+        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
+            <p>Ocurrió un error al intentar modificar el cambio!</p>
+        </div>
+    }
+
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
         <fieldset>
             <legend>Datos del cambio</legend>
+            @Html.HiddenFor(model => model.modeloCambio.IdSolicitud)
 
             <div class="row">
-                @Html.LabelFor(model => model.usuario, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.HiddenFor(model => model.modeloCambio.SolicitanteCambio)
+                @Html.LabelFor(model => model.solicitanteCambio, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
-                    @Html.ValidationMessageFor(model => model.usuario, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.solicitanteCambio, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.solicitanteCambio, "", new { @class = "text-danger" })
                 </div>
 
                 @Html.HiddenFor(model => model.modeloCambio.FechaCambio)
@@ -96,6 +117,22 @@ list-style-type:none;
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.modeloCambio.JustificacionCambio, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
                     @Html.ValidationMessageFor(model => model.modeloCambio.JustificacionCambio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            
+            <div class="row">
+                @Html.HiddenFor(model => model.modeloCambio.Version)
+                @Html.LabelFor(model => model.modeloCambio.Version, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.modeloCambio.Version, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.modeloCambio.Version, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.HiddenFor(model => model.modeloRequerimiento.Version)
+                @Html.LabelFor(model => model.modeloRequerimiento.Version, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.modeloRequerimiento.Version, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.Version, "", new { @class = "text-danger" })
                 </div>
             </div>
         </fieldset>
@@ -184,17 +221,17 @@ list-style-type:none;
 
             <div class="row">
                 @Html.HiddenFor(model => model.modeloCambio.IdSolicitante)
-                @Html.LabelFor(model => model.modeloCambio.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.solicitanteC, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloCambio.IdSolicitante, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
-                    @Html.ValidationMessageFor(model => model.modeloCambio.IdSolicitante, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.solicitanteC, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.solicitanteC, "", new { @class = "text-danger" })
                 </div>
 
                 @Html.HiddenFor(model => model.modeloRequerimiento.IdSolicitante)
-                @Html.LabelFor(model => model.modeloRequerimiento.IdSolicitante, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.solicitante, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.IdSolicitante, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdSolicitante, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.solicitante, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.solicitante, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -340,17 +377,17 @@ list-style-type:none;
 
             <div class="row">
                 @Html.HiddenFor(model => model.modeloCambio.IdResponsable)
-                @Html.LabelFor(model => model.modeloCambio.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.responsableC, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloCambio.IdResponsable, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
-                    @Html.ValidationMessageFor(model => model.modeloCambio.IdResponsable, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.responsableC, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.responsableC, "", new { @class = "text-danger" })
                 </div>
              
                 @Html.HiddenFor(model => model.modeloRequerimiento.IdResponsable)
-                @Html.LabelFor(model => model.modeloRequerimiento.IdResponsable, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.responsable, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.EditorFor(model => model.modeloRequerimiento.IdResponsable, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
-                    @Html.ValidationMessageFor(model => model.modeloRequerimiento.IdResponsable, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.responsable, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                    @Html.ValidationMessageFor(model => model.responsable, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -397,12 +434,11 @@ list-style-type:none;
                         @Html.DropDownListFor(model => model.modeloCambio.EstadoSolicitud, new SelectList(new List<Object>{
                         new { value = "Aprobado" , text = "Aprobado"  },
                         new { value = "Rechazado" , text = "Rechazado"  },
-                        new { value = "En espera modificado" , text = "En espera modificado" },
+                        new { value = "Modificar" , text = "Modificar" },
                     }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
                     </div>
                 </div>
 
-                @Html.HiddenFor(model => model.modeloCambio.ObservacionesSolicitud)
                 @Html.LabelFor(model => model.modeloCambio.ObservacionesSolicitud, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.modeloCambio.ObservacionesSolicitud, new { htmlAttributes = new { @class = "form-control" } })

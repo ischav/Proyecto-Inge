@@ -439,6 +439,10 @@ namespace ProyectoInge1.Controllers
          */
         public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto, string Categ)
         {
+            if (TempData["mensaje"] != null)
+            {
+                ViewBag.Msj = TempData["mensaje"].ToString();
+            }
             String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
             String rol = context.Users.Find(id).Roles.First().RoleId;
 
@@ -613,17 +617,26 @@ namespace ProyectoInge1.Controllers
             return View(cambios.ToPagedList(pageNumber, pageSize));
         }
 
-    /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
-     * Requiere: 
-     * Modifica:
-     * Retorna: 
-     */
-    public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
+        /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
+         * Requiere: 
+         * Modifica:
+         * Retorna: 
+         */
+        public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
         {
+            if (TempData["mensaje"] != null)
+            {
+                ViewBag.Msj = TempData["mensaje"].ToString();
+            }
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloCambio = baseDatos.Cambio.Find(IdSolicitud, IdRequerimiento, IdProyecto);
-            modelo.usuario = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
             modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(IdRequerimiento, IdProyecto);
+
+            modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+            modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
+            modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
+            modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+            modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
 
             if (modelo.modeloRequerimiento.Imagen != null)
             {
@@ -637,10 +650,10 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 
-        /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
-         * Requiere: 
-         * Modifica:
-         * Retorna: 
+        /* Método para aprobar, rechazar o pedir modificar; solicitudes de cambios a un requerimiento
+         * Requiere: que el estado del cambio sea válido
+         * Modifica: el cambio y el requerimiento; o el cambio
+         * Retorna: la vista con un mensaje de éxito o fallo
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -648,21 +661,107 @@ namespace ProyectoInge1.Controllers
         {
             if (ModelState.IsValid)
             {
-                int version = 0;
-                modelo.listaCambios = baseDatos.Cambio.ToList();
-                for (int i = 0; i < modelo.listaCambios.Count; i++)
+                /* 
+                 * Si el estado es Aprobado, entonces se debe modificar el cambio y el requerimiento 
+                 */
+                if (modelo.modeloCambio.EstadoSolicitud == "Aprobado")
                 {
-                    if (modelo.listaCambios.ElementAt(i).Version > version)
-                        version = (int)modelo.listaCambios.ElementAt(i).Version;
+                    /*
+                     * Se debe buscar cuál es la última versión de cambio, la nueva versión será esa más 1
+                     */
+                    int version = 0;
+                    modelo.listaCambios = baseDatos.Cambio.ToList();
+                    for (int i = 0; i < modelo.listaCambios.Count; i++)
+                    {
+                        if (modelo.listaCambios.ElementAt(i).Version > version)
+                            version = (int)modelo.listaCambios.ElementAt(i).Version;
+                    }
+
+                    modelo.modeloCambio.VersionCambio = version + 1;
+
+                    /* 
+                     * Se modifica el requerimiento correspondiente al cambio, para que se le apliquen los cambios
+                     * que dice el requerimiento 
+                     */
+                    modelo.modeloRequerimiento.Nombre = modelo.modeloCambio.Nombre;
+                    modelo.modeloRequerimiento.Prioridad = modelo.modeloCambio.Prioridad;
+                    modelo.modeloRequerimiento.Esfuerzo = modelo.modeloCambio.Esfuerzo;
+                    modelo.modeloRequerimiento.Estado = modelo.modeloCambio.Estado;
+                    modelo.modeloRequerimiento.Descripcion = modelo.modeloCambio.Descripcion;
+                    modelo.modeloRequerimiento.FechaInicio = modelo.modeloCambio.FechaInicio;
+                    modelo.modeloRequerimiento.FechaFinal = modelo.modeloCambio.FechaFinal;
+                    modelo.modeloRequerimiento.Sprint = modelo.modeloCambio.Sprint;
+                    modelo.modeloRequerimiento.Modulo = modelo.modeloCambio.Modulo;
+                    modelo.modeloRequerimiento.Observaciones = modelo.modeloCambio.Observaciones;
+                    modelo.modeloRequerimiento.IdResponsable = modelo.modeloCambio.IdResponsable;
+                    modelo.modeloRequerimiento.IdSolicitante = modelo.modeloCambio.IdSolicitante;
+                    modelo.modeloRequerimiento.Version = modelo.modeloCambio.VersionCambio;
+
+                    /* 
+                     * Si al cambio se le eliminó la imagen, entonces el requerimiento debe elimnarla 
+                     */
+                    if (modelo.modeloCambio.Imagen != null)
+                    {
+                        modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagenCambio);
+                    }
+                    else
+                    {
+                        modelo.modeloRequerimiento.Imagen = null;
+                    }
+
+                    /* 
+                     * Se modifica el cambio y el requerimiento 
+                     */
+                    Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
+                    Requerimiento requerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
+                    baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
+                    baseDatos.Entry(requerimiento).CurrentValues.SetValues(modelo.modeloRequerimiento);
+
+                    baseDatos.SaveChanges();
+
+                    TempData["mensaje"] = "exito";
+                    return RedirectToAction("IndexSolicitud");
+                }
+                /* 
+                 * Si se rechazó la solicitud, simplemente se le cambia el estado a rechazado
+                 */
+                else if(modelo.modeloCambio.EstadoSolicitud == "Rechazado")
+                {
+                    Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
+                    baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
+                    baseDatos.SaveChanges();
+
+                    TempData["mensaje"] = "exito";
+                    return RedirectToAction("IndexSolicitud");
                 }
 
-                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagenCambio);
+                /*
+                 * Si se quiere que el solicitante haga un cambio, entonces debe indicarse cuál es el cambio que
+                 * se desea, de lo contrario se indica un error
+                 */                                           
+                else if(modelo.modeloCambio.EstadoSolicitud == "Modificar")
+                {
+                    if(modelo.modeloCambio.ObservacionesSolicitud == null)
+                    {
+                        TempData["mensaje"] = "erroreem";
+                        ViewBag.Msj = "erroreem";
+                        return View(modelo);
+                    }
+                    else
+                    {
+                        Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
+                        baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
+                        baseDatos.SaveChanges();
+                        
+                        TempData["mensaje"] = "exito";
+                        ViewBag.Msj = "exito";
+                        return View(modelo);
+                    }
+                }
             }
-            else
-            {
 
-            }
-
+            TempData["mensaje"] = "error";
+            ViewBag.Msj = "error";
             return View(modelo);
         }
 

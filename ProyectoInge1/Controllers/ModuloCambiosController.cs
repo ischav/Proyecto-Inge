@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+﻿/*using Microsoft.AspNet.Identity;
 using PagedList;
 using ProyectoInge1.Models;
 using System;
@@ -197,7 +197,7 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
-        [Authorize]
+        /*[Authorize]
         [Permisos("PRO-M", "PRO-E", "PRO-C")]
         public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version = 1)
         {
@@ -258,7 +258,7 @@ namespace ProyectoInge1.Controllers
          * Modifica: la tabla de Requerimiento
          * Retorna: el modelo actualizado
          */
-        [HttpPost]
+       /* [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CrearSolicitud(ModeloProyecto modelo)
         {
@@ -359,3 +359,4 @@ namespace ProyectoInge1.Controllers
 
     }
 }
+*/

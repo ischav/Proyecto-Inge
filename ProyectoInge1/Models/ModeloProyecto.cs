@@ -41,10 +41,14 @@ namespace ProyectoInge1.Models
         /* Objeto string que corresponde al nombre del solicitante del Requerimiento de la base de datos */
         [Display(Name = "Solicitante")]
         public string solicitante { get; set; }
+        [Display(Name = "Solicitante")]
+        public string solicitanteC { get; set; }
 
         /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
         [Display(Name = "Responsable")]
         public string responsable { get; set; }
+        [Display(Name = "Responsable")]
+        public string responsableC { get; set; }
 
         public int accion = 0;
 
@@ -96,9 +100,7 @@ namespace ProyectoInge1.Models
         public List<Usuario> listaUsuariosSolicitantesCambios = new List<Usuario>();
 
         /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
-        [Display(Name = "Solicitante Cambio")]
+        [Display(Name = "Solicitante del cambio")]
         public string solicitanteCambio { get; set; }
-
-        public string usuario { get; set; }
     }
 }
