@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -622,51 +622,50 @@ namespace ProyectoInge1.Controllers
         public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version)
         {
             ModeloProyecto modelo = new ModeloProyecto();
-            var solicitantes = new List<Usuario>();
-            var responsables = new List<Usuario>();
 
             var cambios = (from cambio in baseDatos.Cambio
                            where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
                            select new { cambio });
 
             modelo.modeloCambio = cambios.First().cambio;
+
+            // Solicitante del requerimiento
+            // este no cambia, porque fue quien generó inicialmente el requerimiento
             Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
+            modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2; ;
+
+            // Responsable del requerimiento
+            // es el desaarrollador que está a cargo de la funcionalidad
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            
+            var responsables = new List<Usuario>();
+            var desarrolladores = (from usuario in baseDatos.Usuario
+                                   join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
+                                   where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Desarrollador"
+                                   select new { usuario });
+
+            foreach (var i in desarrolladores)
+            {
+                responsables.Add(i.usuario);
+            }
+
+
+            // El solicitante del cambio es la persona que está "loggeada"
+            // en el sistema actualmente.
             var soliCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
             Usuario solicitanteCambio = baseDatos.Usuario.Find(soliCambio);
             modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
-
-            //no agrego el solicitante para que salga de primero
-            var clientes = (from usuario in baseDatos.Usuario
-                            join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
-                            where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Cliente" && usrProy.IdUsuario != solicitante.Id
-                            select new { usuario });
-
-            //no agrego el responsable para que salga de primero
-            var desarrolladores = (from usuario in baseDatos.Usuario
-                                   join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
-                                   where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Desarrollador" && usrProy.IdUsuario != responsable.Id
-                                   select new { usuario });
-
-
-            solicitantes.Add(solicitante);
-            foreach (var s in clientes)
-            {
-                solicitantes.Add(s.usuario);
-            }
-
-            responsables.Add(responsable);
-            foreach (var d in desarrolladores)
-            {
-                solicitantes.Add(d.usuario);
-                responsables.Add(d.usuario);
-            }
-
-            ViewBag.listaSolicitantes = solicitantes;
+            
             ViewBag.listaResponsables = responsables;
 
+            modelo.modeloCambio.FechaCambio = DateTime.Today;
+            modelo.modeloCambio.DescripcionCambio = "";
+            modelo.modeloCambio.JustificacionCambio = "";
+            modelo.modeloCambio.EstadoSolicitud = "Pendiente";
 
+            if (modelo.modeloCambio.Imagen != null)
+            {
+                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+            }
 
             return View(modelo);
         }
@@ -706,10 +705,6 @@ namespace ProyectoInge1.Controllers
                                                                                  "USP.IdProyecto = P.Id " +
                                                                                  "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
 
-                modelo.listaUsuariosSolicitantesCambios = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                                 "USP.IdProyecto = P.Id " +
-                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
                 nuevoModelo.cambiosGuardados = 1;
 
                 return View(nuevoModelo);
