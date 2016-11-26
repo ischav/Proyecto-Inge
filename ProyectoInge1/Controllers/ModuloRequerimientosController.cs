@@ -821,50 +821,86 @@ namespace ProyectoInge1.Controllers
         {
             ModeloProyecto modelo = new ModeloProyecto();
 
-            var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
-                           select new { cambio });
-
-            modelo.modeloCambio = cambios.First().cambio;
-            modelo.proyectoRequerimiento = idProyecto;
-
-            // Solicitante del requerimiento
-            // este no cambia, porque fue quien generó inicialmente el requerimiento
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
-            modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2; ;
-
-            // Responsable del requerimiento
-            // es el desaarrollador que está a cargo de la funcionalidad
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
+            var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
-            var desarrolladores = (from usuario in baseDatos.Usuario
-                                   join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
-                                   where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Desarrollador"
-                                   select new { usuario });
+            var cambios = from Cambio C in baseDatos.Cambio
+                          where C.IdProyecto == idProyecto && C.IdRequerimiento == idRequerimiento && C.Version == version
+                          select C;
 
-            foreach (var i in desarrolladores)
-            {
-                responsables.Add(i.usuario);
-            }
-
-
-            // El solicitante del cambio es la persona que está "loggeada"
-            // en el sistema actualmente.
-            var soliCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(soliCambio);
-            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
-            
-            ViewBag.listaResponsables = responsables;
-
-            modelo.modeloCambio.FechaCambio = DateTime.Today;
+            modelo.modeloCambio = cambios.First();
+            modelo.modeloCambio.IdProyecto = idProyecto;
+            modelo.modeloCambio.IdRequerimiento = idRequerimiento;
             modelo.modeloCambio.DescripcionCambio = "";
             modelo.modeloCambio.JustificacionCambio = "";
             modelo.modeloCambio.EstadoSolicitud = "Pendiente";
+            modelo.modeloCambio.FechaCambio = DateTime.Today;
+            var soliCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(soliCambio);
+            modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
+            modelo.modeloCambio.SolicitanteCambio = soliCambio;
 
             if (modelo.modeloCambio.Imagen != null)
             {
                 modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
             }
+
+            List<SelectListItem> estado = new List<SelectListItem>();
+            List<SelectListItem> clientesDropDown = new List<SelectListItem>();
+            List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
+
+            estado.Add(new SelectListItem() { Text = "Pendiente de asignar", Value = "Pendiente de asignar" });
+            estado.Add(new SelectListItem() { Text = "Asignado", Value = "Asignado" });
+            estado.Add(new SelectListItem() { Text = "En ejecución", Value = "En ejecución" });
+            estado.Add(new SelectListItem() { Text = "Finalizado", Value = "Finalizado" });
+            estado.Add(new SelectListItem() { Text = "Cerrado", Value = "Cerrado" });
+
+            foreach (var est in estado)
+            {
+                if (est.Text.Equals(modelo.modeloCambio.Estado))
+                {
+                    est.Selected = true;
+                    break;
+                }
+            }
+
+            var clientes = from Usuario U in baseDatos.Usuario
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                           where USP.IdProyecto == idProyecto && USP.RolProyecto == "Cliente"
+                           select U;
+
+            var desarrolladores = from Usuario U in baseDatos.Usuario
+                                  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                  where USP.IdProyecto == idProyecto && USP.RolProyecto == "Desarrollador"
+                                  select U;
+
+
+            foreach (var cl in clientes)
+                clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+            foreach (var ds in desarrolladores)
+                responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+            foreach (var cl in clientesDropDown)
+            {
+                if (cl.Value.Equals(modelo.modeloCambio.IdSolicitante))
+                {
+                    cl.Selected = true;
+                    break;
+                }
+            }
+
+            foreach (var ds in responsablesDropDown)
+            {
+                if (ds.Value.Equals(modelo.modeloCambio.IdResponsable))
+                {
+                    ds.Selected = true;
+                    break;
+                }
+            }
+
+            ViewBag.Estado = estado;
+            ViewBag.ListaSolicitante = clientesDropDown;
+            ViewBag.ListaResponsable = responsablesDropDown;
 
             return View(modelo);
         }
@@ -878,37 +914,81 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CrearSolicitud(ModeloProyecto modelo)
         {
-
             if (!string.IsNullOrEmpty(modelo.rutaImagen))
             {
                 modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
             }
-            modelo.modeloCambio.IdProyecto = modelo.proyectoRequerimiento;
+
             modelo.modeloCambio.EstadoSolicitud = "Pendiente";
-            modelo.modeloCambio.FechaCambio = DateTime.Today;
 
             if (ModelState.IsValid)
             {
                 baseDatos.Cambio.Add(modelo.modeloCambio);
                 baseDatos.SaveChanges();
 
-                ModeloProyecto nuevoModelo = new ModeloProyecto();
 
-                modelo.listaProyectos = baseDatos.Proyecto.ToList();
+                List<SelectListItem> estado = new List<SelectListItem>();
+                List<SelectListItem> clientesDropDown = new List<SelectListItem>();
+                List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
 
-                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                         "USP.IdProyecto = P.Id " +
-                                                                         "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+                estado.Add(new SelectListItem() { Text = "Pendiente de asignar", Value = "Pendiente de asignar" });
+                estado.Add(new SelectListItem() { Text = "Asignado", Value = "Asignado" });
+                estado.Add(new SelectListItem() { Text = "En ejecución", Value = "En ejecución" });
+                estado.Add(new SelectListItem() { Text = "Finalizado", Value = "Finalizado" });
+                estado.Add(new SelectListItem() { Text = "Cerrado", Value = "Cerrado" });
 
-                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                                 "USP.IdProyecto = P.Id " +
-                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
+                foreach (var est in estado)
+                {
+                    if (est.Text.Equals(modelo.modeloCambio.Estado))
+                    {
+                        est.Selected = true;
+                        break;
+                    }
+                }
 
-                nuevoModelo.cambiosGuardados = 1;
+                var clientes = from Usuario U in baseDatos.Usuario
+                               join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                               where USP.IdProyecto == modelo.modeloCambio.IdProyecto && USP.RolProyecto == "Cliente"
+                               select U;
 
-                return View(nuevoModelo);
+                var desarrolladores = from Usuario U in baseDatos.Usuario
+                                      join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                      where USP.IdProyecto == modelo.modeloCambio.IdProyecto && USP.RolProyecto == "Desarrollador"
+                                      select U;
+
+
+                foreach (var cl in clientes)
+                    clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+                foreach (var ds in desarrolladores)
+                    responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+                foreach (var cl in clientesDropDown)
+                {
+                    if (cl.Value.Equals(modelo.modeloCambio.IdSolicitante))
+                    {
+                        cl.Selected = true;
+                        break;
+                    }
+                }
+
+                foreach (var ds in responsablesDropDown)
+                {
+                    if (ds.Value.Equals(modelo.modeloCambio.IdResponsable))
+                    {
+                        ds.Selected = true;
+                        break;
+                    }
+                }
+
+                ViewBag.Estado = estado;
+                ViewBag.ListaSolicitante = clientesDropDown;
+                ViewBag.ListaResponsable = responsablesDropDown;
+
+
+                modelo.cambiosGuardados = 1;
+
+                return View(modelo);
             }
             else
             {
