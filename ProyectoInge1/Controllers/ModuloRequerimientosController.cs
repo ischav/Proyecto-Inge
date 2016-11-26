@@ -1001,10 +1001,10 @@ namespace ProyectoInge1.Controllers
         }
 
         [Authorize]
-        public ActionResult MEC_Solicitud(string idRequerimiento, string idProyecto, int version = 1)
+        public ActionResult MEC_Solicitud(string idRequerimiento, string idProyecto, int version=1)
         {
-            idProyecto = "PRO-II";
-            idRequerimiento = "RF-FQS-01";
+            idProyecto = "PRO-VII";
+            idRequerimiento = "RF-PR-02";
             version = 1;
             ModeloProyecto modelo = new ModeloProyecto();
             var solicitantes = new List<Usuario>();
@@ -1017,12 +1017,11 @@ namespace ProyectoInge1.Controllers
             modelo.modeloCambio = cambios.First().cambio;
             Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
+			Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
+			modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
 
-
-            //no agrego el solicitante para que salga de primero
-            var clientes = (from usuario in baseDatos.Usuario
+			//no agrego el solicitante para que salga de primero
+			var clientes = (from usuario in baseDatos.Usuario
                             join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                             where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Cliente" && usrProy.IdUsuario != solicitante.Id
                             select new { usuario });
@@ -1050,63 +1049,46 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaSolicitantes = solicitantes;
             ViewBag.listaResponsables = responsables;
 
+			ViewBag.msj = TempData["msj"] ?? "";
             return View(modelo);
         }
 
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_Solicitud(ModeloProyecto modelo55)
+        public ActionResult MEC_Solicitud(ModeloProyecto modelo)
         {
-            string idProyecto = "PRO-II";
-            string idRequerimiento = "RF-FQS-01";
-            int version = 1;
-            ModeloProyecto modelo = new ModeloProyecto();
-            var solicitantes = new List<Usuario>();
-            var responsables = new List<Usuario>();
-
-            var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
-                           select new { cambio });
-
-            modelo.modeloCambio = cambios.First().cambio;
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
-
-
-            //no agrego el solicitante para que salga de primero
-            var clientes = (from usuario in baseDatos.Usuario
-                            join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
-                            where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Cliente" && usrProy.IdUsuario != solicitante.Id
-                            select new { usuario });
-
-            //no agrego el responsable para que salga de primero
-            var desarrolladores = (from usuario in baseDatos.Usuario
-                                   join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
-                                   where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Desarrollador" && usrProy.IdUsuario != responsable.Id
-                                   select new { usuario });
-
-
-            solicitantes.Add(solicitante);
-            foreach (var s in clientes)
-            {
-                solicitantes.Add(s.usuario);
-            }
-
-            responsables.Add(responsable);
-            foreach (var d in desarrolladores)
-            {
-                solicitantes.Add(d.usuario);
-                responsables.Add(d.usuario);
-            }
-
-            ViewBag.listaSolicitantes = solicitantes;
-            ViewBag.listaResponsables = responsables;
-
-            return View(modelo);
+			modelo.modeloCambio.FechaCambio = DateTime.Now;
+			if(ModelState.IsValid) {
+				try {
+					baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
+					baseDatos.SaveChanges();
+					TempData["msj"] = "exito";
+					return RedirectToAction("MEC_Solicitud");
+				}
+				catch {
+					ViewBag.msj = "error";
+				}
+			}
+			ViewBag.msj = "error";
+			return View(modelo);
         }
+
+		public ActionResult eliminarSolicitud(int idSolicitud, string idRequerimiento, string idProyecto) {
+			try {
+				var cambios = (from cambio in baseDatos.Cambio
+							   where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
+							   select new { cambio });
+
+				Cambio modelo = cambios.First().cambio;
+				baseDatos.Cambio.Remove(modelo);
+				baseDatos.SaveChanges();
+				return Json(new { success = true });
+			}
+			catch {
+				return Json(new { success = false });
+			}
+		}
 	
 	    [Authorize]
         [HttpGet]
