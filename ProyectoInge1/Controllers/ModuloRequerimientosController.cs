@@ -486,10 +486,11 @@ namespace ProyectoInge1.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                cambios = cambios.Where(s => s.IdSolicitante.Contains(searchString) || s.Nombre.Contains(searchString)
+                cambios = cambios.Where(s => s.IdRequerimiento.Contains(searchString) || s.Nombre.Contains(searchString)
                                               || s.Prioridad.Contains(searchString) || s.Esfuerzo.Contains(searchString)
-                                              || s.Estado.Contains(searchString) || s.Sprint.Contains(searchString)
-                                              || s.Modulo.Contains(searchString));
+                                              || s.Sprint.Contains(searchString) || s.Modulo.Contains(searchString) );
+
+
             }
 
             switch (sortOrder)
@@ -516,40 +517,21 @@ namespace ProyectoInge1.Controllers
                             cambios = cambios.OrderByDescending(s => s.Modulo);
                             break;
                         case "Version":
-                            cambios = cambios.OrderByDescending(s => s.Version);
+                            cambios = cambios.OrderByDescending(s => s.VersionCambio );
+                            break;
+                        case "Solicitante":
+                            cambios = cambios.OrderByDescending(s => s.SolicitanteCambio);
                             break;
                         default:
                             cambios = cambios.OrderByDescending(s => s.IdSolicitud);
                             break;
                     }
                     break;
-                case "Date":
-                    switch (tipo)
-                    {
-                        case "FechaInicio":
-                            cambios = cambios.OrderBy(s => s.FechaInicio);
-                            break;
-                        case "FechaFinal":
-                            cambios = cambios.OrderBy(s => s.FechaFinal);
-                            break;
-                        default:
-                            cambios = cambios.OrderBy(s => s.FechaInicio);
-                            break;
-                    }
-                    break;
                 case "date_desc":
-                    switch (tipo)
-                    {
-                        case "FechaInicio":
-                            cambios = cambios.OrderByDescending(s => s.FechaInicio);
-                            break;
-                        case "FechaFinal":
-                            cambios = cambios.OrderByDescending(s => s.FechaFinal);
-                            break;
-                        default:
-                            cambios = cambios.OrderByDescending(s => s.FechaInicio);
-                            break;
-                    }
+                     cambios =cambios.OrderByDescending(s => s.FechaCambio);
+                     break;
+                case "Date":
+                    cambios = cambios.OrderBy(s => s.FechaCambio);
                     break;
                 default:
                     switch (tipo)
@@ -574,6 +556,9 @@ namespace ProyectoInge1.Controllers
                             break;
                         case "Version":
                             cambios = cambios.OrderBy(s => s.Version);
+                            break;
+                        case "Solicitante":
+                            cambios = cambios.OrderBy(s => s.SolicitanteCambio);
                             break;
                         default:
                             cambios = cambios.OrderBy(s => s.IdSolicitud);
@@ -590,40 +575,47 @@ namespace ProyectoInge1.Controllers
         }
 
         /* Método que carga el modelo para la vista Index de Solicitudes de Cambios
-         * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
-         * Modifica: el modelo
-         * Retorna: el modelo de páginación cargado
-         */
+                 * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
+                 * Modifica: el modelo
+                 * Retorna: el modelo de páginación cargado
+                 */
         public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto, string Categ)
         {
             if (TempData["mensaje"] != null)
             {
                 ViewBag.Msj = TempData["mensaje"].ToString();
             }
+
+            // Id del usuario en sessión 
             String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            // Rol del usuario en sessión
             String rol = context.Users.Find(id).Roles.First().RoleId;
 
+            // Se filtran todos los proyectos
+            var proyecto = from Proyecto p in baseDatos.Proyecto
+                           select p;
+
+            // Si no es administrador se filtran solo los proyectos a los cuales pertecene
+            if (!(rol == "01Admin"))
+            {
+                proyecto = from Proyecto p in baseDatos.Proyecto
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+                            p.Id equals USP.IdProyecto
+                           where USP.IdUsuario == id
+                           select p;
+            }
+
+            // Se filtran los cambios asociados a un proyectos
             var cambios = from Cambio c in baseDatos.Cambio
                           where c.IdProyecto == Proyecto
                           select c;
 
-            var proyecto = from Proyecto p in baseDatos.Proyecto
-                           select p;
-
-            if (!(rol == "01Admin"))
-            {
-                String id_usuario = User.Identity.GetUserId();
-                proyecto = from Proyecto p in baseDatos.Proyecto
-                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
-                            p.Id equals USP.IdProyecto
-                           where USP.IdUsuario == id_usuario
-                           select p;
-            }
-
-
+            // Modificaciones a los atributos de los cambios
             foreach (var i in cambios)
             {
-                String id_usuario = User.Identity.GetUserId();
+                if (i.VersionCambio == null)
+                    i.VersionCambio = -1;
+
                 var nombre = from Usuario u in baseDatos.Usuario
                              join Cambio c in baseDatos.Cambio on
                              u.Id equals c.SolicitanteCambio
@@ -636,27 +628,19 @@ namespace ProyectoInge1.Controllers
                 }
             }
 
+            var asociado = from Usuarios_asociados_proyecto USP in baseDatos.Usuario
+                           where USP.IdUsuario == id && USP.RolProyecto == "Líder"
+                           select USP;
+
+            if (asociado != null && rol == "01Admin")
+                ViewBag.rol = "Modificable";
+            else
+                ViewBag.rol = "Otro";
+
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.pro = new SelectList(proyecto, "Id", "Nombre", Proyecto);
-
-            List<SelectListItem> categoria = new List<SelectListItem>();
-            categoria.Add(new SelectListItem() { Text = "Mis solicitudes", Value = "1" });
-            categoria.Add(new SelectListItem() { Text = "Realizadas por el equipo", Value = "2" });
-
-            if (!String.IsNullOrEmpty(Categ))
-            {
-                var seleccionar = 1;
-                foreach (var k in categoria)
-                {
-                    if (Int32.Parse(Categ) == seleccionar)
-                        k.Selected = true;
-                    seleccionar++;
-                }
-            }
-
-            ViewBag.categoria = categoria;
 
             if (searchString != null)
             {
@@ -671,9 +655,9 @@ namespace ProyectoInge1.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                cambios = cambios.Where(s => s.IdSolicitante.Contains(searchString) || s.Nombre.Contains(searchString)
+                cambios = cambios.Where(s =>  s.Nombre.Contains(searchString) || s.IdRequerimiento.Contains(searchString)
                                               || s.Prioridad.Contains(searchString) || s.Esfuerzo.Contains(searchString)
-                                              || s.Estado.Contains(searchString) || s.Sprint.Contains(searchString)
+                                              || s.EstadoSolicitud.Contains(searchString) || s.Sprint.Contains(searchString)
                                               || s.Modulo.Contains(searchString));
             }
 
@@ -682,8 +666,11 @@ namespace ProyectoInge1.Controllers
                 case "name_desc":
                     switch (tipo)
                     {
-                        case "Id":
+                        case "IdSolicitud":
                             cambios = cambios.OrderByDescending(s => s.IdSolicitud);
+                            break;
+                        case "Id":
+                            cambios = cambios.OrderByDescending(s => s.IdRequerimiento);
                             break;
                         case "Nombre":
                             cambios = cambios.OrderByDescending(s => s.Nombre);
@@ -708,39 +695,20 @@ namespace ProyectoInge1.Controllers
                             break;
                     }
                     break;
-                case "Date":
-                    switch (tipo)
-                    {
-                        case "FechaInicio":
-                            cambios = cambios.OrderBy(s => s.FechaInicio);
-                            break;
-                        case "FechaFinal":
-                            cambios = cambios.OrderBy(s => s.FechaFinal);
-                            break;
-                        default:
-                            cambios = cambios.OrderBy(s => s.FechaInicio);
-                            break;
-                    }
-                    break;
                 case "date_desc":
-                    switch (tipo)
-                    {
-                        case "FechaInicio":
-                            cambios = cambios.OrderByDescending(s => s.FechaInicio);
-                            break;
-                        case "FechaFinal":
-                            cambios = cambios.OrderByDescending(s => s.FechaFinal);
-                            break;
-                        default:
-                            cambios = cambios.OrderByDescending(s => s.FechaInicio);
-                            break;
-                    }
+                    cambios = cambios.OrderByDescending(s => s.FechaCambio);
+                    break;
+                case "Date":
+                    cambios = cambios.OrderBy(s => s.FechaCambio);
                     break;
                 default:
                     switch (tipo)
                     {
                         case "IdSolicitud":
                             cambios = cambios.OrderBy(s => s.IdSolicitud);
+                            break;
+                        case "Id":
+                            cambios = cambios.OrderBy(s => s.IdRequerimiento );
                             break;
                         case "Nombre":
                             cambios = cambios.OrderBy(s => s.Nombre);
@@ -773,6 +741,7 @@ namespace ProyectoInge1.Controllers
 
             return View(cambios.ToPagedList(pageNumber, pageSize));
         }
+
 
         /* Método para aprobar o rechazar solicitudes de cambios a un requerimiento
          * Requiere: 

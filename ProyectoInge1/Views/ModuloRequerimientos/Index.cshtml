@@ -94,7 +94,11 @@
         <th>
             @Html.ActionLink("Modulo", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Modulo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
         </th>
+        <th>
+            @Html.ActionLink("Version", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Version", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+        </th>
         <th></th>
+
     </tr>
     @foreach (var item in Model)
             {
@@ -127,9 +131,12 @@
                 @Html.DisplayFor(modelItem => item.Modulo)
             </td>
             <td>
-                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto })
+                @Html.DisplayFor(modelItem => item.Version)
             </td>
             <td>
+                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto })
+            |
+          
                 @Html.ActionLink("Historial", "IndexHistorialCambios", new { Requerimiento = item.Id, Proyecto = item.IdProyecto })
             </td>
         </tr>

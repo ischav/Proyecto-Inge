@@ -43,10 +43,14 @@
         @using (Html.BeginForm("IndexHistorialCambios", "ModuloRequerimientos", FormMethod.Get))
             {
             <p>
-                Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Proyecto"] as string, Request.Params["Categ"] as string)
+                Buscar &nbsp; @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, Request.Params["Requerimiento"] as string, Request.Params["Proyecto"] as string)
+                <ocultar>
+                    @Html.TextBox("Requerimiento", Request.Params["Requerimiento"] as string)
+                </ocultar>
                 <ocultar>
                     @Html.TextBox("Proyecto", Request.Params["Proyecto"] as string)
                 </ocultar>
+
                 <button type="submit" class="btn btn-primary" onsubmit="campodebusqueda();">
                     <span class="glyphicon glyphicon-search"></span>
                 </button>
@@ -57,42 +61,42 @@
 
 <table class="table">
     <tr>
+        <th>
+            @Html.ActionLink("Versión", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Version", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Identificador", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Nombre", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Nombre", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Módulo", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Modulo", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Sprint", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Sprint", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"]})
+        </th>
+        <th>
+            @Html.ActionLink("Prioridad", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Prioridad", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Esfuerzo", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Esfuerzo", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Solicitante del cambio", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Solicitante", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Fecha del cambio", "IndexHistorialCambios", new { sortOrder = ViewBag.DateSortParm, tipo = "Fecha", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
 
-        <th>
-            @Html.ActionLink("Id", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Nombre", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Nombre", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Prioridad", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Prioridad", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Esfuerzo", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Esfuerzo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Sprint", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Sprint", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Módulo", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Modulo", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Versión del cambio", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionCambio", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Versión final", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionFinal", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Estado de solicitud", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Estado", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
-            @Html.ActionLink("Solicitante", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
         <th></th>
     </tr>
     @foreach (var item in Model)
             {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VersionCambio)
+            </td>
 
             <td>
                 @Html.DisplayFor(modelItem => item.IdRequerimiento)
@@ -101,37 +105,23 @@
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Prioridad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Esfuerzo)
+                @Html.DisplayFor(modelItem => item.Modulo)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Sprint)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Modulo)
+                @Html.DisplayFor(modelItem => item.Prioridad)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Version)
+                @Html.DisplayFor(modelItem => item.Esfuerzo)
             </td>
-            @if (item.VersionCambio != -1)
-                {
-                <td>
-                    @Html.DisplayFor(modelItem => item.VersionCambio)
-                </td>
-            }
-            else
-            {
-                <td>
-                    No asignado
-                </td>
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.EstadoSolicitud)
-            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.SolicitanteCambio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCambio )
             </td>
             <td>
                   @Html.ActionLink("Ver", "DetallesVersion", new { idRequerimiento = item.IdRequerimiento , idProyecto = item.IdProyecto, version = item.VersionCambio })
