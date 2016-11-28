@@ -365,13 +365,12 @@
     <Content Include="Views\ModuloProyecto\Create.cshtml" />
     <Content Include="Views\ModuloRequerimientos\Edit.cshtml" />
     <Content Include="Views\ModuloRequerimientos\CrearSolicitud.cshtml" />
-    <Content Include="Views\ModuloRequerimientos\IndexHistorialCambios.cshtml" />
     <Content Include="Views\ModuloRequerimientos\MEC_Solicitud.cshtml" />
     <Content Include="Views\ModuloRequerimientos\IndexSolicitud.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\IndexHistorialCambios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\ModuloCambios\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

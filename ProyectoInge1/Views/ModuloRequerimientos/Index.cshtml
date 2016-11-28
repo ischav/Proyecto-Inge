@@ -129,6 +129,9 @@
             <td>
                 @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto })
             </td>
+            <td>
+                @Html.ActionLink("Historial", "IndexHistorialCambios", new { Requerimiento = item.Id, Proyecto = item.IdProyecto })
+            </td>
         </tr>
     }
 
