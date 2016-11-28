@@ -52,10 +52,13 @@ list-style-type:none;
 </style>
 
 <script>
-    /*window.onload = function () {
-        $("input").prop('disabled', true).trigger("click");
-        $('select').prop('disabled', true).trigger("click");
-    }*/
+    function funcionCancelar() {
+        var respuesta = confirm('¿Confirma que no desea cambiar el estado de esta solicitud?');
+        if (respuesta == true) {
+            var url = '@Url.Action("IndexSolicitud", "ModuloRequerimientos")';
+            window.location.href = url;
+        }
+    }
 </script>
 
 <div class="elementoConsultar">
