@@ -159,7 +159,8 @@
                 @Html.DisplayFor(modelItem => item.SolicitanteCambio)
             </td>
             <td>
-                @Html.ActionLink("Ver", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Consultar", "MEC_Solicitud", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Evaluar", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
             </td>
         </tr>
     }

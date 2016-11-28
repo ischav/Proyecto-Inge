@@ -1001,17 +1001,14 @@ namespace ProyectoInge1.Controllers
         }
 
         [Authorize]
-        public ActionResult MEC_Solicitud(string idRequerimiento, string idProyecto, int version=1)
+        public ActionResult MEC_Solicitud(int idSolicitud, string idRequerimiento, string idProyecto)
         {
-            idProyecto = "PRO-VII";
-            idRequerimiento = "RF-PR-02";
-            version = 1;
             ModeloProyecto modelo = new ModeloProyecto();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
 
             var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
+                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
                            select new { cambio });
 
             modelo.modeloCambio = cambios.First().cambio;
@@ -1092,17 +1089,14 @@ namespace ProyectoInge1.Controllers
 	
 	    [Authorize]
         [HttpGet]
-        public ActionResult DetallesVersion(string idRequerimiento, string idProyecto, int version=1)
+        public ActionResult DetallesVersion(int idSolicitud, string idRequerimiento, string idProyecto)
         {
-            idProyecto = "PRO-II";
-            idRequerimiento = "RF-FQS-01";
-            version = 1;
             ModeloProyecto modelo = new ModeloProyecto();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
 
             var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
+                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
                            select new { cambio });
 
             modelo.modeloCambio = cambios.First().cambio;
