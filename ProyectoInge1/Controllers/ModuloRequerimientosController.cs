@@ -464,7 +464,7 @@ namespace ProyectoInge1.Controllers
 
                 foreach (var j in nombre)
                 {
-                    i.SolicitanteCambio = j.NombreCompleto;
+                     i.SolicitanteCambio = j.NombreCompleto;
                 }
             }
 
