@@ -416,6 +416,7 @@ namespace ProyectoInge1.Controllers
                                             GESTION DE CAMBIOS
         -------------------------------------------------------------------------------------------*/
 
+      
         /* Método que carga el modelo para la vista Index de Historial de Cambios
  * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
  * Modifica: el modelo
@@ -447,15 +448,12 @@ namespace ProyectoInge1.Controllers
 
             // Se filtran los cambios asociados a un proyectos
             var cambios = from Cambio c in baseDatos.Cambio
-                          where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && c.VersionCambio != null
+                          where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Aprobado" || c.EstadoSolicitud=="Rechazado")
                           select c;
 
             // Modificaciones a los atributos de los cambios
             foreach (var i in cambios)
             {
-                if (i.VersionCambio == null)
-                    i.VersionCambio = -1;
-
                 var nombre = from Usuario u in baseDatos.Usuario
                              join Cambio c in baseDatos.Cambio on
                              u.Id equals c.SolicitanteCambio
@@ -486,11 +484,10 @@ namespace ProyectoInge1.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                cambios = cambios.Where(s => s.IdRequerimiento.Contains(searchString) || s.Nombre.Contains(searchString)
+                cambios = cambios.Where(s => s.Nombre.Contains(searchString) || s.IdRequerimiento.Contains(searchString)
                                               || s.Prioridad.Contains(searchString) || s.Esfuerzo.Contains(searchString)
-                                              || s.Sprint.Contains(searchString) || s.Modulo.Contains(searchString) );
-
-
+                                              || s.EstadoSolicitud.Contains(searchString) || s.Sprint.Contains(searchString)
+                                              || s.Modulo.Contains(searchString));
             }
 
             switch (sortOrder)
@@ -498,8 +495,11 @@ namespace ProyectoInge1.Controllers
                 case "name_desc":
                     switch (tipo)
                     {
-                        case "Id":
+                        case "IdSolicitud":
                             cambios = cambios.OrderByDescending(s => s.IdSolicitud);
+                            break;
+                        case "Id":
+                            cambios = cambios.OrderByDescending(s => s.IdRequerimiento);
                             break;
                         case "Nombre":
                             cambios = cambios.OrderByDescending(s => s.Nombre);
@@ -516,8 +516,14 @@ namespace ProyectoInge1.Controllers
                         case "Modulo":
                             cambios = cambios.OrderByDescending(s => s.Modulo);
                             break;
-                        case "Version":
-                            cambios = cambios.OrderByDescending(s => s.VersionCambio );
+                        case "EstadoCambio":
+                            cambios = cambios.OrderByDescending(s => s.EstadoSolicitud );
+                            break;
+                        case "VersionCambio":
+                            cambios = cambios.OrderByDescending(s => s.Version );
+                            break;
+                        case "VersionFinal":
+                            cambios = cambios.OrderByDescending(s => s.VersionCambio);
                             break;
                         case "Solicitante":
                             cambios = cambios.OrderByDescending(s => s.SolicitanteCambio);
@@ -539,6 +545,9 @@ namespace ProyectoInge1.Controllers
                         case "IdSolicitud":
                             cambios = cambios.OrderBy(s => s.IdSolicitud);
                             break;
+                        case "Id":
+                            cambios = cambios.OrderByDescending(s => s.IdRequerimiento);
+                            break;
                         case "Nombre":
                             cambios = cambios.OrderBy(s => s.Nombre);
                             break;
@@ -554,8 +563,14 @@ namespace ProyectoInge1.Controllers
                         case "Modulo":
                             cambios = cambios.OrderBy(s => s.Modulo);
                             break;
-                        case "Version":
+                        case "EstadoCambio":
+                            cambios = cambios.OrderBy(s => s.EstadoSolicitud);
+                            break;
+                        case "VersionCambio":
                             cambios = cambios.OrderBy(s => s.Version);
+                            break;
+                        case "VersionFinal":
+                            cambios = cambios.OrderBy(s => s.VersionCambio);
                             break;
                         case "Solicitante":
                             cambios = cambios.OrderBy(s => s.SolicitanteCambio);
@@ -589,11 +604,17 @@ namespace ProyectoInge1.Controllers
             // Id del usuario en sessión 
             String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
             // Rol del usuario en sessión
+
             String rol = context.Users.Find(id).Roles.First().RoleId;
 
             // Se filtran todos los proyectos
             var proyecto = from Proyecto p in baseDatos.Proyecto
                            select p;
+
+            // Se filtran los cambios asociados a un proyectos
+            var cambios = from Cambio c in baseDatos.Cambio
+                          where c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Pendiente" || c.EstadoSolicitud == "Modificar") && c.SolicitanteCambio == id
+                          select c;
 
             // Si no es administrador se filtran solo los proyectos a los cuales pertecene
             if (!(rol == "01Admin"))
@@ -605,17 +626,31 @@ namespace ProyectoInge1.Controllers
                            select p;
             }
 
-            // Se filtran los cambios asociados a un proyectos
-            var cambios = from Cambio c in baseDatos.Cambio
-                          where c.IdProyecto == Proyecto
-                          select c;
+            // Si no es administrador se filtran solo las solicitudes asociadas al usuario
+            var asociado = from Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto
+                           where USP.IdProyecto == Proyecto && USP.IdUsuario == id && USP.RolProyecto == "Líder"
+                           select USP;
+
+            if (asociado.Count() != 0 || rol == "01Admin")
+            {
+                cambios = from Cambio c in baseDatos.Cambio
+                              where c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Pendiente" || c.EstadoSolicitud == "Modificar")
+                              select c;
+
+                var usuarioAprobador = from Usuario u in baseDatos.Usuario
+                                       where u.Id == id
+                                       select u;
+
+                ViewBag.aprobador = usuarioAprobador.First().NombreCompleto;
+                ViewBag.rol = "Evaluar";
+            }
+            else
+                ViewBag.rol = "Ver";
+
 
             // Modificaciones a los atributos de los cambios
             foreach (var i in cambios)
             {
-                if (i.VersionCambio == null)
-                    i.VersionCambio = -1;
-
                 var nombre = from Usuario u in baseDatos.Usuario
                              join Cambio c in baseDatos.Cambio on
                              u.Id equals c.SolicitanteCambio
@@ -628,15 +663,7 @@ namespace ProyectoInge1.Controllers
                 }
             }
 
-            var asociado = from Usuarios_asociados_proyecto USP in baseDatos.Usuario
-                           where USP.IdUsuario == id && USP.RolProyecto == "Líder"
-                           select USP;
-
-            if (asociado != null && rol == "01Admin")
-                ViewBag.rol = "Modificable";
-            else
-                ViewBag.rol = "Otro";
-
+ 
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";

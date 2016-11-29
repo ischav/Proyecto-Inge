@@ -62,7 +62,7 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Versión", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Version", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+            @Html.ActionLink("Solicitud", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "IdSolicitud", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
             @Html.ActionLink("Identificador", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Id", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
@@ -83,6 +83,15 @@
             @Html.ActionLink("Esfuerzo", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Esfuerzo", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
+            @Html.ActionLink("Versión del cambio", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionCambio", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Versión Final", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionFinal", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
+            @Html.ActionLink("Estado del cambio", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "EstadoCambio", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
+        </th>
+        <th>
             @Html.ActionLink("Solicitante del cambio", "IndexHistorialCambios", new { sortOrder = ViewBag.NameSortParm, tipo = "Solicitante", currentFilter = ViewBag.CurrentFilter, Requerimiento = Request.Params["Requerimiento"], Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
@@ -92,12 +101,11 @@
         <th></th>
     </tr>
     @foreach (var item in Model)
-            {
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.VersionCambio)
+                SL-@item.IdSolicitud
             </td>
-
             <td>
                 @Html.DisplayFor(modelItem => item.IdRequerimiento)
             </td>
@@ -116,7 +124,24 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Esfuerzo)
             </td>
-
+            <td>
+                @Html.DisplayFor(modelItem => item.Version )
+            </td>
+            @if (String.Compare(item.EstadoSolicitud, "Rechazado") != 0)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.VersionCambio)
+                </td>
+            }
+            else
+            {
+                <td>
+                    No asignado
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoSolicitud)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SolicitanteCambio)
             </td>
@@ -133,4 +158,4 @@
 <br />
     Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
 
-    @Html.PagedListPager(Model, page => Url.Action("IndexSolicitud", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    @Html.PagedListPager(Model, page => Url.Action("IndexHistorialCambios", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

@@ -104,9 +104,6 @@
             @Html.ActionLink("Version del cambio", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionCambio", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
         </th>
         <th>
-            @Html.ActionLink("Version final", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "VersionFinal", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
-        </th>
-        <th>
             @Html.ActionLink("Estado de solicitud", "IndexSolicitud", new { sortOrder = ViewBag.NameSortParm, tipo = "Estado", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"], Categ = Request.Params["Categ"] as string })
         </th>
         <th>
@@ -118,7 +115,7 @@
         <th></th>
     </tr>
     @foreach (var item in Model)
-            {
+    {
         <tr>
             <td>
                SL-@item.IdSolicitud
@@ -144,18 +141,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Version)
             </td>
-            @if (item.VersionCambio != -1)
-                {
-                <td>
-                    @Html.DisplayFor(modelItem => item.VersionCambio)
-                </td>
-            }
-            else
-            {
-                <td>
-                    Sin asignar
-                </td>
-            }
             <td>
                 @Html.DisplayFor(modelItem => item.EstadoSolicitud)
             </td>
@@ -163,33 +148,32 @@
                 @Html.DisplayFor(modelItem => item.SolicitanteCambio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaCambio )
+                @Html.DisplayFor(modelItem => item.FechaCambio)
             </td>
-            @if (String.Compare(ViewBag.rol, "Modificable") == 0)
-            {
-                if (String.Compare(item.EstadoSolicitud, "Aprobado") == 0 || String.Compare(item.EstadoSolicitud,"Rechazado") == 0)
-                {
-                    <td>
-                        @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
 
-                    </td>
+                @if (String.Compare(ViewBag.rol, "Evaluar") == 0)
+                {
+                    if (String.Compare(item.SolicitanteCambio, ViewBag.aprobador) == 0)
+                    {
+                        <td>
+                             @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
+                             @Html.ActionLink("Evaluar", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
+                        </td>
+                    }
+                    else
+                    {
+
+                        <td>
+                            @Html.ActionLink("Evaluar", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
+                        </td>
+                    }
                 }
                 else
                 {
                     <td>
-                        @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
-                        
-                        @Html.ActionLink("Evaluar", "Edit", new { idSolicitud = item.IdSolicitud, idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto })
-                    </td>
+                           @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
+                   </td>
                 }
-            }
-            else
-            {
-                <td>
-                    @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
-
-                </td>
-            }
         </tr>
     }
 </table>
