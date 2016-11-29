@@ -167,7 +167,7 @@
             </td>
             @if (String.Compare(ViewBag.rol, "Modificable") == 0)
             {
-                if (String.Compare(item.EstadoSolicitud, "Aprobado") == 0)
+                if (String.Compare(item.EstadoSolicitud, "Aprobado") == 0 || String.Compare(item.EstadoSolicitud,"Rechazado") == 0)
                 {
                     <td>
                         @Html.ActionLink("Consultar", "MEC_Solicitud", new { idRequerimiento = item.IdRequerimiento, idProyecto = item.IdProyecto, idSolicitud = item.IdSolicitud })
