@@ -355,11 +355,13 @@ namespace ProyectoInge1.Controllers
 
                 baseDatos.Entry(modelo.modeloProyecto).State = EntityState.Modified;
                 baseDatos.SaveChanges();
+				ViewBag.msj = "exito";
             }
             else
             {
                 modelo.cambiosGuardados = 1;
-            }
+				ViewBag.msj = "error";
+			}
 
             return RedirectToAction("MEC_Unificado");
         }
@@ -382,14 +384,12 @@ namespace ProyectoInge1.Controllers
             {          
                 baseDatos.Proyecto.Remove(modelo.modeloProyecto);
                 baseDatos.SaveChanges();
-            }
+				return Json(new { success = true });
+			}
             else
             {
-                return HttpNotFound();
-            }
-
-
-            return RedirectToAction("Index");
+				return Json(new { success = false });
+			}
         }
 
        	/* Método que carga el modelo con los datos para desplegar en la vista de crear proyecto
@@ -400,7 +400,7 @@ namespace ProyectoInge1.Controllers
         public ActionResult Create() {
 			ModeloProyecto modelo = new ModeloProyecto();
 			obtenerUsuarios(modelo);
-
+			ViewBag.msj = TempData["msj"] ?? "";
 			return View(modelo);
 		}
 		
@@ -458,13 +458,14 @@ namespace ProyectoInge1.Controllers
 				baseDatos.Proyecto.Add(modelo.modeloProyecto);
 				try {
 					baseDatos.SaveChanges();
+					TempData["msj"] = "exito";
 				}
-				catch { }
+				catch {
+						TempData["msj"] = "error";
+					}
 			}
 			}
 
-			ModeloProyecto nuevoModelo = new ModeloProyecto();
-			obtenerUsuarios(nuevoModelo);
 			return RedirectToAction("Create");
 		}
 		

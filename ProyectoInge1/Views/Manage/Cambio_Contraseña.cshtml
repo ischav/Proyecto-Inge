@@ -12,13 +12,13 @@
     <script>
 
     function confirmarSalir() {
-
-        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios hechos no se guardaran');
-
-        if (respuesta == true) {
-                    var url = '@Url.Action("Informacion", "ModuloUsuarios")';
-                    window.location.href = url;
-        }
+        msj = "¿Confirma que no desea modificar su contraseña?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("Informacion", "ModuloUsuarios")';
+                window.location.href = url;
+            }
+        });
     }
     </script>
 

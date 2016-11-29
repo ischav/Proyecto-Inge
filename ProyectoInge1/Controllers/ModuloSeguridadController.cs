@@ -133,19 +133,19 @@ namespace ProyectoInge1.Controllers
                 else
                     modelo.privilegios = true;
 
-                /*
+				/*
                  * Se asigna el valor de 1 a la variable de cambios guardados, indicando que se ha modificado la vista
                  */
-                modelo.cambiosGuardados = 1;
+				ViewBag.msj = "exito";
             }
             catch
             {
-                /*
+				/*
                  * Se asigna el valor de 2 a la variable de cambios guardados, indicando que ha ocurrido un error al tratar
                  * de modificar la vista
                  */
-                modelo.cambiosGuardados = 2;
-            }
+				ViewBag.msj = "error";
+			}
 
             /*
              * Se retorna el modelo actualizado a la vista

@@ -16,26 +16,23 @@
 
 <script>
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que desea descartar los cambios en este proyecto?');
-        if(respuesta == true){
-            var url = '@Url.Action("Create", "ModuloProyecto")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que desea descartar los cambios en este proyecto?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("Create", "ModuloProyecto")';
+                window.location.href = url;
+            }
+        });
     }
 
+    if ('@ViewBag.msj' == 'exito') {
+        alertify.success("Proyecto creado exitosamente!");
+    } else if ('@ViewBag.msj' == 'error') {
+        alertify.error("Error al intentar crear el proyecto");
+    }
 </script>
 
 <h2>Agregar proyecto</h2>
-
-@if(ViewBag.msj == "exito") {
-    <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>Proyecto creado exitosamente!</p>
-    </div>
-} else if(ViewBag.msj == "error") {
-    <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
-        <p>Error al intentar crear el proyecto</p>
-    </div>
-}
 
 @using(Html.BeginForm()) {
     @Html.AntiForgeryToken()

@@ -22,11 +22,19 @@
      * Retorna: el modelo cargado
      */
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que no desea insertar este usuario?');
-        if(respuesta == true){
-            var url = '@Url.Action("Create", "ModuloUsuarios")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que no desea insertar este usuario?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("Create", "ModuloUsuarios")';
+                window.location.href = url;
+            }
+        });
+    }
+
+    if ('@ViewBag.msj' == 'exito') {
+        alertify.success("Usuario creado exitosamente!");
+    } else if ('@ViewBag.msj') {
+        alertify.error('@ViewBag.msj');
     }
 </script>
 

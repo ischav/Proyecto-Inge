@@ -24,6 +24,7 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
+		 [Authorize]
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
             /*
@@ -159,23 +160,24 @@ namespace ProyectoInge1.Controllers
          */
         public ActionResult eliminarUsuario(string Id)
         {
-            /*
+			/*
              * Se crea un modelo para la vista, se encuentra la tupla de la tabla Usuario en la base de datos, con id igual
              * al parámetro recibido y se elimina esa tupla de la base de datos, tanto en la tabla de usuarios de ASP, como
              * en la de la base de datos
              */
-            ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.modeloUsuario = baseDatos.Usuario.Find(Id);
-            baseDatos.Usuario.Remove(modelo.modeloUsuario);
-            baseDatos.SaveChanges();
-            ApplicationUser user = context.Users.Find(Id);
-            context.Users.Remove(user);
-            context.SaveChanges();
-
-            /*
-             * Se retorna a la vista Index
-             */
-            return RedirectToAction("Index");
+			try {
+				ModeloIntermedio modelo = new ModeloIntermedio();
+				modelo.modeloUsuario = baseDatos.Usuario.Find(Id);
+				baseDatos.Usuario.Remove(modelo.modeloUsuario);
+				baseDatos.SaveChanges();
+				ApplicationUser user = context.Users.Find(Id);
+				context.Users.Remove(user);
+				context.SaveChanges();
+				return Json(new { success = true });
+			}
+			catch {
+				return Json(new { success = false });
+			}
         }
 
         /* Método para consultar un usuario para la vista MEC_Unificado
@@ -255,7 +257,7 @@ namespace ProyectoInge1.Controllers
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar, string cancelar)
+        public ActionResult MEC_Unificado(ModeloIntermedio modelo, string aceptar)
         {
             /*
              * Si el estado del modelo es válido y se desea modificar el elemento:
@@ -263,48 +265,32 @@ namespace ProyectoInge1.Controllers
              *   - Se busca el email relacionado a ese elemento en las tablas de ASP
              *   - Se guardan los cambios
              */
-            if (ModelState.IsValid && !string.IsNullOrEmpty(aceptar))
+            if (ModelState.IsValid)
             {
-                var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
-                var manager = new UserManager<ApplicationUser>(store);
-                var usr = manager.FindById(modelo.modeloUsuario.Id);
+				try {
+					var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
+					var manager = new UserManager<ApplicationUser>(store);
+					var usr = manager.FindById(modelo.modeloUsuario.Id);
 
-                if (usr != null)
-                {
-                    usr.Email = modelo.aspUserEmail;
-                    var context = store.Context as ApplicationDbContext;
-                    context.SaveChangesAsync();
-                }
+					if(usr != null) {
+						usr.Email = modelo.aspUserEmail;
+						var context = store.Context as ApplicationDbContext;
+						context.SaveChangesAsync();
+					}
 
-                baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
-                baseDatos.SaveChanges();
+					baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
+					baseDatos.SaveChanges();
 
-                modelo.errorValidacion = false;
+					modelo.errorValidacion = false;
+					ViewBag.msj = "exito";
+				}catch{
+					ViewBag.msj = "error";
+				}
 
-                /*
-                 * Se asigna el valor de 1 a la variable de cambios guardados, indicando que se ha modificado la vista
-                 */
-                modelo.cambiosGuardados = 1; 
             }
-            else { 
-                /*
-                 * Si se desea cancelar la vista:
-                 *   - Se reestablecen los campos de cada uno de los elementos en la vista
-                 *   - Se envía el modelo con los datos actuales en la base de datos
-                 */
-                if (!string.IsNullOrEmpty(cancelar))
-                {
-                    ModelState.Clear();
-                    return View(limpiarCampos(modelo.modeloUsuario.Id));
-                }
-
-                modelo.errorValidacion = true;
-                
-                /*
-                 * Se asigna el valor de 2 a la variable de cambios guardados, indicando que se han descartado los cambios en la vista
-                 */
-                modelo.cambiosGuardados = 2; 
-            }
+            else {
+				ViewBag.msj = "error";
+			}
             return View(modelo);
         }
 
@@ -377,14 +363,15 @@ namespace ProyectoInge1.Controllers
                     mailModel.To = modelo.modCrear.Email;
                     mailModel.Subject = "Contraseña Sistema de Requerimientos";
                     EnviarCorreo(mailModel);
+					ViewBag.msj = "exito";
                     return RedirectToAction("Index");
 
                 }
 
-                /*
+				/*
                  * Si no se logra ingresar la tupla, se indica que el elemento ya ha sido ingresado con anterioridad
                  */
-                ModelState.AddModelError("", "El correo indicado ya fue registrado.");
+				ViewBag.msj = "El correo indicado ya fue registrado";
 
                 /*
                  * Se retorna a la vista el modelo actual
@@ -393,10 +380,10 @@ namespace ProyectoInge1.Controllers
             }
             else
             {
-                /*
+				/*
                  * Si el estado del modelo no es válido, se indica que se debe completar toda la información necesaria
                  */
-                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
+				ViewBag.msj = "Debe completar toda la información necesaria";
 
                 /*
                  * Se retorna a la vista el modelo actual
@@ -442,8 +429,7 @@ namespace ProyectoInge1.Controllers
             /*
              * Se asigna a la variable StatusMessage el valor correspondiente a si se descartaron o no los cambios realizados
              */
-            ViewBag.StatusMessage = message.Equals(1) ? "Su contraseña ha sido cambiada exitosamente" :
-                 message.Equals(2) ? "Cambios descartados" : "";
+            ViewBag.StatusMessage = message.Equals(1) ? "Contraseña cambiada exitosamente" : "";
 
             /*
              * Se verifica que el usuario logeado tenga una tupla en la tabla de Usuario de la base de datos y se le asigna el 
@@ -506,12 +492,9 @@ namespace ProyectoInge1.Controllers
                  */
                 baseDatos.Entry(modelo.modeloUsuario).State = EntityState.Modified;
                 baseDatos.SaveChanges();
+				ViewBag.msj = "exito";
 
-                /*
-                 * Se asigna el valor de 0 a la variable de cambios guardados, indicando que se no se han modificado los datos
-                 */
-                modelo.cambiosGuardados = 1;
-            }
+			}
             else
             {
                 /*
@@ -524,8 +507,9 @@ namespace ProyectoInge1.Controllers
                     return View(limpiarCampos(modelo.modeloUsuario.Id));
                 }
                 modelo.errorValidacion = true;
+				ViewBag.msj = "error";
 
-            }
+			}
 
             /*
              * Se retorna el modelo actualizado a la vista

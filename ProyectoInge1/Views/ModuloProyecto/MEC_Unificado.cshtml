@@ -15,25 +15,28 @@
 
 <script>
     function confirmarEliminar(id) {
-
-        var respuesta = confirm('¿Confirma que desea eliminar este proyecto?');
-
-        if (respuesta == true)
-        {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("eliminarProyecto")',
-                data: 'id=' + id,
-                success: function (data) {
-                    alert('Proyecto eliminado exitosamente');
-                    var url = '@Url.Action("Index", "ModuloProyecto")';
-                    window.location.href = url;
-                },
-                error: function () {
-                    alert('El proyecto todavía no ha finalizado');
-                },
-            });
-        }
+        msj = "¿Confirma que desea eliminar este proyecto?"
+        alertify.confirm(msj, function(e){
+            if(e){
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("eliminarProyecto")',
+                    data: 'id=' + id,
+                    success: function (data) {
+                        if(data.success){
+                            alertify.success("Proyecto eliminado exitosamente!");
+                            var url = '@Url.Action("Index", "ModuloProyecto")';
+                            window.location.href = url;
+                        }else{
+                            alertify.error("El proyecto aun no ha finalizado");
+                        }
+                    },
+                    error: function(){
+                        alertify.error("Error al eliminar el proyecto, intente de nuevo.");
+                    }
+                });
+            }
+        });
     }
 
     function habilitarCampos() {
@@ -47,11 +50,13 @@
         }
 
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que no desea modificar este proyecto?');
-        if (respuesta == true) {
-            var url = '@Url.Action("MEC_Unificado", "ModuloProyecto")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que no desea modificar este proyecto?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("MEC_Unificado", "ModuloProyecto")';
+                window.location.href = url;
+            }
+        });
     }
 
     window.onload = function () {
@@ -73,14 +78,18 @@
         $('#equipoDesarrollo option').prop('selected', true)
         var seleccion = $('#equipoDesarrollo option:selected');
         if (seleccion.length == 0) {
-            alert("Debe seleccionar un recurso");
+            alertify.error("Debe seleccionar un recurso");
             field.preventDefault();
         }else{
             $('#prueba').click();
         }
     }
 
-
+    if('@ViewBag.msj'=='exito'){
+        alertify.success("Proyecto modificado exitosamente!");
+    }else if('@ViewBag.msj'=='error'){
+        alertify.error("Error al intentar modificar el proyecto");
+    }
 </script>
 
 

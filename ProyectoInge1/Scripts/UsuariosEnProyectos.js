@@ -1,7 +1,7 @@
 ﻿$('#agregar').click(function (e) {
     var seleccion = $('#recursos option:selected');
     if (seleccion.length == 0) {
-        alert("Debe seleccionar un recurso");
+        alertify.error("Debe seleccionar un recurso");
         e.preventDefault();
     }
 
@@ -13,7 +13,7 @@
 $('#quitar').click(function (e) {
     var seleccion = $('#equipoDesarrollo option:selected');
     if (seleccion.length == 0) {
-        alert("Debe seleccionar un desarrollador");
+        alertify.error("Debe seleccionar un desarrollador");
         e.preventDefault();
     }
 

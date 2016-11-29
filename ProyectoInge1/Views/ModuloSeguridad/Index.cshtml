@@ -15,12 +15,19 @@
      * Retorna: el modelo cargado
      */
     function Cancelar() {
-        var respuesta = confirm('¿Confirma que desea cancelar? Se perderá la información ingresada');
-        if (respuesta == true)
-        {
-            var url = '@Url.Action("Index", "ModuloSeguridad")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que desea cancelar? Se perderá la información ingresada";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("Index", "ModuloSeguridad")';
+                window.location.href = url;
+            }
+        });
+    }
+
+    if ('@ViewBag.msj' == 'exito') {
+        alertify.success("Se guardaron los cambios exitosamente!");
+    } else if ('@ViewBag.msj' == 'error') {
+        alertify.error("Error al intentar guardar los cambios!");
     }
 </script>
 
@@ -30,23 +37,6 @@
         @Html.AntiForgeryToken()
         <h2>Gestión de Privilegios</h2>
         <div class="form-horizontal">
-            <!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
-                 en la base de datos, se imprime un mensaje de éxito 
-                 Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
-                 en la base de datos, se imprime un mensaje de error -->
-            @if (Model.cambiosGuardados == 1)
-            {
-                <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-                    <p>Se guardaron los cambios exitosamente!</p>
-                </div>
-            }
-            else if (Model.cambiosGuardados == 2)
-            {
-                <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
-                    <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
-                </div>
-            }
-
             <!-- Se crea una tabla para imprimir la relación de cada privilegio con cada rol -->
             <table class="table">
                 <tr>

@@ -22,11 +22,13 @@
      * Retorna: el modelo cargado
      */
     function confirmarSalir() {
-        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios hechos no se guardarán');
-        if (respuesta == true) {
-            var url = '@Url.Action("Informacion", "ModuloUsuarios")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que no desea modificar los datos de usuario?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("Informacion", "ModuloUsuarios")';
+                window.location.href = url;
+            }
+        });
     }
 
     /* Método que esconde el "div" de eliminar y muestra el "div" de modificar en la vista Información
@@ -57,34 +59,19 @@
      * Retorna: el modelo cargado
      */
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que desea cancelar? Los cambios realizados no se guardarán');
-        if (respuesta == true) {
-            window.location.reload();
-        }
+        msj = "¿Confirma que no desea modificar los datos de usuario?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                window.location.reload();
+            }
+        });
     }
 
-    /* Método que elimina la tupla de la base de datos en la vista Información
-     * Requiere: no aplica
-     * Modifica: no aplica
-     * Retorna: no aplica
-     */
-    function confirmarEliminar(id) {
-        var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
-        if (respuesta == true)
-        {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("eliminarUsuario")',
-                data: 'id=' + id,
-                success: function (data) {
-                    alert('Usuario eliminado exitosamente');
-                    var url = '@Url.Action("Index", "ModuloUsuarios")';
-                    window.location.href = url;
-                },
-            });
-        }
+    if ('@ViewBag.msj' == 'exito') {
+        alertify.success("Datos modificados exitosamente!");
+    } else if ('@ViewBag.msj' == 'error') {
+        alertify.error("Error al intentar modificar los datos");
     }
-
 </script>
 
 @{ HtmlString styleElementoEliminar;}
@@ -105,31 +92,6 @@ else
 {
     styleElementoEliminar = new HtmlString("style =\"display: none\"");
     styleElementoModificar = new HtmlString("");
-}
-
-<!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
-     en la base de datos, se imprime un mensaje de éxito
-     Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
-     en la base de datos, se imprime un mensaje de error 
-     Si la variable de cambios guardados es igual a 3, entonces los cambios se descartaron, se imprime un mensaje de 
-     verificación -->
-@if (Model.cambiosGuardados == 1)
-{
-    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>Se guardaron los cambios exitosamente!</p>
-    </div>
-}
-else if (Model.cambiosGuardados == 2)
-{
-    <div class="elementoModificar" style="text-align: right; width: 100%; color:red; font-weight:bold;">
-        <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
-    </div>
-}
-else if (Model.cambiosGuardados == 3)
-{
-    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>Cambios descartados!</p>
-    </div>
 }
 
 <!-- Se imprimen botones para modificar y cambiar la contraseña -->

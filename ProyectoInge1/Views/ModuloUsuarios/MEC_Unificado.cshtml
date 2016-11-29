@@ -4,6 +4,7 @@
     ViewBag.pantallaActual = "usuarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <style type="text/css">
     .required:after {
         content: " *";
@@ -37,11 +38,13 @@
     }
 
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que no desea modificar este proyecto?');
-        if (respuesta == true) {
-            var url = '@Url.Action("MEC_Unificado", "ModuloUsuarios")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que no desea modificar los datos de este usuario?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("MEC_Unificado", "ModuloUsuarios")';
+                window.location.href = url;
+            }
+        });
     }
 
     window.onload = function () {
@@ -58,22 +61,32 @@
      * Retorna: no aplica
      */
     function confirmarEliminar(id) {
-        var respuesta = confirm('¿Confirma que desea eliminar este usuario?');
-        if (respuesta == true)
-        {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("eliminarUsuario")',
-                data: 'id=' + id,
-                success: function (data) {
-                    alert('Usuario eliminado exitosamente');
-                    var url = '@Url.Action("Index", "ModuloUsuarios")';
-                    window.location.href = url;
-                },
-            });
-        }
+        msj = "¿Confirma que desea eliminar este usuario?"
+        alertify.confirm(msj, function(e){
+            if(e){
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("eliminarUsuario")',
+                    data: 'id=' + id,
+                    success: function (data) {
+                        if(data.success){
+                            alertify.success("Usuario eliminado exitosamente!");
+                            var url = '@Url.Action("Index", "ModuloUsuarios")';
+                            window.location.href = url;
+                        }else{
+                            alertify.error("Error al eliminar el usuario, intente de nuevo.");
+                        }
+                    }
+                });
+            }
+        });
     }
-    
+
+    if('@ViewBag.msj'=='exito'){
+        alertify.success("Usuario modificado exitosamente!");
+    }else if('@ViewBag.msj'=='error'){
+        alertify.error("Error al intentar modificar el usuario");
+    }
 </script>
 @{ HtmlString styleElementoEliminar;}
 @{ HtmlString styleElementoModificar;}
@@ -95,20 +108,6 @@
 <div class="elementoModificar" @styleElementoModificar>
     <h2>Modificar</h2>
 </div>
-
-<!-- Si la variable de cambios guardados es igual a 1, entonces los cambios se guardaron de manera exitosa
-     en la base de datos, se imprime un mensaje de éxito
-     Si la variable de cambios guardados es igual a 2, entonces los cambios no se guardaron de manera exitosa
-     en la base de datos, se imprime un mensaje de error-->
-@if(Model.cambiosGuardados == 1) {
-    <div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>Se guardaron los cambios exitosamente!</p>
-    </div>
-} else if(Model.cambiosGuardados == 2) {
-    <div class="elementoModificar" style="text-align: right; width: 100%; color:red; font-weight:bold;">
-        <p>Ha ocurrido un error al tratar de guardar los cambios!</p>
-    </div>
-}
 
 <!-- Se despliega la información modificable, del elemento seleccionado cuando se va a modificar -->
             @using(Html.BeginForm()) {
