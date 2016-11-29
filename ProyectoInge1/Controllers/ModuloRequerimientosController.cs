@@ -952,7 +952,7 @@ namespace ProyectoInge1.Controllers
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
             var cambios = from Cambio C in baseDatos.Cambio
-                          where C.IdProyecto == idProyecto && C.IdRequerimiento == idRequerimiento && C.Version == version
+                          where C.IdProyecto == idProyecto && C.IdRequerimiento == idRequerimiento && C.VersionCambio == version
                           select C;
 
             modelo.modeloCambio = cambios.First();
