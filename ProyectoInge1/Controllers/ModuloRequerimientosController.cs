@@ -1174,7 +1174,12 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaSolicitantes = solicitantes;
             ViewBag.listaResponsables = responsables;
 
-			ViewBag.msj = TempData["msj"] ?? "";
+            if (!string.IsNullOrEmpty(modelo.rutaImagen))
+            {
+                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+            }
+
+            ViewBag.msj = TempData["msj"] ?? "";
             return View(modelo);
         }
 
@@ -1217,14 +1222,14 @@ namespace ProyectoInge1.Controllers
 	
 	    [Authorize]
         [HttpGet]
-        public ActionResult DetallesVersion(int idSolicitud, string idRequerimiento, string idProyecto)
+        public ActionResult DetallesVersion(int version, string idRequerimiento, string idProyecto)
         {
             ModeloProyecto modelo = new ModeloProyecto();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
 
             var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
+                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
                            select new { cambio });
 
             modelo.modeloCambio = cambios.First().cambio;
@@ -1262,6 +1267,11 @@ namespace ProyectoInge1.Controllers
 
             ViewBag.listaSolicitantes = solicitantes;
             ViewBag.listaResponsables = responsables;
+
+            if (!string.IsNullOrEmpty(modelo.rutaImagen))
+            {
+                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+            }
 
             return View(modelo);
         }

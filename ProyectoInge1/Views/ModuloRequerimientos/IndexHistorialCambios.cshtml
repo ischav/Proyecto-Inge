@@ -124,7 +124,7 @@
                 @Html.DisplayFor(modelItem => item.FechaCambio )
             </td>
             <td>
-                  @Html.ActionLink("Ver", "DetallesVersion", new { idRequerimiento = item.IdRequerimiento , idProyecto = item.IdProyecto, version = item.VersionCambio })
+                  @Html.ActionLink("Consultar", "DetallesVersion", new { idRequerimiento = item.IdRequerimiento , idProyecto = item.IdProyecto, version = item.VersionCambio })
               </td>
 
         </tr>
