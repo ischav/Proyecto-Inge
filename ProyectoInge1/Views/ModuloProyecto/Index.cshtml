@@ -72,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.Duracion)
                 </td>
                 <td>
-                    @Html.ActionLink("Consultar", "MEC_Unificado", new { id = item.Id})
+                    @Html.ActionLink("Consultar", "MEC_Unificado", new { id = item.Id, error=0})
                 </td>
             </tr>
         }

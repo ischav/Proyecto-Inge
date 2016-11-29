@@ -169,7 +169,7 @@ namespace ProyectoInge1.Controllers
 		*/
 		[Authorize]
 		[Permisos("PRO-M","PRO-E", "PRO-C")]
-		public ActionResult MEC_Unificado(string id)
+		public ActionResult MEC_Unificado(string id, int error)
         {
             ModeloProyecto modeloPr = new ModeloProyecto();
             ModeloIntermedio modelo = new ModeloIntermedio();
@@ -178,6 +178,11 @@ namespace ProyectoInge1.Controllers
             /*
 	    *Se cargan los modelos de usuarios asociados al proyecto
 	    */
+            if (error == 1)
+            {
+                ViewBag.msj = "error";
+            }
+
             obtenerUsuariosModificar(modeloPr);
             obtenerDesarrolladores(modeloPr);
             if (id == null)
@@ -217,6 +222,17 @@ namespace ProyectoInge1.Controllers
                     if (equipoDesarrollo.Count() == 1 && equipoDesarrollo[0] == lider)
                     {
                         return RedirectToAction("MEC_Unificado");
+                    }
+                }
+
+                if (modelo.modeloProyecto.Estado == "Finalizado")
+                {
+                    var requerimientos = (from requerimiento in baseDatos.Requerimiento
+                                          where requerimiento.IdProyecto == modelo.modeloProyecto.Id && requerimiento.Estado != "Finalizado"
+                                          select new { requerimiento });
+                    if (requerimientos != null)
+                    {
+                        return RedirectToAction("MEC_Unificado", new { id = modelo.modeloProyecto.Id, error = 1 });
                     }
                 }
 
