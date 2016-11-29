@@ -796,11 +796,13 @@ namespace ProyectoInge1.Controllers
                      * Se debe buscar cuál es la última versión de cambio, la nueva versión será esa más 1
                      */
                     int version = 0;
-                    modelo.listaCambios = baseDatos.Cambio.ToList();
+                    modelo.listaCambios = baseDatos.Cambio.SqlQuery("SELECT * FROM Cambio WHERE " +
+                                                                    "idRequerimiento = " + "'" + modelo.modeloCambio.IdRequerimiento + "' AND " +
+                                                                    "idProyecto = " + "'" + modelo.modeloCambio.IdProyecto + "';").ToList();
                     for (int i = 0; i < modelo.listaCambios.Count; i++)
                     {
                         if (modelo.listaCambios.ElementAt(i).Version > version)
-                            version = (int)modelo.listaCambios.ElementAt(i).Version;
+                            version = (int)modelo.listaCambios.ElementAt(i).VersionCambio;
                     }
 
                     modelo.modeloCambio.VersionCambio = version + 1;
