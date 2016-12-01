@@ -207,6 +207,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HtmlHelpers.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ModuloCambiosController.cs" />
     <Compile Include="Controllers\ModuloProyectoController.cs" />
@@ -373,6 +374,7 @@
     <Content Include="Views\ModuloRequerimientos\MEC_Solicitud.cshtml" />
     <Content Include="Views\ModuloRequerimientos\IndexSolicitud.cshtml" />
     <Content Include="Views\ModuloRequerimientos\IndexHistorialCambios.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\EditorTemplates\CriterioAceptacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -165,82 +165,137 @@ namespace ProyectoInge1.Controllers
 
         public ActionResult Create(String proyecto)
         {
-            ModeloProyecto modelo = new ModeloProyecto();
-            modelo.listaProyectos = baseDatos.Proyecto.ToList();
-            modelo.proyectoRequerimiento = proyecto;
-            modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                     "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                     "USP.IdProyecto = P.Id " +
-                                                                     "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='"+proyecto+"';").ToList();
-            modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT DISTINCT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                             "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                             "USP.IdProyecto = P.Id " +
-                                                                             "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + proyecto + "';").ToList();
+            List<SelectListItem> clientesDropDown = new List<SelectListItem>();
+            List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
 
-            return View(modelo);
+            var clientes = from Usuario U in baseDatos.Usuario
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                           where USP.IdProyecto == proyecto && USP.RolProyecto == "Cliente"
+                           select U;
+
+            var desarrolladores = from Usuario U in baseDatos.Usuario
+                                  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                  where USP.IdProyecto == proyecto && USP.RolProyecto == "Desarrollador"
+                                  select U;
+
+
+            foreach (var cl in clientes)
+                clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+            foreach (var ds in desarrolladores)
+                responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+            ViewBag.Solicitante = clientesDropDown;
+            ViewBag.Responsable = responsablesDropDown;
+
+            var requerimientos = new Requerimiento();
+            requerimientos.IdProyecto = proyecto;
+            requerimientos.agregarCriterios(0);
+            requerimientos.cambiosGuardados = 0;
+            return View(requerimientos);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ModeloProyecto modelo)
+        public ActionResult Create([Bind(Include = "Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,Modulo,Observaciones,Imagen,IdProyecto,IdResponsable,IdSolicitante,Version,rutaImagen,CriterioAceptacion")] Requerimiento modelo)
         {
-            if (ModelState.IsValid && modelo.proyectoRequerimiento != "Seleccione un proyecto")
+            var num = 1;
+            foreach (CriterioAceptacion criterio in modelo.CriterioAceptacion.ToList())
             {
-				if(!string.IsNullOrEmpty(modelo.rutaImagen)) {
-					modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
-				}
-                modelo.modeloRequerimiento.IdProyecto = modelo.proyectoRequerimiento;
-                modelo.modeloRequerimiento.Version = 1;
-                baseDatos.Requerimiento.Add(modelo.modeloRequerimiento);
-
-                /* Se guarda en el historial, ese nuevo requerimiento */
-                Cambio cambio = new Cambio();
-                cambio.EstadoSolicitud = "Aprobado";
-                cambio.IdRequerimiento = modelo.modeloRequerimiento.Id;
-                cambio.IdProyecto = modelo.modeloRequerimiento.IdProyecto;
-                cambio.Nombre = modelo.modeloRequerimiento.Nombre;
-                cambio.Prioridad = modelo.modeloRequerimiento.Prioridad;
-                cambio.Esfuerzo = modelo.modeloRequerimiento.Esfuerzo;
-                cambio.Estado = modelo.modeloRequerimiento.Estado;
-                cambio.Descripcion = modelo.modeloRequerimiento.Descripcion;
-                cambio.FechaInicio = modelo.modeloRequerimiento.FechaInicio;
-                cambio.FechaFinal = modelo.modeloRequerimiento.FechaFinal;
-                cambio.FechaCambio = modelo.modeloRequerimiento.FechaInicio;
-                cambio.Sprint = modelo.modeloRequerimiento.Sprint;
-                cambio.Modulo = modelo.modeloRequerimiento.Modulo;
-                cambio.Observaciones = modelo.modeloRequerimiento.Observaciones;
-                cambio.Imagen = modelo.modeloRequerimiento.Imagen;
-                cambio.IdResponsable = modelo.modeloRequerimiento.IdResponsable;
-                cambio.IdSolicitante = modelo.modeloRequerimiento.IdSolicitante;
-                cambio.Version = 1;
-                cambio.SolicitanteCambio = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                cambio.ObservacionesSolicitud = "Cambio inicial";
-                cambio.DescripcionCambio = "Cambio inicial";
-                cambio.JustificacionCambio = "Cambio inicial";
-                baseDatos.Cambio.Add(cambio);
-                baseDatos.SaveChanges();
-                ModeloProyecto nuevoModelo = new ModeloProyecto();
-                modelo.listaProyectos = baseDatos.Proyecto.ToList();
-                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                         "USP.IdProyecto = P.Id " +
-                                                                         "WHERE USP.RolProyecto = 'Cliente' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
-                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                                 "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                                 "USP.IdProyecto = P.Id " +
-                                                                                 "WHERE USP.RolProyecto = 'Desarrollador' AND USP.IdProyecto ='" + modelo.proyectoRequerimiento + "';").ToList();
-                nuevoModelo.cambiosGuardados = 1;
-
-                return View(nuevoModelo);
+                if (criterio.Borrar == true)
+                    modelo.CriterioAceptacion.Remove(criterio);
+                else
+                {
+                    // Le da un valor generado al Escenario de Criterio de Aceptación
+                    criterio.Escenario = num.ToString();
+                    num++;
+                    criterio.IdProyecto = modelo.IdProyecto;
+                    criterio.IdRequerimiento = modelo.Id;
+                }
             }
-            else
-            {
-                modelo.listaProyectos = baseDatos.Proyecto.ToList();
-                ModelState.AddModelError("", "Debe completar toda la información necesaria.");
-                modelo.cambiosGuardados = 2;
 
+            if (!string.IsNullOrEmpty(modelo.rutaImagen))
+                modelo.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+
+            modelo.Version = 1;
+
+            List<SelectListItem> clientesDropDown = new List<SelectListItem>();
+            List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
+
+            var clientes = from Usuario U in baseDatos.Usuario
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                           where USP.IdProyecto == modelo.IdProyecto && USP.RolProyecto == "Cliente"
+                           select U;
+
+            var desarrolladores = from Usuario U in baseDatos.Usuario
+                                  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                  where USP.IdProyecto == modelo.IdProyecto && USP.RolProyecto == "Desarrollador"
+                                  select U;
+
+
+            foreach (var cl in clientes)
+                clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+            foreach (var ds in desarrolladores)
+                responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+            ViewBag.Solicitante = clientesDropDown;
+            ViewBag.Responsable = responsablesDropDown;
+
+            if (ModelState.IsValid)
+            {
+                String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var cambio_historial = new Cambio();
+                cambio_historial.IdRequerimiento = modelo.Id;
+                cambio_historial.IdProyecto = modelo.IdProyecto;
+                cambio_historial.Nombre = modelo.Nombre;
+                cambio_historial.Prioridad = modelo.Prioridad;
+                cambio_historial.Esfuerzo = modelo.Esfuerzo;
+                cambio_historial.Estado = modelo.Estado;
+                cambio_historial.Descripcion = modelo.Descripcion;
+                cambio_historial.FechaInicio = modelo.FechaInicio;
+                cambio_historial.FechaFinal = modelo.FechaFinal;
+                cambio_historial.Sprint = modelo.Sprint;
+                cambio_historial.Modulo = modelo.Modulo;
+                cambio_historial.Observaciones = modelo.Observaciones;
+                if (!string.IsNullOrEmpty(modelo.rutaImagen))
+                    cambio_historial.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+                cambio_historial.IdResponsable = modelo.IdResponsable;
+                cambio_historial.IdSolicitante = modelo.IdSolicitante;
+                cambio_historial.Version = modelo.Version;
+                cambio_historial.DescripcionCambio = "Cambio inicial";
+                cambio_historial.JustificacionCambio = "Cambio inicial";
+                cambio_historial.SolicitanteCambio = id;
+                cambio_historial.FechaCambio = DateTime.Today;
+                cambio_historial.EstadoSolicitud = "Aprobado";
+                cambio_historial.ObservacionesSolicitud = "Cambio inicial";
+                cambio_historial.VersionCambio = 1;
+
+                baseDatos.Requerimiento.Add(modelo);
+                baseDatos.SaveChanges();
+                baseDatos.Cambio.Add(cambio_historial);
+                baseDatos.SaveChanges();
+
+                foreach (CriterioAceptacion criterio in modelo.CriterioAceptacion.ToList())
+                {
+                    var c = new CriterioAceptacionHistorial();
+
+                    c.IdSolicitud = cambio_historial.IdSolicitud;
+                    c.IdProyecto = criterio.IdProyecto;
+                    c.IdRequerimiento = criterio.IdRequerimiento;
+                    c.Escenario = criterio.Escenario;
+                    c.Descripcion = criterio.Descripcion;
+                    cambio_historial.CriterioAceptacionHistorial.Add(c);
+                }
+
+                baseDatos.Entry(cambio_historial).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+                modelo.cambiosGuardados = 1;
                 return View(modelo);
             }
+
+            modelo.cambiosGuardados = 1;
+            return View(modelo);
         }
 
         /* Método elimina un elemento en la vista Index
@@ -251,7 +306,6 @@ namespace ProyectoInge1.Controllers
         public ActionResult eliminarRequerimiento(string Id, string IdProyecto)
         {
             //Borra al requerimiento de la tabla Requerimientos
-            
             ModeloProyecto modelo = new ModeloProyecto();
             modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
             if (modelo.modeloRequerimiento.Estado.Equals("Pendiente de asignar"))
@@ -281,7 +335,7 @@ namespace ProyectoInge1.Controllers
              * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
              */
 
-                ModeloProyecto modelo = new ModeloProyecto();
+            ModeloProyecto modelo = new ModeloProyecto();
             try
             {
                 modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
@@ -304,7 +358,7 @@ namespace ProyectoInge1.Controllers
             }
             catch
             {
-                
+
             }
 
             if (modelo.modeloRequerimiento.Imagen != null)
@@ -416,7 +470,7 @@ namespace ProyectoInge1.Controllers
                                             GESTION DE CAMBIOS
         -------------------------------------------------------------------------------------------*/
 
-      
+
         /* Método que carga el modelo para la vista Index de Historial de Cambios
  * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
  * Modifica: el modelo
@@ -448,7 +502,7 @@ namespace ProyectoInge1.Controllers
 
             // Se filtran los cambios asociados a un proyectos
             var cambios = from Cambio c in baseDatos.Cambio
-                          where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Aprobado" || c.EstadoSolicitud=="Rechazado")
+                          where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Aprobado" || c.EstadoSolicitud == "Rechazado")
                           select c;
 
             // Modificaciones a los atributos de los cambios
@@ -462,7 +516,7 @@ namespace ProyectoInge1.Controllers
 
                 foreach (var j in nombre)
                 {
-                     i.SolicitanteCambio = j.NombreCompleto;
+                    i.SolicitanteCambio = j.NombreCompleto;
                 }
             }
 
@@ -517,10 +571,10 @@ namespace ProyectoInge1.Controllers
                             cambios = cambios.OrderByDescending(s => s.Modulo);
                             break;
                         case "EstadoCambio":
-                            cambios = cambios.OrderByDescending(s => s.EstadoSolicitud );
+                            cambios = cambios.OrderByDescending(s => s.EstadoSolicitud);
                             break;
                         case "VersionCambio":
-                            cambios = cambios.OrderByDescending(s => s.Version );
+                            cambios = cambios.OrderByDescending(s => s.Version);
                             break;
                         case "VersionFinal":
                             cambios = cambios.OrderByDescending(s => s.VersionCambio);
@@ -534,8 +588,8 @@ namespace ProyectoInge1.Controllers
                     }
                     break;
                 case "date_desc":
-                     cambios =cambios.OrderByDescending(s => s.FechaCambio);
-                     break;
+                    cambios = cambios.OrderByDescending(s => s.FechaCambio);
+                    break;
                 case "Date":
                     cambios = cambios.OrderBy(s => s.FechaCambio);
                     break;
@@ -634,8 +688,8 @@ namespace ProyectoInge1.Controllers
             if (asociado.Count() != 0 || rol == "01Admin")
             {
                 cambios = from Cambio c in baseDatos.Cambio
-                              where c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Pendiente" || c.EstadoSolicitud == "Modificar")
-                              select c;
+                          where c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Pendiente" || c.EstadoSolicitud == "Modificar")
+                          select c;
 
                 var usuarioAprobador = from Usuario u in baseDatos.Usuario
                                        where u.Id == id
@@ -663,7 +717,7 @@ namespace ProyectoInge1.Controllers
                 }
             }
 
- 
+
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -682,7 +736,7 @@ namespace ProyectoInge1.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                cambios = cambios.Where(s =>  s.Nombre.Contains(searchString) || s.IdRequerimiento.Contains(searchString)
+                cambios = cambios.Where(s => s.Nombre.Contains(searchString) || s.IdRequerimiento.Contains(searchString)
                                               || s.Prioridad.Contains(searchString) || s.Esfuerzo.Contains(searchString)
                                               || s.EstadoSolicitud.Contains(searchString) || s.Sprint.Contains(searchString)
                                               || s.Modulo.Contains(searchString));
@@ -735,7 +789,7 @@ namespace ProyectoInge1.Controllers
                             cambios = cambios.OrderBy(s => s.IdSolicitud);
                             break;
                         case "Id":
-                            cambios = cambios.OrderBy(s => s.IdRequerimiento );
+                            cambios = cambios.OrderBy(s => s.IdRequerimiento);
                             break;
                         case "Nombre":
                             cambios = cambios.OrderBy(s => s.Nombre);
@@ -880,7 +934,7 @@ namespace ProyectoInge1.Controllers
                 /* 
                  * Si se rechazó la solicitud, simplemente se le cambia el estado a rechazado
                  */
-                else if(modelo.modeloCambio.EstadoSolicitud == "Rechazado")
+                else if (modelo.modeloCambio.EstadoSolicitud == "Rechazado")
                 {
                     Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
                     baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
@@ -893,12 +947,12 @@ namespace ProyectoInge1.Controllers
                 /*
                  * Si se quiere que el solicitante haga un cambio, entonces debe indicarse cuál es el cambio que
                  * se desea, de lo contrario se indica un error
-                 */                                           
-                else if(modelo.modeloCambio.EstadoSolicitud == "Modificar")
+                 */
+                else if (modelo.modeloCambio.EstadoSolicitud == "Modificar")
                 {
-                    if(modelo.modeloCambio.ObservacionesSolicitud == null)
+                    if (modelo.modeloCambio.ObservacionesSolicitud == null)
                     {
-		    	modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
                         modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
                         modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
                         modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
@@ -912,7 +966,7 @@ namespace ProyectoInge1.Controllers
                         {
                             modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
                         }
-		    
+
                         TempData["mensaje"] = "erroreem";
                         ViewBag.Msj = "erroreem";
                         return View(modelo);
@@ -922,8 +976,8 @@ namespace ProyectoInge1.Controllers
                         Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
                         baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
                         baseDatos.SaveChanges();
-                        
-			modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+
+                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
                         modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
                         modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
                         modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
@@ -937,28 +991,28 @@ namespace ProyectoInge1.Controllers
                         {
                             modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
                         }
-			
+
                         TempData["mensaje"] = "exito";
                         ViewBag.Msj = "exito";
                         return View(modelo);
                     }
                 }
             }
-	    
-	    modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
-                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
-                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
-                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
-                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
 
-                        if (modelo.modeloRequerimiento.Imagen != null)
-                        {
-                            modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
-                        }
-                        if (modelo.modeloCambio.Imagen != null)
-                        {
-                            modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
-                        }
+            modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
+            modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
+            modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
+            modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
+            modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+
+            if (modelo.modeloRequerimiento.Imagen != null)
+            {
+                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+            }
+            if (modelo.modeloCambio.Imagen != null)
+            {
+                modelo.rutaImagenCambio = Encoding.ASCII.GetString(modelo.modeloCambio.Imagen);
+            }
 
             TempData["mensaje"] = "error";
             ViewBag.Msj = "error";
@@ -1169,11 +1223,11 @@ namespace ProyectoInge1.Controllers
             modelo.modeloCambio = cambios.First().cambio;
             Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
             Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-			Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-			modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
+            modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
 
-			//no agrego el solicitante para que salga de primero
-			var clientes = (from usuario in baseDatos.Usuario
+            //no agrego el solicitante para que salga de primero
+            var clientes = (from usuario in baseDatos.Usuario
                             join usrProy in baseDatos.Usuarios_asociados_proyecto on usuario.Id equals usrProy.IdUsuario
                             where usrProy.IdProyecto == idProyecto && usrProy.RolProyecto == "Cliente" && usrProy.IdUsuario != solicitante.Id
                             select new { usuario });
@@ -1215,39 +1269,45 @@ namespace ProyectoInge1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult MEC_Solicitud(ModeloProyecto modelo)
         {
-			modelo.modeloCambio.FechaCambio = DateTime.Now;
-			if(ModelState.IsValid) {
-				try {
-					baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
-					baseDatos.SaveChanges();
-					TempData["msj"] = "exito";
-					return RedirectToAction("MEC_Solicitud");
-				}
-				catch {
-					ViewBag.msj = "error";
-				}
-			}
-			ViewBag.msj = "error";
-			return View(modelo);
+            modelo.modeloCambio.FechaCambio = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
+                    baseDatos.SaveChanges();
+                    TempData["msj"] = "exito";
+                    return RedirectToAction("MEC_Solicitud");
+                }
+                catch
+                {
+                    ViewBag.msj = "error";
+                }
+            }
+            ViewBag.msj = "error";
+            return View(modelo);
         }
 
-		public ActionResult eliminarSolicitud(int idSolicitud, string idRequerimiento, string idProyecto) {
-			try {
-				var cambios = (from cambio in baseDatos.Cambio
-							   where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
-							   select new { cambio });
+        public ActionResult eliminarSolicitud(int idSolicitud, string idRequerimiento, string idProyecto)
+        {
+            try
+            {
+                var cambios = (from cambio in baseDatos.Cambio
+                               where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
+                               select new { cambio });
 
-				Cambio modelo = cambios.First().cambio;
-				baseDatos.Cambio.Remove(modelo);
-				baseDatos.SaveChanges();
-				return Json(new { success = true });
-			}
-			catch {
-				return Json(new { success = false });
-			}
-		}
-	
-	    [Authorize]
+                Cambio modelo = cambios.First().cambio;
+                baseDatos.Cambio.Remove(modelo);
+                baseDatos.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        [Authorize]
         [HttpGet]
         public ActionResult DetallesVersion(int version, string idRequerimiento, string idProyecto)
         {

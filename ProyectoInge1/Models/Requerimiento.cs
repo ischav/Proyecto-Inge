@@ -65,14 +65,20 @@ namespace ProyectoInge1.Models
         [Display(Name = "Módulo")]
         public string Modulo { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Observaciones { get; set; }
+
         [Display(Name = "Proyecto")]
         public string IdProyecto { get; set; }
+
         public byte[] Imagen { get; set; }
+
         [Display(Name = "Responsable")]
         public string IdResponsable { get; set; }
+
         [Display(Name = "Solicitante")]
         public string IdSolicitante { get; set; }
+
         [Display(Name = "Versión")]
         public Nullable<int> Version { get; set; }
 
@@ -90,5 +96,12 @@ namespace ProyectoInge1.Models
                 CriterioAceptacion.Add(new CriterioAceptacion());
             }
         }
+        [Display(Name = "Imagen")]
+        public string rutaImagen { get; set; }
+        public int cambiosGuardados { get; set; }
+
+        [Display(Name = "Imagen")]
+        public string rutaImagenCambio { get; set; }
+
     }
 }
