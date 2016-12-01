@@ -72,7 +72,6 @@
                             @Html.AntiForgeryToken()
                             <li><a href="javascript:document.getElementById('logoutForm').submit()">Salir </a></li>
                         } else {
-                            <li>@Html.ActionLink("Register", "Register", "Account", null, new { id = "registerLink", @style = colorRegistro })</li>
                             <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { id = "loginLink", @style = colorIniciarSesion })</li>
                         }
                     </ul>
