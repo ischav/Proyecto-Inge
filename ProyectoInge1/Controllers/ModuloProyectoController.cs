@@ -230,7 +230,7 @@ namespace ProyectoInge1.Controllers
                     var requerimientos = (from requerimiento in baseDatos.Requerimiento
                                           where requerimiento.IdProyecto == modelo.modeloProyecto.Id && requerimiento.Estado != "Finalizado"
                                           select new { requerimiento });
-                    if (requerimientos != null)
+                    if (requerimientos.Count() != 0)
                     {
                         return RedirectToAction("MEC_Unificado", new { id = modelo.modeloProyecto.Id, error = 1 });
                     }
@@ -379,7 +379,7 @@ namespace ProyectoInge1.Controllers
 				ViewBag.msj = "error";
 			}
 
-            return RedirectToAction("MEC_Unificado");
+            return RedirectToAction("MEC_Unificado", new { id = modelo.modeloProyecto.Id, error = 0 });
         }
 
         /*
