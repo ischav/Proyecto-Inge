@@ -25,22 +25,9 @@ namespace ProyectoInge1.Controllers
          * Retorna: el modelo cargado
          */
 		 [Authorize]
+		 [Permisos("GUS-I")]
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page)
         {
-            /*
-             * Se crea el modelo:
-             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
-             * en la base de datos (tabla de la base de datos)
-             * Se verifica si el usuario actual cuenta con permisos para realizar la acción
-             */
-            ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-I", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.agregar = false;
-            else
-                modelo.agregar = true;
 
             /* 
              * Se asignan los valores necesarios para la paginación y el filtrado 
@@ -153,12 +140,13 @@ namespace ProyectoInge1.Controllers
             return View(usuarios.ToPagedList(pageNumber, pageSize));
         }
 
-        /* Método elimina un elemento en la vista Index
+		/* Método elimina un elemento en la vista Index
          * Requiere: parámetro recibido válido en la base de datos
          * Modifica: la tabla Usuario de la base de datos
          * Retorna: redirección a la vista Index
          */
-        public ActionResult eliminarUsuario(string Id)
+		[Authorize]
+		public ActionResult eliminarUsuario(string Id)
         {
 			/*
              * Se crea un modelo para la vista, se encuentra la tupla de la tabla Usuario en la base de datos, con id igual
@@ -185,6 +173,8 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
+		 [Authorize]
+		 [Permisos("GUS-E", "GUS-M")]
         public ActionResult MEC_Unificado(string id)
         {
             /*
@@ -194,50 +184,30 @@ namespace ProyectoInge1.Controllers
              * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
              */
             ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-M", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.modificar = false;
-            else
-                modelo.modificar = true;
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-C", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.consultar = false;
-            else
-                modelo.consultar = true;
-
-            privilegio = baseDatos.Privilegios_asociados_roles.Find("GUS-E", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.eliminar = false;
-            else
-                modelo.eliminar = true;
 
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            /*
+			/*
              * Si el usuario existe:
              *   - Se asigna al atributo modeloUsuario el valor del usuario correspondiente al id
              *   - Se asigna el email a ese usuario
              *   - Se asigna un 0 a la variable de cambios guardados
              */
-            modelo.modeloUsuario = baseDatos.Usuario.Find(id);
-            if (modelo.modeloUsuario == null)
-            {
-                return HttpNotFound();
-            }
-            else
-            {
-                var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-                var usr = manager.FindById(modelo.modeloUsuario.Id);
-                if (usr != null)
-                    modelo.aspUserEmail = usr.Email;
-                else
-                    modelo.aspUserEmail = " ";
-            }
+			try {
+				modelo.modeloUsuario = baseDatos.Usuario.Find(id);
+				var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+				var usr = manager.FindById(modelo.modeloUsuario.Id);
+				if(usr != null)
+					modelo.aspUserEmail = usr.Email;
+				else
+					modelo.aspUserEmail = " ";
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos.");
+			}
 
             /*
             * Se asigna el valor de 0 a la variable de cambios guardados, indicando que no se ha modificado la vista
@@ -419,12 +389,13 @@ namespace ProyectoInge1.Controllers
             }
         }
 
-        /* Método para consultar un elemento en la vista Informacion
+		/* Método para consultar un elemento en la vista Informacion
          * Requiere: datos ingresados válidos
          * Modifica: la tabla de Usuario
          * Retorna: el modelo actualizado
          */
-        public ActionResult Informacion(int? message)
+		[Authorize]
+		public ActionResult Informacion(int? message)
         {
             /*
              * Se asigna a la variable StatusMessage el valor correspondiente a si se descartaron o no los cambios realizados
@@ -516,5 +487,12 @@ namespace ProyectoInge1.Controllers
              */
             return View(modelo);
         }
-    }
+
+		private ActionResult mostrarError(string msj) {
+			HttpContext.Response.StatusCode = 500;
+			var view = new ViewResult { ViewName = "~/Views/Shared/Error.cshtml", ViewData = new ViewDataDictionary() };
+			view.ViewData["errorBD"] = msj;
+			return (view);
+		}
+	}
 }

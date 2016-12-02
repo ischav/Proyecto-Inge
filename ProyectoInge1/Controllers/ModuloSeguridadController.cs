@@ -18,33 +18,25 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
+		 [Authorize]
+		 [Permisos("SEG-I")]
         public ActionResult Index()
         {
-            /*
+			/*
              * Se crea el modelo:
              *   - Se agregan los roles a la lista de roles (tabla generada por ASP)
              *   - Se agregan los privilegios a la lista de privilegios (tabla de la base de datos)
              *   - Se agregan los privilegios asociados a roles a la lista de privilegios asociados a roles (tabla de la base de datos)
              *   - Se asigna el valor de 0 a la variable de cambios guardados, indicando que no se ha modificado la vista
              */
-            ModeloIntermedio modelo = new ModeloIntermedio();
-            modelo.listaRoles = context.Roles.ToList();
-            modelo.listaPrivilegios = baseDatos.Privilegio.ToList();
-            modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
-            modelo.cambiosGuardados = 0;
-
-            /*
-             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
-             * en la base de datos (tabla de la base de datos)
-             * Se verifica si el usuario actual cuenta con permisos para realizar la acción
-             */
-            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-            Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("SEG-I", modelo.rolActualId);
-            if (privilegio == null)
-                modelo.privilegios = false;
-            else
-                modelo.privilegios = true;
+			ModeloIntermedio modelo = new ModeloIntermedio();
+			try {
+				modelo.listaRoles = context.Roles.ToList();
+				modelo.listaPrivilegios = baseDatos.Privilegio.ToList();
+				modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
+			}catch {
+				return mostrarError("Error al intentar cargar los datos de la base de datos.");
+			}
             
             /*
              * Se retorna el modelo a la vista
@@ -59,6 +51,7 @@ namespace ProyectoInge1.Controllers
          */
         [HttpPost, ActionName("Index")]
         [ValidateAntiForgeryToken]
+		[Permisos("SEG-I")]
         public ActionResult Guardar()
         {
             /*
@@ -120,28 +113,15 @@ namespace ProyectoInge1.Controllers
                  */
                 modelo.listaPrivilegios_asociados_roles = baseDatos.Privilegios_asociados_roles.ToList();
 
-                /*
-                 * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
-                 * en la base de datos (tabla de la base de datos)
-                 * Se verifica si el usuario actual cuenta con permisos para realizar la acción
-                 */
-                modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                modelo.rolActualId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-                Privilegios_asociados_roles privilegio = baseDatos.Privilegios_asociados_roles.Find("SEG-I", modelo.rolActualId);
-                if (privilegio == null)
-                    modelo.privilegios = false;
-                else
-                    modelo.privilegios = true;
-
 				/*
-                 * Se asigna el valor de 1 a la variable de cambios guardados, indicando que se ha modificado la vista
+                 * indicando que se ha modificado la vista
                  */
 				ViewBag.msj = "exito";
             }
             catch
             {
 				/*
-                 * Se asigna el valor de 2 a la variable de cambios guardados, indicando que ha ocurrido un error al tratar
+                 * indicando que ha ocurrido un error al tratar
                  * de modificar la vista
                  */
 				ViewBag.msj = "error";
@@ -152,5 +132,12 @@ namespace ProyectoInge1.Controllers
              */
             return View(modelo);
         }
+
+		private ActionResult mostrarError(string msj) {
+			HttpContext.Response.StatusCode = 500;
+			var view = new ViewResult { ViewName = "~/Views/Shared/Error.cshtml", ViewData = new ViewDataDictionary() };
+			view.ViewData["errorBD"] = msj;
+			return (view);
+		}
     }
 }

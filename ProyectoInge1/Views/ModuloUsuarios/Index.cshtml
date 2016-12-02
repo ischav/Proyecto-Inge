@@ -10,10 +10,11 @@
 
 <h2>Gestión de Usuarios</h2>
 
+@if((bool)Session["GUS-I"]) {
 <p>
     @Html.ActionLink("Agregar usuario", "Create")
 </p>
-
+}
 <!-- Se filtran las tuplas de la tabla Usuario de la base de datos -->
 @using (Html.BeginForm("Index", "ModuloUsuarios", FormMethod.Get))
 {

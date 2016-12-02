@@ -31,17 +31,6 @@
         });
     }
 
-    /* Método que esconde el "div" de eliminar y muestra el "div" de modificar en la vista Información
-     * Requiere: no aplica
-     * Modifica: no aplica
-     * Retorna: no aplica
-     */
-    function esconderEliminar()
-    {
-        $('.elementoEliminar').hide();
-        $('.elementoModificar').show();
-    }
-
     /* Método que esconde el "div" de modificar y muestra el "div" de eliminar en la vista Información
      * Requiere: no aplica
      * Modifica: no aplica
@@ -67,185 +56,112 @@
         });
     }
 
+    function habilitarCampos() {
+            $("input").prop('disabled', false);
+            $('select').prop('disabled', false);
+            $('.elementoEliminar').hide();
+            $('.elementoModificar').show();
+            $("#eliminar").prop("disabled", true);
+    }
+
+    window.onload = function () {
+            $("input").prop('disabled', true).trigger("click");
+            $('select').prop('disabled', true).trigger("click");
+            $('.elementoModificar').hide();
+            $('.elementoConsultar').show();
+    }
+
     if ('@ViewBag.msj' == 'exito') {
         alertify.success("Datos modificados exitosamente!");
     } else if ('@ViewBag.msj' == 'error') {
         alertify.error("Error al intentar modificar los datos");
     }
-</script>
 
-@{ HtmlString styleElementoEliminar;}
-@{ HtmlString styleElementoModificar;}
+    if ('@ViewBag.StatusMessage') {
+        alertify.success('@ViewBag.StatusMessage');
+    }
+</script>
 
 <h2>Mi cuenta</h2>
 
-<div class="elementoEliminar" style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-    <p>@ViewBag.StatusMessage</p>
-</div>
-
-@if (Model.errorValidacion == false)
-{
-    styleElementoEliminar = new HtmlString("");
-    styleElementoModificar = new HtmlString("style =\"display: none\"");
-}
-else
-{
-    styleElementoEliminar = new HtmlString("style =\"display: none\"");
-    styleElementoModificar = new HtmlString("");
-}
 
 <!-- Se imprimen botones para modificar y cambiar la contraseña -->
-<div class="elementoEliminar" @styleElementoEliminar>
-    <a class="btn btn-default" onclick="esconderEliminar()">Modificar</a>
+<div class="elementoEliminar">
+    <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
     <a class="btn btn-default" onclick="location.href='@Url.Action("Cambio_Contraseña", "Manage")'">Cambiar contraseña</a>
 </div>
-<div class="elementoModificar" @styleElementoModificar>
+<div class="elementoModificar">
     <h4> Modificar </h4>
 </div>
 
-<!-- Se despliega la información del elemento seleccionado cuando se va a eliminar -->
-<div>
-    <div class="elementoEliminar" @styleElementoEliminar>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Nombre)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Nombre)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Apellido1)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Apellido1)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Apellido2)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Apellido2)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Cedula)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Cedula)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modCrear.Email)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.aspUserEmail)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.FechaNac)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.FechaNac)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Telefono1)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Telefono1)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Telefono2)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.modeloUsuario.Telefono2)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.modeloUsuario.Sexo)
-            </dt>
-            <dd>
-                @if (Model.modeloUsuario.Sexo == "F")
-                {
-                    @Html.DisplayName("Femenino")
-                }
-                else if (Model.modeloUsuario.Sexo == "M")
-                {
-                    @Html.DisplayName("Masculino")
-                }
-                else
-                {
-                    @Html.DisplayName("Otro")
-                }
-            </dd>
-        </dl>
-    </div>
-</div>
-
 <!-- Se despliega la información modificable, del elemento seleccionado cuando se va a modificar -->
-<div class="elementoModificar" @styleElementoModificar>
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+@using(Html.BeginForm()) {
+    @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Nombre, htmlAttributes: new { @class = "control-label required col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.Nombre, "", new { @class = "text-danger" })
-                </div>
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Nombre, htmlAttributes: new { @class = "control-label required col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.Nombre, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Apellido1, htmlAttributes: new { @class = "control-label required col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.Apellido1, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido1, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Apellido1, htmlAttributes: new { @class = "control-label required col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.Apellido1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido1, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Apellido2, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.Apellido2, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido2, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Apellido2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.Apellido2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.Apellido2, "", new { @class = "text-danger" })
             </div>
-            @Html.HiddenFor(model => model.modeloUsuario.Cedula)
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.FechaNac, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.FechaNac, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.FechaNac, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        @Html.HiddenFor(model => model.modeloUsuario.Cedula)
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.FechaNac, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.FechaNac, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.FechaNac, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Telefono1, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.Telefono1, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.Telefono1, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Telefono1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.Telefono1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.Telefono1, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Telefono2, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.modeloUsuario.Telefono2, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modeloUsuario.Telefono2, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Telefono2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.modeloUsuario.Telefono2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modeloUsuario.Telefono2, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modCrear.Email, htmlAttributes: new { @class = "control-label required col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.aspUserEmail, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.modCrear.Email, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modCrear.Email, htmlAttributes: new { @class = "control-label required col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.aspUserEmail, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.modCrear.Email, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.modeloUsuario.Sexo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F", false)@Html.DisplayName("Femenino")
-                    @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M", false)@Html.DisplayName("Masculino")
-                    @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName("Otro")
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.modeloUsuario.Sexo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "F", false)@Html.DisplayName("Femenino")
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "M", false)@Html.DisplayName("Masculino")
+                @Html.RadioButtonFor(model => model.modeloUsuario.Sexo, "O", false)@Html.DisplayName("Otro")
             </div>
+        </div>
 
-            @Html.HiddenFor(model => model.modeloUsuario.Id)
+        @Html.HiddenFor(model => model.modeloUsuario.Id)
+        <div class="elementoModificar">
             <div class="form-group">
                 <div class="form-inline" align="right">
                     <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
@@ -253,7 +169,7 @@ else
                 </div>
             </div>
         </div>
-    }
-</div>
+    </div>
+}
 
 

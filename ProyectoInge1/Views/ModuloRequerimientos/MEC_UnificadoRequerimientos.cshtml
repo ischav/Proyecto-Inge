@@ -90,8 +90,7 @@
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea modificar este requerimiento?');
         if (respuesta == true) {
-            var url = '@Url.Action("MEC_UnificadoRequerimientos", "ModuloRequerimientos")';
-            window.location.href = url;
+            window.location.reload();
         }
     }
 
@@ -171,9 +170,15 @@
     }
 </div>
 
-<button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
-<button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
-@Html.ActionLink("Solicitar cambio", "CrearSolicitud",  new { idRequerimiento = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto, version = Model.modeloRequerimiento.Version })
+@if((bool)Session["GRF-M"]) {
+    <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
+}
+@if((bool)Session["GRF-E"]) {
+    <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
+}
+@if((bool)Session["GCS-CS"]) {
+    @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idRequerimiento = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto, version = Model.modeloRequerimiento.Version })
+}
 
 @using(Html.BeginForm())
 {
@@ -359,13 +364,15 @@
         @Html.HiddenFor(model => model.modeloRequerimiento.Version)
     </fieldset>
 
-    <div class="form-group">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        
-        <div class="form-inline" align="right">
-            <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
-            <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+    <div class="elementoModificar">
+        <div class="form-group">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-inline" align="right">
+                <input type="submit" value="Aceptar" name="aceptar" class="btn btn-default" />
+                <a class="btn btn-default" onclick="funcionCancelar()">Cancelar</a>
+            </div>
         </div>
     </div>
 }

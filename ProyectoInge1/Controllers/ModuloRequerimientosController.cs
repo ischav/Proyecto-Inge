@@ -25,23 +25,32 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo de páginación cargado
          */
+		 [Authorize]
+		 [Permisos("GRF-I")]
         public ActionResult Index(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto)
         {
+			String id;
+			String rol;
+			IQueryable<Proyecto> proyecto;
 
-            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            String rol = context.Users.Find(id).Roles.First().RoleId;
-            var proyecto = from Proyecto p in baseDatos.Proyecto
-                           select p;
+			try {
+				id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+				rol = context.Users.Find(id).Roles.First().RoleId;
+				proyecto = from Proyecto p in baseDatos.Proyecto
+						   select p;
 
-            if (!(rol == "01Admin"))
-            {
-                String id_usuario = User.Identity.GetUserId();
-                proyecto = from Proyecto p in baseDatos.Proyecto
-                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
-                            p.Id equals USP.IdProyecto
-                           where USP.IdUsuario == id_usuario
-                           select p;
-            }
+				if(!(rol == "01Admin")) {
+					String id_usuario = User.Identity.GetUserId();
+					proyecto = from Proyecto p in baseDatos.Proyecto
+							   join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+								p.Id equals USP.IdProyecto
+							   where USP.IdUsuario == id_usuario
+							   select p;
+				}
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
 
             ViewBag.pro = new SelectList(proyecto, "Id", "Nombre", Proyecto);
             ViewBag.CurrentSort = sortOrder;
@@ -163,20 +172,27 @@ namespace ProyectoInge1.Controllers
             return View(requerimiento.ToPagedList(pageNumber, pageSize));
         }
 
+		[Authorize]
         public ActionResult Create(String proyecto)
         {
             List<SelectListItem> clientesDropDown = new List<SelectListItem>();
             List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
 
-            var clientes = from Usuario U in baseDatos.Usuario
-                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
-                           where USP.IdProyecto == proyecto && USP.RolProyecto == "Cliente"
-                           select U;
+			IQueryable<Usuario> clientes;
+			IQueryable<Usuario> desarrolladores;
+			try {
+				clientes = from Usuario U in baseDatos.Usuario
+							   join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+							   where USP.IdProyecto == proyecto && USP.RolProyecto == "Cliente"
+							   select U;
 
-            var desarrolladores = from Usuario U in baseDatos.Usuario
-                                  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
-                                  where USP.IdProyecto == proyecto && USP.RolProyecto == "Desarrollador"
-                                  select U;
+				desarrolladores = from Usuario U in baseDatos.Usuario
+									  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+									  where USP.IdProyecto == proyecto && USP.RolProyecto == "Desarrollador"
+									  select U;
+			}catch{
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
 
 
             foreach (var cl in clientes)
@@ -303,6 +319,7 @@ namespace ProyectoInge1.Controllers
          * Modifica: la tabla Requerimientos de la base de datos
          * Retorna: redirección a la vista Index
          */
+		 [Authorize]
         public ActionResult eliminarRequerimiento(string Id, string IdProyecto)
         {
             //Borra al requerimiento de la tabla Requerimientos
@@ -326,6 +343,8 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
+		 [Authorize]
+		 [Permisos("GRF-M", "GRF-E", "GCS-CS")]
         public ActionResult MEC_UnificadoRequerimientos(string Id, string IdProyecto)
         {
             /*
@@ -340,9 +359,9 @@ namespace ProyectoInge1.Controllers
             {
                 modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
                 Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
-                modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+                modelo.solicitante = solicitante.NombreCompleto;
                 Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
-                modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+                modelo.responsable = responsable.NombreCompleto;
                 modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
                                                                          "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
                                                                          "USP.IdProyecto = P.Id JOIN Requerimiento R " +
@@ -358,7 +377,7 @@ namespace ProyectoInge1.Controllers
             }
             catch
             {
-
+				return mostrarError("Error al intentar acceder a la base de datos");
             }
 
             if (modelo.modeloRequerimiento.Imagen != null)
@@ -472,38 +491,47 @@ namespace ProyectoInge1.Controllers
 
 
         /* Método que carga el modelo para la vista Index de Historial de Cambios
- * Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
- * Modifica: el modelo
- * Retorna: el modelo de páginación cargado
- */
-
+		* Requiere: Tipo de ordenamiento, tipo de filtrado, patron de búsqueda, número de página y id del proyecto
+		* Modifica: el modelo
+		* Retorna: el modelo de páginación cargado
+		*/
+		[Authorize]
         public ActionResult IndexHistorialCambios(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Requerimiento, string Proyecto)
         {
 
-            // Id del usuario en sessión 
-            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            // Rol del usuario en sessión
-            String rol = context.Users.Find(id).Roles.First().RoleId;
+			String id;
+			String rol;
+			IQueryable<Proyecto> proyecto;
+			IQueryable<Cambio> cambios;
 
-            // Se filtran todos los proyectos
-            var proyecto = from Proyecto p in baseDatos.Proyecto
-                           select p;
+			try {
+				// Id del usuario en sessión 
+				id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+				// Rol del usuario en sessión
+				rol = context.Users.Find(id).Roles.First().RoleId;
 
-            // Si no es administrador se filtran solo los proyectos a los cuales pertecene
-            if (!(rol == "01Admin"))
-            {
-                proyecto = from Proyecto p in baseDatos.Proyecto
-                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
-                            p.Id equals USP.IdProyecto
-                           where USP.IdUsuario == id
-                           select p;
+				// Se filtran todos los proyectos
+				proyecto = from Proyecto p in baseDatos.Proyecto
+						   select p;
 
-            }
+				// Si no es administrador se filtran solo los proyectos a los cuales pertecene
+				if(!(rol == "01Admin")) {
+					proyecto = from Proyecto p in baseDatos.Proyecto
+							   join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+								p.Id equals USP.IdProyecto
+							   where USP.IdUsuario == id
+							   select p;
 
-            // Se filtran los cambios asociados a un proyectos
-            var cambios = from Cambio c in baseDatos.Cambio
-                          where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Aprobado" || c.EstadoSolicitud == "Rechazado")
-                          select c;
+				}
+
+				// Se filtran los cambios asociados a un proyectos
+				cambios = from Cambio c in baseDatos.Cambio
+						  where c.IdRequerimiento == Requerimiento && c.IdProyecto == Proyecto && (c.EstadoSolicitud == "Aprobado" || c.EstadoSolicitud == "Rechazado")
+						  select c;
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
 
             // Modificaciones a los atributos de los cambios
             foreach (var i in cambios)
@@ -648,6 +676,7 @@ namespace ProyectoInge1.Controllers
                  * Modifica: el modelo
                  * Retorna: el modelo de páginación cargado
                  */
+		[Authorize]
         public ActionResult IndexSolicitud(string sortOrder, string tipo, string currentFilter, string searchString, int? page, string Proyecto, string Categ)
         {
             if (TempData["mensaje"] != null)
@@ -829,6 +858,7 @@ namespace ProyectoInge1.Controllers
          * Modifica:
          * Retorna: 
          */
+		 [Authorize]
         public ActionResult Edit(int IdSolicitud, string IdRequerimiento, string IdProyecto)
         {
             if (TempData["mensaje"] != null)
@@ -836,15 +866,19 @@ namespace ProyectoInge1.Controllers
                 ViewBag.Msj = TempData["mensaje"].ToString();
             }
             ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloCambio = baseDatos.Cambio.Find(IdSolicitud, IdRequerimiento, IdProyecto);
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(IdRequerimiento, IdProyecto);
+			try {
+				modelo.modeloCambio = baseDatos.Cambio.Find(IdSolicitud, IdRequerimiento, IdProyecto);
+				modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(IdRequerimiento, IdProyecto);
 
-            modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
-            modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
-            modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
-            modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
-            modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
-
+				modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).NombreCompleto;
+				modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).NombreCompleto;
+				modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).NombreCompleto;
+				modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).NombreCompleto;
+				modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).NombreCompleto;
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
             if (modelo.modeloRequerimiento.Imagen != null)
             {
                 modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
@@ -952,11 +986,11 @@ namespace ProyectoInge1.Controllers
                 {
                     if (modelo.modeloCambio.ObservacionesSolicitud == null)
                     {
-                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
-                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
-                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
-                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
-                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).NombreCompleto;
+						modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).NombreCompleto;
+						modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).NombreCompleto;
+						modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).NombreCompleto;
+						modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).NombreCompleto;
 
                         if (modelo.modeloRequerimiento.Imagen != null)
                         {
@@ -977,11 +1011,11 @@ namespace ProyectoInge1.Controllers
                         baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
                         baseDatos.SaveChanges();
 
-                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
-                        modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
-                        modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
-                        modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
-                        modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+                        modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).NombreCompleto;
+						modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).NombreCompleto;
+						modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).NombreCompleto;
+						modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).NombreCompleto;
+						modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).NombreCompleto;
 
                         if (modelo.modeloRequerimiento.Imagen != null)
                         {
@@ -999,11 +1033,11 @@ namespace ProyectoInge1.Controllers
                 }
             }
 
-            modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).Apellido2;
-            modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).Apellido2;
-            modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).Apellido2;
-            modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).Apellido2;
-            modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Nombre + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido1 + " " + baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).Apellido2;
+			modelo.solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio).NombreCompleto;
+			modelo.solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante).NombreCompleto;
+			modelo.responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable).NombreCompleto;
+			modelo.solicitanteC = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante).NombreCompleto;
+			modelo.responsableC = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable).NombreCompleto;
 
             if (modelo.modeloRequerimiento.Imagen != null)
             {
@@ -1025,7 +1059,6 @@ namespace ProyectoInge1.Controllers
          * Retorna: el modelo cargado
          */
         [Authorize]
-        [Permisos("PRO-M", "PRO-E", "PRO-C")]
         public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version)
         {
             ModeloProyecto modelo = new ModeloProyecto();
@@ -1272,14 +1305,18 @@ namespace ProyectoInge1.Controllers
             modelo.modeloCambio.FechaCambio = DateTime.Now;
             if (ModelState.IsValid)
             {
-                try
-                {
-                    baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
-                    baseDatos.SaveChanges();
-                    TempData["msj"] = "exito";
-                    return RedirectToAction("MEC_Solicitud");
-                }
-                catch
+				try {
+					baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
+					baseDatos.SaveChanges();
+					TempData["msj"] = "exito";
+					return RedirectToAction("MEC_Solicitud",
+							new {
+								idSolicitud = modelo.modeloCambio.IdSolicitud,
+								idRequerimiento = modelo.modeloCambio.IdRequerimiento,
+								idProyecto = modelo.modeloCambio.IdProyecto
+							});
+				}
+				catch
                 {
                     ViewBag.msj = "error";
                 }
@@ -1288,6 +1325,7 @@ namespace ProyectoInge1.Controllers
             return View(modelo);
         }
 
+		[Authorize]
         public ActionResult eliminarSolicitud(int idSolicitud, string idRequerimiento, string idProyecto)
         {
             try
@@ -1308,6 +1346,7 @@ namespace ProyectoInge1.Controllers
         }
 
         [Authorize]
+		[Permisos("GCS-CS")]
         [HttpGet]
         public ActionResult DetallesVersion(int version, string idRequerimiento, string idProyecto)
         {
@@ -1362,5 +1401,12 @@ namespace ProyectoInge1.Controllers
 
             return View(modelo);
         }
-    }
+
+		private ActionResult mostrarError(string msj) {
+			HttpContext.Response.StatusCode = 500;
+			var view = new ViewResult { ViewName = "~/Views/Shared/Error.cshtml", ViewData = new ViewDataDictionary() };
+			view.ViewData["errorBD"] = msj;
+			return (view);
+		}
+	}
 }

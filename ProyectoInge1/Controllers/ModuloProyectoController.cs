@@ -45,23 +45,30 @@ namespace ProyectoInge1.Controllers
                 searchString = currentFilter;
             ViewBag.CurrentFilter = searchString;
 
-            /*
+			/*
              * Se asigna a la variable proyecto, el valor de todos los proyectos de la base de datos
              */
-            String id = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            String rol = context.Users.Find(id).Roles.First().RoleId;
-            var proyecto = from Proyecto p in baseDatos.Proyecto
-                           select p;
+			String id; 
+			String rol;
+			IQueryable<Proyecto> proyecto;
+			try {
+				id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+				rol = context.Users.Find(id).Roles.First().RoleId;
+				proyecto = from Proyecto p in baseDatos.Proyecto
+							   select p;
 
-            if (!(rol == "01Admin"))
-            {
-                String id_usuario = User.Identity.GetUserId();
-                proyecto = from Proyecto p in baseDatos.Proyecto
-                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
-                            p.Id equals USP.IdProyecto
-                           where USP.IdUsuario == id_usuario
-                           select p;
-            }
+				if(!(rol == "01Admin")) {
+					String id_usuario = User.Identity.GetUserId();
+					proyecto = from Proyecto p in baseDatos.Proyecto
+							   join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on
+								p.Id equals USP.IdProyecto
+							   where USP.IdUsuario == id_usuario
+							   select p;
+				}
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos.");
+			}
 
             /* 
              * Si existe una hilera con la cual filtrar, entonces se devuelven las tuplas de la tabla Proyecto de la base
@@ -168,13 +175,18 @@ namespace ProyectoInge1.Controllers
 		*Retorna: el modelo de proyecto cargado
 		*/
 		[Authorize]
-		[Permisos("PRO-M","PRO-E", "PRO-C")]
+		[Permisos("PRO-M","PRO-E")]
 		public ActionResult MEC_Unificado(string id, int error)
         {
             ModeloProyecto modeloPr = new ModeloProyecto();
             ModeloIntermedio modelo = new ModeloIntermedio();
 
-            modeloPr.modeloProyecto = baseDatos.Proyecto.Find(id);
+			try {
+				modeloPr.modeloProyecto = baseDatos.Proyecto.Find(id);
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
             /*
 	    *Se cargan los modelos de usuarios asociados al proyecto
 	    */
@@ -387,11 +399,17 @@ namespace ProyectoInge1.Controllers
         *Modifica: la base de datos eliminando el proyecto asociado
         *Retorna: el modelo en la pantalla del index
         */
+		[Authorize]
         public ActionResult eliminarProyecto(string Id)
         {
 
             ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
+			try {
+				modelo.modeloProyecto = baseDatos.Proyecto.Find(Id);
+			}
+			catch {
+				return Json(new { success = false });
+			}
 	        /*
 	        *Revisa si el estado del proyecto está finalizado, en caso  contrario
 	        *muestra una alerta
@@ -413,9 +431,39 @@ namespace ProyectoInge1.Controllers
 	 * Modifica: no aplica
 	 * Retorna: el modelo con los datos cargados de la base
 	 */
+		[Authorize]
         public ActionResult Create() {
 			ModeloProyecto modelo = new ModeloProyecto();
-			obtenerUsuarios(modelo);
+
+			var listaUsuarios = baseDatos.Usuario.ToList();// se cargan todos los usuarios de la base
+			var clientes = new List<Usuario>();
+			var recursos = new List<Usuario>();
+			var lideres = new List<Usuario>();
+
+			/*
+			 * se clasifican los usuarios segun rol
+			 */
+			try {
+				foreach(var usr in listaUsuarios) {
+					if(context.Users.Find(usr.Id).Roles.First().RoleId == "03User") {
+						clientes.Add(usr);
+					} else if(context.Users.Find(usr.Id).Roles.First().RoleId == "02Develop") {
+						recursos.Add(usr);
+						lideres.Add(usr);
+					}
+				}
+			}
+			catch {
+				return mostrarError("Error al intentar acceder a la base de datos");
+			}
+
+			/*
+			 * se pasan las listas de usuarios clasificados segun rol a la vista
+			 */
+			ViewBag.listaClientes = clientes;
+			ViewBag.listaRecursos = recursos;
+			ViewBag.listaDesarrolladores = new List<Usuario>();
+
 			ViewBag.msj = TempData["msj"] ?? "";
 			return View(modelo);
 		}
@@ -483,37 +531,6 @@ namespace ProyectoInge1.Controllers
 			}
 
 			return RedirectToAction("Create");
-		}
-		
-		/* Método que carga listas con clientes y recursos para desplegar en la vista
-		 * Requiere: un objeto del modelo
-		 * Modifica: el modelo que se envia como parametro a la vista
-		 * Retorna: no aplica
-		 */
-		private void obtenerUsuarios(ModeloProyecto modelo) {
-			var listaUsuarios = baseDatos.Usuario.ToList();// se cargan todos los usuarios de la base
-			var clientes = new List<Usuario>();
-			var recursos = new List<Usuario>();
-			var lideres = new List<Usuario>();
-			
-			/*
-			 * se clasifican los usuarios segun rol
-			 */
-			foreach(var usr in listaUsuarios) {
-				if(context.Users.Find(usr.Id).Roles.First().RoleId == "03User") {
-					clientes.Add(usr);
-				} else if(context.Users.Find(usr.Id).Roles.First().RoleId == "02Develop") {
-					recursos.Add(usr);
-					lideres.Add(usr);
-				}
-			}
-			
-			/*
-			 * se pasan las listas de usuarios clasificados segun rol a la vista
-			 */
-			ViewBag.listaClientes = clientes;
-			ViewBag.listaRecursos = recursos;
-			ViewBag.listaDesarrolladores = new List<Usuario>();
 		}
 
 	/* Método que carga listas con Desarroladores
@@ -631,5 +648,11 @@ namespace ProyectoInge1.Controllers
             return lid.First().usrProy;
         }
 
-    }
+		private ActionResult mostrarError(string msj) {
+			HttpContext.Response.StatusCode = 500;
+			var view = new ViewResult { ViewName = "~/Views/Shared/Error.cshtml", ViewData = new ViewDataDictionary() };
+			view.ViewData["errorBD"] = msj;
+			return (view);
+		}
+	}
 }

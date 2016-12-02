@@ -91,7 +91,7 @@
             </table>
         <!-- Si el usuario logeado tiene permisos para modificar los privilegios asociados a los roles, entonces se habilitan los botones para modificar
              y cancelar -->
-        @if (Model.privilegios == true)
+        @if ((bool)Session["SEG-I"])
         {
                 <div class="form-group">
                     <div class="form-inline" align="right">

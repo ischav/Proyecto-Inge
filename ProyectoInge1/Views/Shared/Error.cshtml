@@ -7,6 +7,6 @@
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">Ocurrió un error al procesar su petición.</h2>
 
-@if((bool)(ViewData["errorPrivilegio"] ?? false)) {
-        <p>Error al intentar validar los permisos asociados al rol. Vuelva a cargar la página.</p>
+@if(ViewData["errorBD"] != null) {
+        <p>@ViewData["errorBD"] Intene dirigirse de nuevo a la página que falló.</p>
 }

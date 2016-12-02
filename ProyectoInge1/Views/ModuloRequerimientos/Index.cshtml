@@ -27,9 +27,11 @@
 
 <h2>Gestión de requerimientos</h2>
 
-<p>
-    @Html.ActionLink("Agregar requerimiento", "Create", new { Proyecto = Request.Params["Proyecto"] })
-</p>
+@if((bool)Session["GRF-I"]) {
+    <p>
+        @Html.ActionLink("Agregar requerimiento", "Create", new { Proyecto = Request.Params["Proyecto"] })
+    </p>
+}
 <div display="inline">
     <form>
         <p>
@@ -83,10 +85,10 @@
             @Html.ActionLink("Estado", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Estado", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
-            @Html.ActionLink("FechaInicio", "Index", new { sortOrder = ViewBag.DateSortParm = "FechaInicio", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+            @Html.ActionLink("Fecha de Inicio", "Index", new { sortOrder = ViewBag.DateSortParm = "FechaInicio", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
-            @Html.ActionLink("FechaFinal", "Index", new { sortOrder = ViewBag.DateSortParm = "FechaFinal", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
+            @Html.ActionLink("Fecha Final", "Index", new { sortOrder = ViewBag.DateSortParm = "FechaFinal", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })
         </th>
         <th>
             @Html.ActionLink("Sprint", "Index", new { sortOrder = ViewBag.NameSortParm, tipo = "Sprint", currentFilter = ViewBag.CurrentFilter, Proyecto = Request.Params["Proyecto"] })

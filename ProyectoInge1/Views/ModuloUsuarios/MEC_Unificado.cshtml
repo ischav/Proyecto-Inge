@@ -88,24 +88,18 @@
         alertify.error("Error al intentar modificar el usuario");
     }
 </script>
-@{ HtmlString styleElementoEliminar;}
-@{ HtmlString styleElementoModificar;}
-
-@if(Model.errorValidacion == false) {
-    styleElementoEliminar = new HtmlString("");
-    styleElementoModificar = new HtmlString("style =\"display: none\"");
-} else {
-    styleElementoEliminar = new HtmlString("style =\"display: none\"");
-    styleElementoModificar = new HtmlString("");
-}
 
 <!-- Se imprimen los botones de modificar y eliminar, cuando se ingresa a consultar los datos -->
-<div class="elementoEliminar" @styleElementoEliminar>
+<div class="elementoEliminar">
     <h2>Detalles</h2>
-    <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
-    <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
+    @if((bool)Session["GUS-M"]) {
+        <a class="btn btn-default" onclick="habilitarCampos()">Modificar</a>
+    }
+    @if((bool)Session["GUS-E"]) {
+        <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloUsuario.Id)')">Eliminar</a>
+    }
 </div>
-<div class="elementoModificar" @styleElementoModificar>
+<div class="elementoModificar">
     <h2>Modificar</h2>
 </div>
 
