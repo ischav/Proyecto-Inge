@@ -19,7 +19,7 @@ namespace ProyectoInge1.Models
         public string IdRequerimiento { get; set; }
         public string IdProyecto { get; set; }
         public int IdSolicitud { get; set; }
-    
+        public Nullable<bool> Borrar { get; set; }
         public virtual Cambio Cambio { get; set; }
     }
 }

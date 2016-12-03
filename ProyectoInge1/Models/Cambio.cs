@@ -110,6 +110,19 @@ namespace ProyectoInge1.Models
 		public virtual ICollection<CriterioAceptacionHistorial> CriterioAceptacionHistorial { get; set; }
 		public virtual Requerimiento Requerimiento { get; set; }
 		public virtual Usuario Usuario { get; set; }
-	}
+
+        public string rutaImagen { get; set; }
+        public string solicitanteCambioNombre { get; set; }
+        public int cambiosGuardados { get; set; }
+
+
+        internal void agregarCriterios(int c = 1)
+        {
+            for (int i = 0; i < c; i++)
+            {
+                CriterioAceptacionHistorial.Add(new CriterioAceptacionHistorial());
+            }
+        }
+    }
 }
 

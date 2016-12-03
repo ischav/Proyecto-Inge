@@ -376,6 +376,7 @@
     <Content Include="Views\ModuloRequerimientos\IndexSolicitud.cshtml" />
     <Content Include="Views\ModuloRequerimientos\IndexHistorialCambios.cshtml" />
     <Content Include="Views\ModuloRequerimientos\EditorTemplates\CriterioAceptacion.cshtml" />
+    <Content Include="Views\ModuloRequerimientos\EditorTemplates\CriterioAceptacionHistorial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
