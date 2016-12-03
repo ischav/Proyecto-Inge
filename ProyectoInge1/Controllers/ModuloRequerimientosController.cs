@@ -1483,7 +1483,30 @@ namespace ProyectoInge1.Controllers
             modelo.FechaCambio = DateTime.Now;
             if (ModelState.IsValid)
             {
-				try {
+                var criterios = baseDatos.CriterioAceptacionHistorial.Where(t => t.IdRequerimiento == modelo.IdRequerimiento && t.IdProyecto == modelo.IdProyecto && t.IdSolicitud == modelo.IdSolicitud);
+
+                foreach (var c in criterios)
+                    baseDatos.CriterioAceptacionHistorial.Remove(c);
+
+                var r = 1;
+                foreach (CriterioAceptacionHistorial criterios_acep in modelo.CriterioAceptacionHistorial.ToList())
+                {
+                    if (criterios_acep.Borrar == true)
+                    {
+                        modelo.CriterioAceptacionHistorial.Remove(criterios_acep);
+                    }
+                    else
+                    {
+                        criterios_acep.Escenario = r.ToString();
+                        criterios_acep.IdSolicitud = modelo.IdSolicitud;
+                        criterios_acep.IdRequerimiento = modelo.IdRequerimiento;
+                        criterios_acep.IdProyecto = modelo.IdProyecto;
+                        modelo.CriterioAceptacionHistorial.Add(criterios_acep);
+                        r++;
+                    }
+                }
+
+                try {
                     baseDatos.Cambio.Add(modelo);
 					baseDatos.Entry(modelo).State = EntityState.Modified;
 					baseDatos.SaveChanges();

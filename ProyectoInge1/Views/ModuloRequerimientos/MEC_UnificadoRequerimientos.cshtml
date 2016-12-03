@@ -166,7 +166,6 @@
     }
 </script>
 
-
 <div class="elementoConsultar">
     <h2>Consultar</h2>
     @if (Model.cambiosGuardados == 1)
@@ -207,8 +206,11 @@
 
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.Id)', '@(Model.IdProyecto)')">Eliminar</button>
+ &nbsp; &nbsp; &nbsp;
 @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idRequerimiento = Model.Id, idProyecto = Model.IdProyecto, version = Model.Version })
-
+<p>
+    &nbsp;
+</p>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -425,9 +427,6 @@
             {   @Html.Label("Descripción", htmlAttributes: new { @class = "control-label required col-md-2" })
                 <div class="col-md-10" id="crite2">
                     @Html.EditorFor(modelo => modelo.criteriosTexto, new { htmlAttributes = new { @class = "form-control", @Value = item.Descripcion.ToString(),  } })
-                <p>
-                    &nbsp;
-                </p>
             </div>
             }
         </div>

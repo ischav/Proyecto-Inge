@@ -54,6 +54,8 @@
             $("#justificacionCambio *").prop("disabled", false);
             $('.elementoConsultar').hide();
             $('.elementoModificar').show();
+            $('#campo').show();
+            $('#campo2').hide();
         }else{
             alertify.error("No se puede modificar una solicitud que ya ha sido evaluada");
         }
@@ -77,6 +79,8 @@
             $("#justificacionCambio *").prop("disabled", true).trigger("click");
             $('.elementoModificar').hide();
             $('.elementoConsultar').show();
+            $('#campo').hide();
+            $('#campo2').show();
         }
     }
 
@@ -154,6 +158,9 @@
     <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos('@(Model.EstadoSolicitud)')">Modificar</button>
     <a class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.EstadoSolicitud)', '@(Model.IdSolicitud)', '@(Model.IdRequerimiento)', '@(Model.IdProyecto)')">Eliminar</a>
 </div>
+<p>
+    &nbsp;
+</p>
 
 @using(Html.BeginForm()) {
     @Html.AntiForgeryToken()
