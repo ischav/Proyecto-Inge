@@ -51,6 +51,7 @@
             $("#justificacionCambio *").prop("disabled", true).trigger("click");
             $("#guardar").attr('disabled','disabled');
             $('.elementoModificar').hide();
+            $('#campo2').show();
             $('.elementoConsultar').show();
             $('.botonPrueba').hide();
     }
@@ -263,6 +264,19 @@
                     new { value = "Rechazado" , text = "Rechazado" }
                 }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
             </div>
+        </div>
+    </fieldset>
+
+    <fieldset id="campo2">
+        <legend>Criterios de Aceptación</legend>
+        <div class="form-group">
+
+            @foreach (var item in Model.CriterioAceptacionHistorial.ToList())
+            {   @Html.Label("Descripción", htmlAttributes: new { @class = "control-label required col-md-2" })
+                <div class="col-md-10" id="crite2">
+                    @Html.EditorFor(modelo => modelo.criteriosTexto, new { htmlAttributes = new { @class = "form-control", @Value = item.Descripcion.ToString(), } })
+                </div>
+            }
         </div>
     </fieldset>
 }

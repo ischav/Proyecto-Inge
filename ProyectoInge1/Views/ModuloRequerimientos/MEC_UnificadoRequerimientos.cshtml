@@ -207,7 +207,8 @@
 <button type="button" class="btn btn-default" id="modificar" onclick="habilitarCampos()">Modificar</button>
 <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.Id)', '@(Model.IdProyecto)')">Eliminar</button>
  &nbsp; &nbsp; &nbsp;
-@Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idRequerimiento = Model.Id, idProyecto = Model.IdProyecto, version = Model.Version })
+@Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = -1, idRequerimiento = Model.Id, idProyecto = Model.IdProyecto, version = Model.Version })
+
 <p>
     &nbsp;
 </p>

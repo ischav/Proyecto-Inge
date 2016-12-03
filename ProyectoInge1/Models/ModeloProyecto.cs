@@ -98,6 +98,13 @@ namespace ProyectoInge1.Models
 
         /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
         public List<Usuario> listaUsuariosSolicitantesCambios = new List<Usuario>();
+        /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
+        public List<CriterioAceptacion> CriteriosRequerimiento = new List<CriterioAceptacion>();
+        /* Objeto que corresponde a las tuplas de la tabla Usuarios en la base de datos */
+        public List<CriterioAceptacionHistorial> CriteriosCambio = new List<CriterioAceptacionHistorial>();
+
+        public string criterioProyecto { get; set; }
+        public string criterioRequerimientos { get; set; }
 
         /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
         [Display(Name = "Solicitante del cambio")]

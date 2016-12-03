@@ -53,7 +53,7 @@
     function funcionCancelar() {
         var respuesta = confirm('¿Confirma que no desea enviar una solicitud de cambio?');
         if (respuesta == true) {
-            var url = '@Url.Action("MEC_UnificadoRequerimientos", "ModuloRequerimientos")';
+            var url = '@Url.Action("Index", "ModuloRequerimientos")';
             window.location.href = url;
         }
     }

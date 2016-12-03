@@ -419,7 +419,39 @@ list-style-type:none;
                     @Html.ValidationMessageFor(model => model.modeloRequerimiento.Modulo, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <fieldset id="campo2">
+                <legend>Criterios de Aceptación</legend>
+                <div class="form-group">
+                    @foreach (var item in Model.modeloRequerimiento.CriterioAceptacion.ToList())
+                    {
+                        @Html.Label("Descripción", htmlAttributes: new { @class = "control-label required col-md-2" })
+                        <div class="col-md-10" >
+                            @Html.EditorFor(modelo => modelo.CriteriosRequerimiento, new { htmlAttributes = new { @class = "form-control", @Value = item.Descripcion.ToString() } })
+                            <p>
+                                &nbsp;
+                            </p>
+                        </div>
+                    }
+
+                    @foreach (var item in Model.modeloCambio.CriterioAceptacionHistorial.ToList())
+                    {
+                        @Html.Label("Descripción", htmlAttributes: new { @class = "control-label required col-md-2" })
+                        <div class="col-md-10" >
+                            @Html.EditorFor(modelo => modelo.CriteriosCambio, new { htmlAttributes = new { @class = "form-control", @Value = item.Descripcion.ToString() } })
+                            <p>
+                                &nbsp;
+                            </p>
+                        </div>
+                    }
+                </div>
+
+            </fieldset>
+
+
         </fieldset>
+
+
+
 
         <fieldset>
             <legend>Estado del cambio</legend>

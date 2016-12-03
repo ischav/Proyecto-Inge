@@ -565,9 +565,11 @@ namespace ProyectoInge1.Controllers
                 modelo.cambiosGuardados = 1;
 
                 Usuario solicitante = baseDatos.Usuario.Find(modelo.IdSolicitante);
-                modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+                if(!String.IsNullOrEmpty(modelo.IdSolicitante))
+                    modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
                 Usuario responsable = baseDatos.Usuario.Find(modelo.IdResponsable);
-                modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+                if(!String.IsNullOrEmpty(modelo.IdResponsable))
+                    modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
                 
                 return View(modelo);
             }
@@ -1060,7 +1062,7 @@ namespace ProyectoInge1.Controllers
                                                                     "idProyecto = " + "'" + modelo.modeloCambio.IdProyecto + "';").ToList();
                     for (int i = 0; i < modelo.listaCambios.Count; i++)
                     {
-                        if (modelo.listaCambios.ElementAt(i).Version > version)
+                        if (modelo.listaCambios.ElementAt(i).VersionCambio > version)
                             version = (int)modelo.listaCambios.ElementAt(i).VersionCambio;
                     }
 
@@ -1084,6 +1086,7 @@ namespace ProyectoInge1.Controllers
                     modelo.modeloRequerimiento.IdSolicitante = modelo.modeloCambio.IdSolicitante;
                     modelo.modeloRequerimiento.Version = modelo.modeloCambio.VersionCambio;
 
+
                     /* 
                      * Si al cambio se le eliminó la imagen, entonces el requerimiento debe elimnarla 
                      */
@@ -1099,6 +1102,29 @@ namespace ProyectoInge1.Controllers
                     /* 
                      * Se modifica el cambio y el requerimiento 
                      */
+
+                    var criterios = baseDatos.CriterioAceptacion.Where(t => t.IdRequerimiento == modelo.modeloRequerimiento.Id && t.IdProyecto == modelo.modeloRequerimiento.IdProyecto);
+
+                    foreach (var c in criterios)
+                        baseDatos.CriterioAceptacion.Remove(c);
+
+                    foreach(CriterioAceptacion crit in modelo.modeloRequerimiento.CriterioAceptacion.ToList())
+                    {
+                        modelo.modeloRequerimiento.CriterioAceptacion.Remove(crit);
+                    }
+
+                    var criterios_historial = baseDatos.CriterioAceptacionHistorial.Where(t => t.IdRequerimiento == modelo.modeloRequerimiento.Id && t.IdProyecto == modelo.modeloRequerimiento.IdProyecto && t.IdSolicitud == modelo.modeloCambio.IdSolicitud);
+
+                    foreach (CriterioAceptacionHistorial criterio in criterios_historial)
+                    {
+                            CriterioAceptacion nuevo = new CriterioAceptacion();
+                            nuevo.Escenario = criterio.Escenario;
+                            nuevo.Descripcion = criterio.Descripcion;
+                            nuevo.IdProyecto = criterio.IdProyecto;
+                            nuevo.IdRequerimiento = criterio.IdRequerimiento;
+                            baseDatos.CriterioAceptacion.Add(nuevo);
+                    }
+
                     Cambio cambio = baseDatos.Cambio.Find(modelo.modeloCambio.IdSolicitud, modelo.modeloCambio.IdRequerimiento, modelo.modeloCambio.IdProyecto);
                     Requerimiento requerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
                     baseDatos.Entry(cambio).CurrentValues.SetValues(modelo.modeloCambio);
