@@ -17,6 +17,10 @@
 
         }
 
+    if ('@ViewBag.Msj' == 'exito')
+    {
+        alertify.success("El cambio fue modificado exitosamente!");
+    }
 </script>
 
 
@@ -31,13 +35,6 @@
 </style>
 
 <h2>Gestion de solicitudes de cambios</h2>
-
-@if (String.Compare(ViewBag.Msj, "exito") == 0)
-{
-    <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-        <p>El cambio fue modificado exitosamente!</p>
-    </div>
-}
 
 <div display="inline">
     <form>

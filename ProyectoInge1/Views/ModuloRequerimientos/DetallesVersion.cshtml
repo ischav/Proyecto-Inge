@@ -59,7 +59,7 @@
 <h2>Consultar versión</h2>
 
 @if((bool)Session["GCS-CS"]){
-	@Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idRequerimiento = Model.modeloCambio.IdRequerimiento, idProyecto = Model.modeloCambio.IdProyecto, version = Model.modeloCambio.Version })
+	@Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = Model.modeloCambio.IdSolicitud, idRequerimiento = Model.modeloCambio.IdRequerimiento, idProyecto = Model.modeloCambio.IdProyecto, version = Model.modeloCambio.Version })
 }
 @using (Html.BeginForm())
 {

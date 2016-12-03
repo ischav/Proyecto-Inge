@@ -177,7 +177,7 @@
     <button type="button" class="btn btn-default" id="eliminar" onclick="confirmarEliminar('@(Model.modeloRequerimiento.Id)', '@(Model.modeloRequerimiento.IdProyecto)')">Eliminar</button>
 }
 @if((bool)Session["GCS-CS"]) {
-    @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idRequerimiento = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto, version = Model.modeloRequerimiento.Version })
+    @Html.ActionLink("Solicitar cambio", "CrearSolicitud", new { idSolicitud = -1, idRequerimiento = Model.modeloRequerimiento.Id, idProyecto = Model.modeloRequerimiento.IdProyecto, version = Model.modeloRequerimiento.Version })
 }
 
 @using(Html.BeginForm())

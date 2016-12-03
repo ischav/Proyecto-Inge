@@ -59,29 +59,23 @@ list-style-type:none;
             window.location.href = url;
         }
     }
+
+    if ('@ViewBag.Msj' == 'exito')
+    {
+        alertify.success("El cambio fue modificado exitosamente!");
+    }
+    else if ('@ViewBag.Msj' == 'erroreem')
+    {
+        alertify.error("El cambio no pudo ser modificado. El campo Observaciones de la solicitud no puede ser nulo!");
+    }
+    else if ('@ViewBag.Msj' == 'error')
+    {
+        alertify.error("Ocurrió un error al intentar modificar el cambio!");
+    }
 </script>
 
 <div class="elementoConsultar">
     <h2>Modificar</h2>
-
-    @if (String.Compare(ViewBag.Msj, "exito") == 0)
-    {
-        <div style="text-align: right; width: 100%; color:limegreen; font-weight:bold;">
-            <p>El cambio fue modificado exitosamente!</p>
-        </div>
-    }
-    else if (String.Compare(ViewBag.Msj, "erroreem") == 0)
-    {
-        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
-            <p>El cambio no pudo ser modificado. El campo "Observaciones de la solicitud" no puede ser nulo!</p>
-        </div>
-    }
-    else if (String.Compare(ViewBag.Msj, "error") == 0)
-    {
-        <div style="text-align: right; width: 100%; color:red; font-weight:bold;">
-            <p>Ocurrió un error al intentar modificar el cambio!</p>
-        </div>
-    }
 
     @using (Html.BeginForm())
     {

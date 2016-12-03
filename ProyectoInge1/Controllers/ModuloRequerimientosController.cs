@@ -1061,17 +1061,27 @@ namespace ProyectoInge1.Controllers
          */
         [Authorize]
         [Permisos("PRO-M", "PRO-E", "PRO-C")]
-        public ActionResult CrearSolicitud(string idRequerimiento, string idProyecto, int version)
+        public ActionResult CrearSolicitud(int idSolicitud, string idRequerimiento, string idProyecto, int version)
         {
             var modelo = new Cambio();
 
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
-            var cambios = from Cambio C in baseDatos.Cambio
+            
+            if(idSolicitud == -1) {
+                var cambios = from Cambio C in baseDatos.Cambio
                           where C.IdProyecto == idProyecto && C.IdRequerimiento == idRequerimiento && C.VersionCambio == version
                           select C;
-
-            modelo = cambios.First();
+                modelo = cambios.First();
+            }
+            else
+            {
+                var cambios = from Cambio C in baseDatos.Cambio
+                          where C.IdProyecto == idProyecto && C.IdRequerimiento == idRequerimiento && C.IdSolicitud == idSolicitud
+                          select C;
+                modelo = cambios.First();
+            }
+            
             modelo.IdProyecto = idProyecto;
             modelo.IdRequerimiento = idRequerimiento;
             modelo.DescripcionCambio = "";
