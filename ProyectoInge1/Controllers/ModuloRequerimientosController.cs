@@ -315,25 +315,25 @@ namespace ProyectoInge1.Controllers
         }
 
         /* Método elimina un elemento en la vista Index
-         * Requiere: parámetro recibido válido en la base de datos
-         * Modifica: la tabla Requerimientos de la base de datos
-         * Retorna: redirección a la vista Index
-         */
-		 [Authorize]
+ * Requiere: parámetro recibido válido en la base de datos
+ * Modifica: la tabla Requerimientos de la base de datos
+ * Retorna: redirección a la vista Index
+ */
         public ActionResult eliminarRequerimiento(string Id, string IdProyecto)
         {
             //Borra al requerimiento de la tabla Requerimientos
-            ModeloProyecto modelo = new ModeloProyecto();
-            modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
-            if (modelo.modeloRequerimiento.Estado.Equals("Pendiente de asignar"))
-            {
-                baseDatos.Requerimiento.Remove(modelo.modeloRequerimiento);
-                baseDatos.SaveChanges();
-            }
-            else
-            {
-                return HttpNotFound();
-            }
+            Requerimiento modelo = new Requerimiento();
+            modelo = baseDatos.Requerimiento.Find(Id, IdProyecto);
+
+            var cambios_asociados = baseDatos.Cambio.Where(t => t.IdRequerimiento == Id && t.IdProyecto == IdProyecto);
+
+            foreach (var c in cambios_asociados)
+                baseDatos.Cambio.Remove(c);
+
+            baseDatos.SaveChanges();
+
+            baseDatos.Requerimiento.Remove(modelo);
+            baseDatos.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -343,50 +343,70 @@ namespace ProyectoInge1.Controllers
          * Modifica: el modelo
          * Retorna: el modelo cargado
          */
-		 [Authorize]
-		 [Permisos("GRF-M", "GRF-E", "GCS-CS")]
         public ActionResult MEC_UnificadoRequerimientos(string Id, string IdProyecto)
         {
-            /*
-             * Se crea el modelo:
-             * Se obtiene la llave primaria del usuario actual (tabla generada por ASP) y se busca al usuario correspondiente 
-             * en la base de datos (tabla de la base de datos)
-             * Se verifica si el usuario actual cuenta con permisos para realizar las acciones
-             */
+            var requerimiento = new Requerimiento();
 
-            ModeloProyecto modelo = new ModeloProyecto();
-            try
+            requerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
+            Usuario solicitante = baseDatos.Usuario.Find(requerimiento.IdSolicitante);
+            requerimiento.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+            Usuario responsable = baseDatos.Usuario.Find(requerimiento.IdResponsable);
+            requerimiento.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+
+            List<SelectListItem> clientesDropDown = new List<SelectListItem>();
+            List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
+
+            var clientes = from Usuario U in baseDatos.Usuario
+                           join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                           join Proyecto P in baseDatos.Proyecto on USP.IdProyecto equals P.Id
+                           join Requerimiento R in baseDatos.Requerimiento on P.Id equals R.IdProyecto
+                           where USP.IdProyecto == IdProyecto && USP.RolProyecto == "Cliente" && R.Id == Id
+                           select U;
+
+            var desarrolladores = from Usuario U in baseDatos.Usuario
+                                  join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                  join Proyecto P in baseDatos.Proyecto on USP.IdProyecto equals P.Id
+                                  join Requerimiento R in baseDatos.Requerimiento on P.Id equals R.IdProyecto
+                                  where USP.IdProyecto == IdProyecto && USP.RolProyecto == "Desarrollador" && R.Id == Id
+                                  select U;
+
+            foreach (var cl in clientes)
+                clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+            foreach (var ds in desarrolladores)
+                responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+            foreach (var cl in clientesDropDown)
             {
-                modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
-                Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdSolicitante);
-                modelo.solicitante = solicitante.NombreCompleto;
-                Usuario responsable = baseDatos.Usuario.Find(modelo.modeloRequerimiento.IdResponsable);
-                modelo.responsable = responsable.NombreCompleto;
-                modelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                         "USP.IdProyecto = P.Id JOIN Requerimiento R " +
-                                                                         "ON P.Id = R.IdProyecto " +
-                                                                         "WHERE USP.RolProyecto = 'Cliente' AND " +
-                                                                         "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-                modelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                         "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                         "USP.IdProyecto = P.Id JOIN Requerimiento R " +
-                                                                         "ON P.Id = R.IdProyecto " +
-                                                                         "WHERE USP.RolProyecto = 'Desarrollador' AND " +
-                                                                         "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-            }
-            catch
-            {
-				return mostrarError("Error al intentar acceder a la base de datos");
+                if (cl.Value.Equals(requerimiento.IdSolicitante))
+                {
+                    cl.Selected = true;
+                    break;
+                }
             }
 
-            if (modelo.modeloRequerimiento.Imagen != null)
+            foreach (var ds in responsablesDropDown)
             {
-                modelo.rutaImagen = Encoding.ASCII.GetString(modelo.modeloRequerimiento.Imagen);
+                if (ds.Value.Equals(requerimiento.IdResponsable))
+                {
+                    ds.Selected = true;
+                    break;
+                }
             }
-            modelo.accion = 0;
 
-            return View(modelo);
+            ViewBag.Solicitante = clientesDropDown;
+            ViewBag.Responsable = responsablesDropDown;
+
+            if (requerimiento.Imagen != null)
+            {
+                requerimiento.rutaImagen = Encoding.ASCII.GetString(requerimiento.Imagen);
+            }
+
+            requerimiento.IdProyecto = IdProyecto;
+            requerimiento.Id = Id;
+            requerimiento.accion = 0;
+
+            return View(requerimiento);
         }
 
         /* Método que guarda los cambios en la vista de MEC_UnificadoRequerimientos
@@ -396,42 +416,158 @@ namespace ProyectoInge1.Controllers
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_UnificadoRequerimientos(ModeloProyecto modelo)
+        public ActionResult MEC_UnificadoRequerimientos([Bind(Include = "Id,Nombre,Prioridad,Esfuerzo,Estado,Descripcion,FechaInicio,FechaFinal,Sprint,Modulo,Observaciones,Imagen,IdProyecto,IdResponsable,IdSolicitante,Version,rutaImagen,CriterioAceptacion,accion")] Requerimiento modelo)
         {
+            if (!string.IsNullOrEmpty(modelo.rutaImagen))
+            {
+                modelo.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+            }
+
             if (ModelState.IsValid)
             {
-                modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
-                baseDatos.Entry(modelo.modeloRequerimiento).State = EntityState.Modified;
-                baseDatos.SaveChanges();
-                ModeloProyecto nuevoModelo = new ModeloProyecto();
-                nuevoModelo.modeloRequerimiento = baseDatos.Requerimiento.Find(modelo.modeloRequerimiento.Id, modelo.modeloRequerimiento.IdProyecto);
-                if (modelo.modeloRequerimiento.Imagen != null)
+                if (modelo.Imagen != null)
                 {
-                    nuevoModelo.rutaImagen = Encoding.ASCII.GetString(nuevoModelo.modeloRequerimiento.Imagen);
+                    modelo.rutaImagen = Encoding.ASCII.GetString(modelo.Imagen);
                 }
-                nuevoModelo.listaUsuariosCliente = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                              "USP.IdProyecto = P.Id JOIN Requerimiento R " +
-                                                                              "ON P.Id = R.IdProyecto " +
-                                                                              "WHERE USP.RolProyecto = 'Cliente' AND " +
-                                                                              "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-                nuevoModelo.listaUsuariosDesarrolladores = baseDatos.Usuario.SqlQuery("SELECT * FROM Usuario U JOIN Usuarios_asociados_proyecto USP ON " +
-                                                                              "U.Id = USP.IdUsuario JOIN Proyecto P ON " +
-                                                                              "USP.IdProyecto = P.Id JOIN Requerimiento R " +
-                                                                              "ON P.Id = R.IdProyecto " +
-                                                                              "WHERE USP.RolProyecto = 'Desarrollador' AND " +
-                                                                              "R.Id = '" + modelo.modeloRequerimiento.Id + "';").ToList();
-                nuevoModelo.accion = 0;
-                nuevoModelo.cambiosGuardados = 1;
 
-                return View(nuevoModelo);
+                var criterios = baseDatos.CriterioAceptacion.Where(t => t.IdRequerimiento == modelo.Id && t.IdProyecto == modelo.IdProyecto);
+
+                foreach (var c in criterios)
+                    baseDatos.CriterioAceptacion.Remove(c);
+       
+                List < SelectListItem > clientesDropDown = new List<SelectListItem>();
+                List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
+
+                var clientes = from Usuario U in baseDatos.Usuario
+                               join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                               join Proyecto P in baseDatos.Proyecto on USP.IdProyecto equals P.Id
+                               join Requerimiento R in baseDatos.Requerimiento on P.Id equals R.IdProyecto
+                               where USP.IdProyecto == modelo.IdProyecto && USP.RolProyecto == "Cliente" && R.Id == modelo.Id
+                               select U;
+
+                var desarrolladores = from Usuario U in baseDatos.Usuario
+                                      join Usuarios_asociados_proyecto USP in baseDatos.Usuarios_asociados_proyecto on U.Id equals USP.IdUsuario
+                                      join Proyecto P in baseDatos.Proyecto on USP.IdProyecto equals P.Id
+                                      join Requerimiento R in baseDatos.Requerimiento on P.Id equals R.IdProyecto
+                                      where USP.IdProyecto == modelo.IdProyecto && USP.RolProyecto == "Desarrollador" && R.Id == modelo.Id
+                                      select U;
+
+                foreach (var cl in clientes)
+                    clientesDropDown.Add(new SelectListItem() { Text = cl.NombreCompleto, Value = cl.Id });
+
+                foreach (var ds in desarrolladores)
+                    responsablesDropDown.Add(new SelectListItem() { Text = ds.NombreCompleto, Value = ds.Id });
+
+                foreach (var cl in clientesDropDown)
+                {
+                    if (cl.Value.Equals(modelo.IdSolicitante))
+                    {
+                        cl.Selected = true;
+                        break;
+                    }
+                }
+
+                foreach (var ds in responsablesDropDown)
+                {
+                    if (ds.Value.Equals(modelo.IdResponsable))
+                    {
+                        ds.Selected = true;
+                        break;
+                    }
+                }
+
+                ViewBag.Solicitante = clientesDropDown;
+                ViewBag.Responsable = responsablesDropDown;
+
+                var r = 1;
+                foreach (CriterioAceptacion criterios_acep in modelo.CriterioAceptacion.ToList())
+                {
+                    if (criterios_acep.Borrar == true)
+                    {
+                        modelo.CriterioAceptacion.Remove(criterios_acep);
+                    }
+                    else
+                    {
+                        criterios_acep.Escenario = r.ToString();
+                        criterios_acep.IdRequerimiento = modelo.Id;
+                        criterios_acep.IdProyecto = modelo.IdProyecto;
+                        modelo.CriterioAceptacion.Add(criterios_acep);
+                        r++;
+                    }
+                }
+
+                baseDatos.Requerimiento.Add(modelo); 
+                baseDatos.Entry(modelo).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+
+                var cambios = from Cambio C in baseDatos.Cambio
+                              where C.IdProyecto == modelo.IdProyecto && C.IdRequerimiento == modelo.Id && C.VersionCambio == modelo.Version
+                              select C;
+
+                Cambio cambio_nuevo = new Cambio();
+                cambio_nuevo = cambios.First();
+
+                cambio_nuevo.IdRequerimiento = modelo.Id;
+                cambio_nuevo.IdProyecto = modelo.IdProyecto;
+                cambio_nuevo.Nombre = modelo.Nombre;
+                cambio_nuevo.Prioridad = modelo.Prioridad;
+                cambio_nuevo.Esfuerzo = modelo.Esfuerzo;
+                cambio_nuevo.Estado = modelo.Estado;
+                cambio_nuevo.Descripcion = modelo.Descripcion;
+                cambio_nuevo.FechaInicio = modelo.FechaInicio;
+                cambio_nuevo.FechaFinal = modelo.FechaFinal;
+                cambio_nuevo.Sprint = modelo.Sprint;
+                cambio_nuevo.Modulo = modelo.Modulo;
+                cambio_nuevo.Observaciones = modelo.Observaciones;
+                if (!string.IsNullOrEmpty(modelo.rutaImagen))
+                {
+                    cambio_nuevo.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+                }
+                cambio_nuevo.IdResponsable = modelo.IdResponsable;
+                cambio_nuevo.IdSolicitante = modelo.IdSolicitante;
+
+                var criterios_historial = baseDatos.CriterioAceptacionHistorial.Where(t => t.IdRequerimiento == modelo.Id && t.IdProyecto == modelo.IdProyecto && t.IdSolicitud == cambio_nuevo.IdSolicitud);
+
+                foreach (var k in criterios_historial)
+                    baseDatos.CriterioAceptacionHistorial.Remove(k);
+
+                foreach (CriterioAceptacionHistorial criterio in cambio_nuevo.CriterioAceptacionHistorial)
+                    cambio_nuevo.CriterioAceptacionHistorial.Remove(criterio);
+
+                baseDatos.Cambio.Add(cambio_nuevo);
+                baseDatos.Entry(cambio_nuevo).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+
+                foreach (CriterioAceptacion criterio in modelo.CriterioAceptacion)
+                {
+                    if (criterio.Borrar != true)
+                    {
+                        CriterioAceptacionHistorial nuevo = new CriterioAceptacionHistorial();
+                        nuevo.IdSolicitud = cambio_nuevo.IdSolicitud;
+                        nuevo.Escenario = criterio.Escenario;
+                        nuevo.Descripcion = criterio.Descripcion;
+                        nuevo.IdProyecto = modelo.IdProyecto;
+                        nuevo.IdRequerimiento = modelo.Id;
+                        cambio_nuevo.CriterioAceptacionHistorial.Add(nuevo);
+                    }
+                }
+
+                baseDatos.Cambio.Add(cambio_nuevo);
+                baseDatos.Entry(cambio_nuevo).State = EntityState.Modified;
+                baseDatos.SaveChanges();
+                modelo.cambiosGuardados = 1;
+
+                Usuario solicitante = baseDatos.Usuario.Find(modelo.IdSolicitante);
+                modelo.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+                Usuario responsable = baseDatos.Usuario.Find(modelo.IdResponsable);
+                modelo.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+                
+                return View(modelo);
             }
             else
             {
-                modelo.listaProyectos = baseDatos.Proyecto.ToList();
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
                 modelo.cambiosGuardados = 2;
-
                 return View(modelo);
             }
         }
@@ -445,8 +581,8 @@ namespace ProyectoInge1.Controllers
         {
             try
             {
-                ModeloProyecto modelo = new ModeloProyecto();
-                modelo.modeloRequerimiento = baseDatos.Requerimiento.Find(Id);
+                Requerimiento modelo = new Requerimiento();
+                modelo = baseDatos.Requerimiento.Find(Id);
                 modelo.accion = Accion;
                 return View(modelo);
             }
@@ -484,6 +620,7 @@ namespace ProyectoInge1.Controllers
             ViewBag.listaRecursos = recursos;
             ViewBag.listaDesarrolladores = new List<Usuario>();
         }
+
 
         /*-------------------------------------------------------------------------------------------
                                             GESTION DE CAMBIOS

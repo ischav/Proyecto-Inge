@@ -103,5 +103,23 @@ namespace ProyectoInge1.Models
         [Display(Name = "Imagen")]
         public string rutaImagenCambio { get; set; }
 
+        [Display(Name = "Solicitante")]
+        public string solicitante { get; set; }
+        [Display(Name = "Solicitante")]
+        public string solicitanteC { get; set; }
+
+        /* Objeto string que corresponde al nombre del responsable del Requerimiento de la base de datos */
+        [Display(Name = "Responsable")]
+        public string responsable { get; set; }
+        [Display(Name = "Responsable")]
+        public string responsableC { get; set; }
+
+ 
+        public string criteriosTexto { get; set; }
+
+        public int accion { get; set; }
+
+
+
     }
 }

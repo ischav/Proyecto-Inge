@@ -19,6 +19,7 @@ namespace ProyectoInge1.Models
         public string Escenario { get; set; }
         [Required(ErrorMessage = "La descripción es un campo requerido.")]
         [Display(Name = "Descripción")]
+        [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
         public string IdRequerimiento { get; set; }
         public string IdProyecto { get; set; }

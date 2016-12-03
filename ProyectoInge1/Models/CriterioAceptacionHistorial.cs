@@ -11,10 +11,12 @@ namespace ProyectoInge1.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class CriterioAceptacionHistorial
     {
         public string Escenario { get; set; }
+        [DataType(DataType.MultilineText)]
         public string Descripcion { get; set; }
         public string IdRequerimiento { get; set; }
         public string IdProyecto { get; set; }
