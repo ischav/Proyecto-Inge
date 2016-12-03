@@ -348,10 +348,17 @@ namespace ProyectoInge1.Controllers
             var requerimiento = new Requerimiento();
 
             requerimiento = baseDatos.Requerimiento.Find(Id, IdProyecto);
-            Usuario solicitante = baseDatos.Usuario.Find(requerimiento.IdSolicitante);
-            requerimiento.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
-            Usuario responsable = baseDatos.Usuario.Find(requerimiento.IdResponsable);
-            requerimiento.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+
+            if (!String.IsNullOrEmpty(requerimiento.IdSolicitante))
+            {
+                Usuario solicitante = baseDatos.Usuario.Find(requerimiento.IdSolicitante);
+                requerimiento.solicitante = solicitante.Nombre + " " + solicitante.Apellido1 + " " + solicitante.Apellido2;
+            }
+            if (!String.IsNullOrEmpty(requerimiento.IdResponsable))
+            { 
+                Usuario responsable = baseDatos.Usuario.Find(requerimiento.IdResponsable);
+                requerimiento.responsable = responsable.Nombre + " " + responsable.Apellido1 + " " + responsable.Apellido2;
+            }
 
             List<SelectListItem> clientesDropDown = new List<SelectListItem>();
             List<SelectListItem> responsablesDropDown = new List<SelectListItem>();
