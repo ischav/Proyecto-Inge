@@ -123,6 +123,8 @@ namespace ProyectoInge1.Models
                 CriterioAceptacionHistorial.Add(new CriterioAceptacionHistorial());
             }
         }
+
+        public string criteriosTexto { get; set; }
     }
 }
 

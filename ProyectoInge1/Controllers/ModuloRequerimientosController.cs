@@ -1423,19 +1423,19 @@ namespace ProyectoInge1.Controllers
         [Authorize]
         public ActionResult MEC_Solicitud(int idSolicitud, string idRequerimiento, string idProyecto)
         {
-            ModeloProyecto modelo = new ModeloProyecto();
+            Cambio modelo = new Cambio();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
 
-            var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.IdSolicitud == idSolicitud
-                           select new { cambio });
+            var cambios =  from Cambio c in baseDatos.Cambio
+                           where c.IdProyecto == idProyecto && c.IdRequerimiento == idRequerimiento && c.IdSolicitud == idSolicitud
+                           select c;
 
-            modelo.modeloCambio = cambios.First().cambio;
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-            modelo.solicitanteCambio = solicitanteCambio.NombreCompleto;
+            modelo = cambios.First();
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.IdSolicitante);
+            Usuario responsable = baseDatos.Usuario.Find(modelo.IdResponsable);
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.SolicitanteCambio);
+            modelo.solicitanteCambioNombre = solicitanteCambio.NombreCompleto;
 
             //no agrego el solicitante para que salga de primero
             var clientes = (from usuario in baseDatos.Usuario
@@ -1468,7 +1468,7 @@ namespace ProyectoInge1.Controllers
 
             if (!string.IsNullOrEmpty(modelo.rutaImagen))
             {
-                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+                modelo.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
             }
 
             ViewBag.msj = TempData["msj"] ?? "";
@@ -1478,20 +1478,21 @@ namespace ProyectoInge1.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MEC_Solicitud(ModeloProyecto modelo)
+        public ActionResult MEC_Solicitud(Cambio modelo)
         {
-            modelo.modeloCambio.FechaCambio = DateTime.Now;
+            modelo.FechaCambio = DateTime.Now;
             if (ModelState.IsValid)
             {
 				try {
-					baseDatos.Entry(modelo.modeloCambio).State = EntityState.Modified;
+                    baseDatos.Cambio.Add(modelo);
+					baseDatos.Entry(modelo).State = EntityState.Modified;
 					baseDatos.SaveChanges();
 					TempData["msj"] = "exito";
 					return RedirectToAction("MEC_Solicitud",
 							new {
-								idSolicitud = modelo.modeloCambio.IdSolicitud,
-								idRequerimiento = modelo.modeloCambio.IdRequerimiento,
-								idProyecto = modelo.modeloCambio.IdProyecto
+								idSolicitud = modelo.IdSolicitud,
+								idRequerimiento = modelo.IdRequerimiento,
+								idProyecto = modelo.IdProyecto
 							});
 				}
 				catch
@@ -1528,19 +1529,20 @@ namespace ProyectoInge1.Controllers
         [HttpGet]
         public ActionResult DetallesVersion(int version, string idRequerimiento, string idProyecto)
         {
-            ModeloProyecto modelo = new ModeloProyecto();
+            Cambio modelo = new Cambio();
             var solicitantes = new List<Usuario>();
             var responsables = new List<Usuario>();
 
-            var cambios = (from cambio in baseDatos.Cambio
-                           where cambio.IdProyecto == idProyecto && cambio.IdRequerimiento == idRequerimiento && cambio.Version == version
-                           select new { cambio });
+            var cambios = (from Cambio c in baseDatos.Cambio
+                           where c.IdProyecto == idProyecto && c.IdRequerimiento == idRequerimiento && c.VersionCambio == version
+                           select c);
 
-            modelo.modeloCambio = cambios.First().cambio;
-            Usuario solicitante = baseDatos.Usuario.Find(modelo.modeloCambio.IdSolicitante);
-            Usuario responsable = baseDatos.Usuario.Find(modelo.modeloCambio.IdResponsable);
-            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.modeloCambio.SolicitanteCambio);
-            modelo.solicitanteCambio = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
+            modelo = cambios.First();
+
+            Usuario solicitante = baseDatos.Usuario.Find(modelo.IdSolicitante);
+            Usuario responsable = baseDatos.Usuario.Find(modelo.IdResponsable);
+            Usuario solicitanteCambio = baseDatos.Usuario.Find(modelo.SolicitanteCambio);
+            modelo.solicitanteCambioNombre = solicitanteCambio.Nombre + " " + solicitanteCambio.Apellido1 + " " + solicitanteCambio.Apellido2;
 
 
             //no agrego el solicitante para que salga de primero
@@ -1574,7 +1576,7 @@ namespace ProyectoInge1.Controllers
 
             if (!string.IsNullOrEmpty(modelo.rutaImagen))
             {
-                modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
+                modelo.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagen);
             }
 
             return View(modelo);
