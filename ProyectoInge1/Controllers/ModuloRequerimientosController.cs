@@ -1090,9 +1090,10 @@ namespace ProyectoInge1.Controllers
                     /* 
                      * Si al cambio se le eliminó la imagen, entonces el requerimiento debe elimnarla 
                      */
-                    if (modelo.modeloCambio.Imagen != null)
+                    if (modelo.rutaImagenCambio != null)
                     {
                         modelo.modeloRequerimiento.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagenCambio);
+                        modelo.modeloCambio.Imagen = Encoding.ASCII.GetBytes(modelo.rutaImagenCambio);
                     }
                     else
                     {
@@ -1430,17 +1431,24 @@ namespace ProyectoInge1.Controllers
                     }
                 }
 
-                baseDatos.Entry(modelo).State = EntityState.Modified;
-                baseDatos.SaveChanges();
+                try
+                {
+                    baseDatos.Entry(modelo).State = EntityState.Modified;
+                    baseDatos.SaveChanges();
 
-                modelo.cambiosGuardados = 1;
-
-                return View(modelo);
+                    ViewBag.Msj = "exito";
+                    return View(modelo);
+                }
+                catch {
+                    ViewBag.Msj = "error";
+                    return View(modelo);
+                }
             }
             else
             {
                 ModelState.AddModelError("", "Debe completar toda la información necesaria.");
                 modelo.cambiosGuardados = 2;
+                ViewBag.Msj = "error";
                 return View(modelo);
             }
         }
