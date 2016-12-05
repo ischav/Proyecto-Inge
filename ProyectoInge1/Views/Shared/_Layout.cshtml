@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity;
 @using ProyectoInge1.Models;
 
 <!DOCTYPE html>
@@ -50,18 +50,43 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         @if(Request.IsAuthenticated) {
-                            Entities baseDatos = new Entities();
-                            ApplicationDbContext context = new ApplicationDbContext();
-                            ModeloIntermedio modelo = new ModeloIntermedio();
-                            modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                            string rolId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
-                            if(rolId == "01Admin") {
+                            string [] privilegios = {"GUS-C","PRO-C", "GRF-C", "GCS-CO"};
+                            bool resultado;
+                            try {
+                                Entities bd = new Entities();
+                                ApplicationDbContext context = new ApplicationDbContext();
+                                ModeloIntermedio modelo = new ModeloIntermedio();
+                                modelo.usuarioActualId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                                string rolId = context.Users.Find(modelo.usuarioActualId).Roles.First().RoleId;
+                                for(int i = 0; i < privilegios.Length; i++) {
+                                    //Asignacion de privilegios de consultar
+                                    string priv = bd.Privilegios_asociados_roles.Find(privilegios[i], rolId)?.Id_Privilegio ?? "";
+                                    if(!string.IsNullOrEmpty(priv)) {
+                                        resultado = true;
+                                    } else {
+                                        resultado = false;
+                                    }
+                                    ViewData[privilegios[i]] = resultado;
+                                }
+                            }
+                            catch {
+                                //En caso de errores al acceder a la base de datos se redirige a una pantalla de error
+                                ViewBag.errorRol = "Error al intentar validar el rol";
+                            }
+
+                            if(Convert.ToBoolean(ViewData["GUS-C"])) {
                                 <li>@Html.ActionLink("Usuarios", "Index", "ModuloUsuarios", null, new { @style = colorUsuarios })</li>
                             }
                             <li>@Html.ActionLink("Privilegios", "Index", "ModuloSeguridad", null, new { @style = colorPrivilegios })</li>
-                            <li>@Html.ActionLink("Proyecto", "Index", "ModuloProyecto", null, new { @style = colorProyectos })</li>
-                            <li>@Html.ActionLink("Requerimientos", "Index", "ModuloRequerimientos", null, new { @style = colorRequerimientos })</li>
-                            <li>@Html.ActionLink("Solicitudes de Cambios", "IndexSolicitud", "ModuloRequerimientos", null, new { @style = colorSolicitudes })</li>
+                            if(Convert.ToBoolean(ViewData["PRO-C"])) {
+                                <li>@Html.ActionLink("Proyecto", "Index", "ModuloProyecto", null, new { @style = colorProyectos })</li>
+                            }
+                            if(Convert.ToBoolean(ViewData["GRF-C"])) {
+                                <li>@Html.ActionLink("Requerimientos", "Index", "ModuloRequerimientos", null, new { @style = colorRequerimientos })</li>
+                            }
+                            if(Convert.ToBoolean(ViewData["GCS-CO"])) {
+                                <li>@Html.ActionLink("Solicitudes de Cambios", "IndexSolicitud", "ModuloRequerimientos", null, new { @style = colorSolicitudes })</li>
+                            }
                         }
                         <li>@Html.ActionLink("Contáctenos", "Contact", "Home", null, new { @style = colorContacto })</li>
                         <li>@Html.ActionLink("Acerca de", "About", "Home", null, new { @style = colorAcercaDe })</li>
@@ -80,6 +105,12 @@
         </div>
 
     </div>
+    <script>
+        if ('@ViewBag.errorRol') {
+            alertify.error('@ViewBag.errorRol');
+            @{ ViewBag.errorRol = "";}
+        }
+    </script>
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -93,3 +124,4 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
