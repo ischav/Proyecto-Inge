@@ -137,7 +137,7 @@
                 @Html.DisplayFor(modelItem => item.Version)
             </td>
             <td>
-                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto })
+                @Html.ActionLink("Consultar", "MEC_UnificadoRequerimientos", new { id = item.Id, idProyecto = item.IdProyecto }) | 
          
           
                 @Html.ActionLink("Historial", "IndexHistorialCambios", new { Requerimiento = item.Id, Proyecto = item.IdProyecto })
