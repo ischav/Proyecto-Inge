@@ -1616,16 +1616,22 @@ namespace ProyectoInge1.Controllers
 
 
             solicitantes.Add(solicitante);
-            foreach (var s in clientes)
+            if (clientes != null)
             {
-                solicitantes.Add(s.usuario);
+                foreach (var s in clientes)
+                {
+                    solicitantes.Add(s.usuario);
+                }
             }
 
             responsables.Add(responsable);
-            foreach (var d in desarrolladores)
+            if (desarrolladores != null)
             {
-                solicitantes.Add(d.usuario);
-                responsables.Add(d.usuario);
+                foreach (var d in desarrolladores)
+                {
+                    solicitantes.Add(d.usuario);
+                    responsables.Add(d.usuario);
+                }
             }
 
             ViewBag.listaSolicitantes = solicitantes;

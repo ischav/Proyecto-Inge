@@ -118,7 +118,7 @@
         </div>
 
         <div class="row">
-            @Html.LabelFor(model => model.rutaImagen, htmlAttributes: new { @class = "control-label required col-md-2" })
+            @Html.LabelFor(model => model.rutaImagen, "Ruta de la imagen" ,htmlAttributes: new { @class = "control-label required col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.rutaImagen, new { htmlAttributes = new { @id = "rutaImagen", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.rutaImagen, "", new { @class = "text-danger" })
@@ -263,7 +263,7 @@
                     new { value = "En revisión" , text = "En revisión"  },
                     new { value = "Aceptado" , text = "Aceptado" },
                     new { value = "Rechazado" , text = "Rechazado" }
-                }, "value", "text"), "Seleccione un estado", new { @class = "form-control" })
+                }, "value", "text"), new { @class = "form-control" })
             </div>
         </div>
     </fieldset>

@@ -53,11 +53,13 @@ list-style-type:none;
 
 <script>
     function funcionCancelar() {
-        var respuesta = confirm('¿Confirma que no desea cambiar el estado de esta solicitud?');
-        if (respuesta == true) {
-            var url = '@Url.Action("IndexSolicitud", "ModuloRequerimientos")';
-            window.location.href = url;
-        }
+        msj = "¿Confirma que no desea cambiar el estado de esta solicitud?";
+        alertify.confirm(msj, function (e) {
+            if (e) {
+                var url = '@Url.Action("IndexSolicitud", "ModuloRequerimientos")';
+                window.location.href = url;
+            }
+        });
     }
 
     if ('@ViewBag.Msj' == 'exito')
